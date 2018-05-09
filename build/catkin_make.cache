@@ -1,0 +1,2 @@
+mcfoamy
+-DCATKIN_DEVEL_PREFIX=/home/eitan/mcfoamy_gazebo/devel -DCMAKE_INSTALL_PREFIX=/home/eitan/mcfoamy_gazebo/install -G Unix Makefiles

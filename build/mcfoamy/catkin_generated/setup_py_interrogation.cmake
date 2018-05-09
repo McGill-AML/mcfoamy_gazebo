@@ -1,0 +1,6 @@
+set(gazebo_example_SETUP_PY_VERSION "0.0.0")
+set(gazebo_example_SETUP_PY_SCRIPTS "")
+set(gazebo_example_SETUP_PY_PACKAGES "gazebo_example")
+set(gazebo_example_SETUP_PY_PACKAGE_DIRS "src/gazebo_example")
+set(gazebo_example_SETUP_PY_MODULES "")
+set(gazebo_example_SETUP_PY_MODULE_DIRS "")
