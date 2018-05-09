@@ -1,0 +1,32 @@
+<launch>
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find gazebo_example)/worlds/world_example.world"/>
+    <arg name="verbose" value="true"/>
+    <!-- more default parameters can be changed here -->
+  </include>
+  
+  <!-- Spawn a robot into Gazebo URDF -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find gazebo_example)/models/urdf/example_robot.urdf -urdf -z 1 -x 1 -model plane_urdf" />
+  
+  <!-- Spawn a robot into Gazebo Xacro -->
+  <group ns="plane_xacro_default">
+    <!-- Convert an xacro and put on parameter server -->
+    <param name="robot_description" command="$(find xacro)/xacro $(find gazebo_example)/models/xacro/example_robot.urdf.xacro --inorder" />
+
+    <!-- Spawn a robot into Gazebo -->
+    <node name="spawn_xacro" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model plane_xacro" />
+    
+    <node name="controller_node_py" pkg="gazebo_example" type="controller_node.py" output="screen" />
+  </group>
+  
+  <group ns="plane_xacro_param">
+    <!-- Convert an xacro and put on parameter server and pass the robot name as a parameter-->
+    <param name="robot_description" command="$(find xacro)/xacro $(find gazebo_example)/models/xacro/example_robot.urdf.xacro --inorder robot_name:=plane_xacro_param" />
+
+    <!-- Spawn a robot into Gazebo -->
+    <node name="spawn_xacro_param" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -z 1 -x -1 -model plane_xacro_param" />
+    
+    <node name="controller_node" pkg="gazebo_example" type="controller_node" output="screen" />
+  </group>
+</launch>
