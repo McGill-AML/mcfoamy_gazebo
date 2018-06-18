@@ -1,0 +1,468 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Code Generation Report</title>
+<link rel="stylesheet" type="text/css" href="file:///D:\\Programs\\Matlab2014\\toolbox\\coder\\coder\\resources\\eml_report.css" />
+<link rel="stylesheet" type="text/css" href="file:///D:\\Programs\\Matlab2014\\toolbox\\coder\\coder\\resources\\jQuery\\ui.resizable.css" />
+<link rel="stylesheet" type="text/css" href="file:///C:\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic UAV Controller\\codegen\\dll\\controller_eb\\html\\index.css" />
+
+<script type="text/javascript" src="file:///D:\\Programs\\Matlab2014\\toolbox\\coder\\coder\\resources\\jQuery\\jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="file:///D:\\Programs\\Matlab2014\\toolbox\\coder\\coder\\resources\\jQuery\\jquery-ui-1.7.custom.min.js"></script>
+<script type="text/javascript" src="file:///D:\\Programs\\Matlab2014\\toolbox\\coder\\coder\\resources\\jQuery\\jquery.tablesorter.mod.js"></script>
+<script type="text/javascript" src="file:///D:\\Programs\\Matlab2014\\toolbox\\coder\\coder\\resources\\jQuery\\jquery.hotkeys-0.7.8.js"></script>
+<script type="text/javascript" src="file:///D:\\Programs\\Matlab2014\\toolbox\\coder\\coder\\resources\\eml_report_interactions.js"></script>
+<script type="text/javascript" src="file:///D:\\Programs\\Matlab2014\\toolbox\\coder\\coder\\resources\\eml_report_layout.js"></script>
+<script type="text/javascript" src="file:///D:\\Programs\\Matlab2014\\toolbox\\rtw\\rtw\\+coder\\+report\\resources\\rtwshrink.js"></script>
+<script type="text/javascript">
+var localizedMessages = {
+    callSelectPrompt: "Select a function call:",
+    callSelectSource: "Calls from this function",
+    callSelectTarget: "Calls to this function",
+    infoForExpression: "Information for the selected expression:",
+    infoForVarType: "Information for the selected variable:",
+    infoForVarConst: "Information for the selected compile-time constant:",
+    infoForVarNone: "This variable does not have information associated with it.",
+    infoForFilter: "Matched {0}/{1} functions, {2}/{3} methods",
+    autoExtrinsicCall: "Only supported within the MATLAB environment."
+};
+var keyBindings = {
+        selectMCodeTab: "Ctrl+m",
+    selectCallStackTab: "Ctrl+k",
+        selectCCodeTab: "Ctrl+c",
+       selectReportTab: "Ctrl+r",
+     selectCenterPanel: "Ctrl+w",
+      selectSummaryTab: "Ctrl+s",
+     selectMessagesTab: "Ctrl+a",
+    selectWatchListTab: "Ctrl+v",
+     selectBuildLogTab: "Ctrl+t"
+};
+var functionInfoTable = {
+ MATLABcode1: "controller_eb1_mcode.html",
+ fpath1: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/controller_eb.m",
+ lines1: [1, 1, 43],
+ watch1: "controller_eb1_watch.html",
+ title1: "Function: <span class='functionname'><a title='C:&nbsp;\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic&nbsp;UAV&nbsp;Controller\\controller_eb.m' class='functionlink' href=\"matlab: open('C:\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic UAV Controller\\controller_eb.m')\">controller_eb</a></span>",
+ tcall1: [  ],
+ scall1: [ [ "From line 33 to position_controller", "55#srcline1" ], [ "From line 34 to attitude_controller", "78#srcline1" ], [ "From line 35 to force_controller", "117#srcline1" ], [ "From line 36 to mixer", "129#srcline1" ] ],
+ MATLABcode50: "saturate50_mcode.html",
+ fpath50: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/saturate.m",
+ lines50: [1, 1, 10],
+ watch50: "saturate50_watch.html",
+ title50: "Function: <span class='functionname'><a title='C:&nbsp;\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic&nbsp;UAV&nbsp;Controller\\saturate.m' class='functionlink' href=\"matlab: open('C:\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic UAV Controller\\saturate.m')\">saturate</a></span>",
+ tcall50: [ [ "From position_controller line 6", "55#F50N8:B69" ], [ "From mixer line 79", "129#F50N8:B498" ] ],
+ scall50: [  ],
+ MATLABcode55: "position_controller55_mcode.html",
+ fpath55: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/position_controller.m",
+ lines55: [1, 1, 13],
+ watch55: "position_controller55_watch.html",
+ title55: "Function: <span class='functionname'><a title='C:&nbsp;\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic&nbsp;UAV&nbsp;Controller\\position_controller.m' class='functionlink' href=\"matlab: open('C:\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic UAV Controller\\position_controller.m')\">position_controller</a></span>",
+ tcall55: [ [ "From controller_eb line 33", "1#F55N7:B208" ] ],
+ scall55: [ [ "From line 6 to saturate", "50#srcline1" ] ],
+ MATLABcode78: "attitude_controller78_mcode.html",
+ fpath78: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/attitude_controller.m",
+ lines78: [1, 1, 13],
+ watch78: "attitude_controller78_watch.html",
+ title78: "Function: <span class='functionname'><a title='C:&nbsp;\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic&nbsp;UAV&nbsp;Controller\\attitude_controller.m' class='functionlink' href=\"matlab: open('C:\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic UAV Controller\\attitude_controller.m')\">attitude_controller</a></span>",
+ tcall78: [ [ "From controller_eb line 34", "1#F78N2:B221" ] ],
+ scall78: [  ],
+ MATLABcode117: "force_controller117_mcode.html",
+ fpath117: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/force_controller.m",
+ lines117: [1, 1, 20],
+ watch117: "force_controller117_watch.html",
+ title117: "Function: <span class='functionname'><a title='C:&nbsp;\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic&nbsp;UAV&nbsp;Controller\\force_controller.m' class='functionlink' href=\"matlab: open('C:\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic UAV Controller\\force_controller.m')\">force_controller</a></span>",
+ tcall117: [ [ "From controller_eb line 35", "1#F117N4:B233" ] ],
+ scall117: [  ],
+ MATLABcode124: "lpfilt124_mcode.html",
+ fpath124: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/lpfilt.m",
+ lines124: [1, 1, 32],
+ watch124: "lpfilt124_watch.html",
+ title124: "Function: <span class='functionname'><a title='C:&nbsp;\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic&nbsp;UAV&nbsp;Controller\\lpfilt.m' class='functionlink' href=\"matlab: open('C:\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic UAV Controller\\lpfilt.m')\">lpfilt</a></span>",
+ tcall124: [ [ "From mixer line 36", "129#F124N5:B181" ] ],
+ scall124: [  ],
+ MATLABcode129: "mixer129_mcode.html",
+ fpath129: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/mixer.m",
+ lines129: [1, 1, 86],
+ watch129: "mixer129_watch.html",
+ title129: "Function: <span class='functionname'><a title='C:&nbsp;\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic&nbsp;UAV&nbsp;Controller\\mixer.m' class='functionlink' href=\"matlab: open('C:\\Users\\Eitan\\Dropbox\\Research\\Gazebo\\controller\\Generic UAV Controller\\mixer.m')\">mixer</a></span>",
+ tcall129: [ [ "From controller_eb line 36", "1#F129N6:B248" ] ],
+ scall129: [ [ "From line 36 to lpfilt", "124#srcline1" ], [ "From line 79 to saturate", "50#srcline1" ] ],
+ rootFcnID: "1",
+ firstPage: "controller_eb_c.html",
+ htmlRoot: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic%20UAV%20Controller/codegen/dll/controller_eb/html/"
+};
+var scriptInfoTable = {
+ fpath1: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/controller_eb.m",
+ fpath2: "D:/Programs/Matlab2014/toolbox/shared/coder/coder/+coder/+internal/isBuiltInNumeric.m",
+ fpath3: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/ops/eml_mtimes_helper.m",
+ fpath4: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_index_class.m",
+ fpath5: "D:/Programs/Matlab2014/toolbox/coder/coder/+coder/+internal/scalarEg.p",
+ fpath6: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_scalar_eg.m",
+ fpath7: "D:/Programs/Matlab2014/toolbox/coder/coder/+coder/+internal/+blas/inline.p",
+ fpath8: "D:/Programs/Matlab2014/toolbox/coder/coder/+coder/+internal/+blas/use_refblas.p",
+ fpath9: "D:/Programs/Matlab2014/toolbox/coder/coder/+coder/+internal/+refblas/xgemm.p",
+ fpath10: "D:/Programs/Matlab2014/toolbox/coder/coder/+coder/+internal/+blas/xgemm.p",
+ fpath11: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/blas/eml_xgemm.m",
+ fpath12: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/specfun/cross.m",
+ fpath13: "D:/Programs/Matlab2014/toolbox/shared/coder/coder/+coder/+internal/assert.m",
+ fpath14: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_scalexp_compatible.m",
+ fpath15: "D:/Programs/Matlab2014/toolbox/coder/coder/+coder/+internal/div.p",
+ fpath16: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_div.m",
+ fpath17: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/ops/rdivide.m",
+ fpath18: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/ops/mrdivide.p",
+ fpath19: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/saturate.m",
+ fpath20: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/eml_scalar_cos.m",
+ fpath21: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/cos.m",
+ fpath22: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/eml_scalar_sin.m",
+ fpath23: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/sin.m",
+ fpath24: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/position_controller.m",
+ fpath25: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/matfun/trace.m",
+ fpath26: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_error.m",
+ fpath27: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/eml_scalar_acos.m",
+ fpath28: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/acos.m",
+ fpath29: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elmat/ismatrix.m",
+ fpath30: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_switch_helper.m",
+ fpath31: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elmat/intmax.m",
+ fpath32: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_int_forloop_overflow_check.m",
+ fpath33: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elmat/diag.m",
+ fpath34: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/attitude_controller.m",
+ fpath35: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_float_model.m",
+ fpath36: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_realmin.m",
+ fpath37: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elmat/realmin.m",
+ fpath38: "D:/Programs/Matlab2014/toolbox/shared/coder/coder/+coder/+internal/indexMinus.m",
+ fpath39: "D:/Programs/Matlab2014/toolbox/shared/coder/coder/+coder/+internal/indexTimes.m",
+ fpath40: "D:/Programs/Matlab2014/toolbox/shared/coder/coder/+coder/+internal/indexPlus.m",
+ fpath41: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/eml_scalar_abs.m",
+ fpath42: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/abs.m",
+ fpath43: "D:/Programs/Matlab2014/toolbox/coder/coder/+coder/+internal/+refblas/xnrm2.p",
+ fpath44: "D:/Programs/Matlab2014/toolbox/coder/coder/+coder/+internal/+blas/xnrm2.p",
+ fpath45: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/blas/eml_xnrm2.m",
+ fpath46: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/matfun/norm.m",
+ fpath47: "D:/Programs/Matlab2014/toolbox/coder/coder/+coder/+internal/scalexpAlloc.p",
+ fpath48: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/eml/eml_scalexp_alloc.m",
+ fpath49: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/eml_scalar_floor.m",
+ fpath50: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/floor.m",
+ fpath51: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/ops/power.m",
+ fpath52: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/ops/mpower.m",
+ fpath53: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/force_controller.m",
+ fpath54: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/eml_scalar_sqrt.m",
+ fpath55: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/sqrt.m",
+ fpath56: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/eml_scalar_tan.m",
+ fpath57: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elfun/tan.m",
+ fpath58: "D:/Programs/Matlab2014/toolbox/eml/lib/matlab/elmat/isnan.m",
+ fpath59: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/lpfilt.m",
+ fpath60: "C:/Users/Eitan/Dropbox/Research/Gazebo/controller/Generic UAV Controller/mixer.m"
+};
+</script>
+</head>
+<body>
+
+<div class="west">
+<ul class="ui-tabs-nav">
+<li class="ui-tabs-nav-item ui-tabs-selected"><span class="tab-link" id="MATLABcode"><span>MATLAB code</span></span></li>
+<li class="ui-tabs-nav-item"><span class="tab-link" id="callstack"><span>Call stack</span></span></li>
+<li class="ui-tabs-nav-item"><span class="tab-link" id="ccode"><span>C code</span></span></li>
+</ul>
+<div id="MATLABcodebody" class="ui-tabs-panel">
+<!-- Begin Filter -->
+<div class="grayline methodset" onclick="filterClick(event);">
+<a class="collapsed">Filter</a>
+</div>
+<div id="filterbody" class="hidden">
+<table class="myfunc-filter-tbl">
+<tr>
+<td title="Use this filter to display only functions and methods that contain variables or expressions with the specified attributes." colspan="2" class="checkbox">
+<div class="myfunc-filterby-chk"><input type="checkbox" class="filterenable" />
+<div class="filter-enable-lbl">Filter functions and methods</div></div></td></tr><tr>
+<td class="label"><div class="myfunc-filterby-lbl">Filter by:</div></td>
+<td class="select">
+<div class="filters">
+<select class="myfunc-filterby">
+<option id="size">Size</option>
+<option id="complex">Complexity</option>
+<option id="class">Class</option>
+</select>
+</div>
+</td>
+</tr>
+
+<tr>
+<td class="label"><div class="myfunc-filterstr-lbl">Filter:</div></td>
+<td class="input"><div>
+
+<div class="size">
+<select class="myfunc-filter size">
+<option value="1 50 55 78 117 124 129">1 x 1</option>
+<option value="1 55 78 117 129">3 x 1</option>
+<option value="1 55 78 117">3 x 3</option>
+<option value="1 129">4 x 1</option>
+</select>
+</div>
+
+<div class="complex">
+<select class="myfunc-filter complex">
+<option value="">Complex values</option>
+<option value="1 50 55 78 117 124 129">Real values</option>
+</select>
+</div>
+<!-- Begin Class Filter -->
+<div class="class">
+<select class="myfunc-filter class">
+<option value="1 50 55 78 117 124 129">double</option>
+<option value="1 55 78 117 129">struct</option>
+</select>
+</div>
+<!-- End Class Filter -->
+</div>
+</td>
+</tr>
+</table>
+<div class="myfunc-count"></div>
+</div>
+<!-- End Filter -->
+<div class="grayline methodset" onmouseover="callTreeMouseOver(event);" onmouseout="callTreeMouseOut(event);" onclick="functionSetClick(event);">
+<a class="expanded">Functions</a>
+</div>
+<!-- Begin Function Tree -->
+<div id="functiontreebody">
+<div class="functionwrapper" onmouseover="callTreeMouseOver(event);" onmouseout="callTreeMouseOut(event);" onclick="functionTreeClick(event);">
+<ol class="tree">
+<!-- Begin Function Tree Roots -->
+<li class="leaf  passed"><a href="#" class="fcn" id="F78N2:F1">attitude_controller</a></li>
+<li class="leaf  passed"><a href="#" class="fcn" id="F1N3:F2">controller_eb</a></li>
+<li class="leaf  passed"><a href="#" class="fcn" id="F117N4:F3">force_controller</a></li>
+<li class="leaf  passed"><a href="#" class="fcn" id="F124N5:F4">lpfilt</a></li>
+<li class="leaf  passed"><a href="#" class="fcn" id="F129N6:F5">mixer</a></li>
+<li class="leaf  passed"><a href="#" class="fcn" id="F55N7:F6">position_controller</a></li>
+<li class="leaf  passed"><a href="#" class="fcn" id="F50N8:F7">saturate</a></li>
+<!-- End Function Tree Roots -->
+</ol>
+<!-- Function Tree Nodes -->
+<div class="functiontreenodes hidden">
+</div>
+<!-- End Function Tree Nodes -->
+</div>
+</div>
+<!-- End Function Tree -->
+</div>
+<!-- Begin Call Tree -->
+<div id="callstackbody" class="ui-tabs-panel hidden">
+<div class="treewrapper" onmouseover="callTreeMouseOver(event);" onmouseout="callTreeMouseOut(event);" onclick="callTreeClick(event);">
+<ol class="tree">
+<!-- Call Tree Root -->
+<li class="node collapsed passed"><a href="#" class="fcn" id="F1N3:L1">controller_eb</a>
+<ul>
+<li class="node collapsed passed"><a href="#" class="fcn" id="F55N7:L2">position_controller</a></li>
+<li class="leaf passed"><a href="#" class="fcn" id="F78N2:L3">attitude_controller</a></li>
+<li class="leaf passed"><a href="#" class="fcn" id="F117N4:L4">force_controller</a></li>
+<li class="node collapsed passed"><a href="#" class="fcn" id="F129N6:L5">mixer</a></li>
+</ul>
+</li>
+</ol>
+<!-- Call Tree Nodes -->
+<div class="callstacknodes hidden">
+<ol class="callstacknode" id="callstacknode1">
+
+<li class="node collapsed passed"><a href="#" class="fcn" id="F1N3:l1">controller_eb</a>
+<ul>
+<li class="node collapsed passed"><a href="#" class="fcn" id="F55N7:l2">position_controller</a></li>
+<li class="leaf passed"><a href="#" class="fcn" id="F78N2:l3">attitude_controller</a></li>
+<li class="leaf passed"><a href="#" class="fcn" id="F117N4:l4">force_controller</a></li>
+<li class="node collapsed passed"><a href="#" class="fcn" id="F129N6:l5">mixer</a></li>
+</ul>
+</li>
+</ol>
+<ol class="callstacknode" id="callstacknode50">
+
+<li class="leaf passed"><a href="#" class="fcn" id="F50N8:l6">saturate</a>
+</li>
+</ol>
+<ol class="callstacknode" id="callstacknode55">
+
+<li class="node collapsed passed"><a href="#" class="fcn" id="F55N7:l7">position_controller</a>
+<ul>
+<li class="leaf passed"><a href="#" class="fcn" id="F50N8:l8">saturate</a></li>
+</ul>
+</li>
+</ol>
+<ol class="callstacknode" id="callstacknode78">
+
+<li class="leaf passed"><a href="#" class="fcn" id="F78N2:l9">attitude_controller</a>
+</li>
+</ol>
+<ol class="callstacknode" id="callstacknode117">
+
+<li class="leaf passed"><a href="#" class="fcn" id="F117N4:l10">force_controller</a>
+</li>
+</ol>
+<ol class="callstacknode" id="callstacknode124">
+
+<li class="leaf passed"><a href="#" class="fcn" id="F124N5:l11">lpfilt</a>
+</li>
+</ol>
+<ol class="callstacknode" id="callstacknode129">
+
+<li class="node collapsed passed"><a href="#" class="fcn" id="F129N6:l12">mixer</a>
+<ul>
+<li class="leaf passed"><a href="#" class="fcn" id="F124N5:l13">lpfilt</a></li>
+<li class="leaf passed"><a href="#" class="fcn" id="F50N8:l14">saturate</a></li>
+</ul>
+</li>
+</ol>
+
+</div>
+</div>
+</div>
+<!-- End Call Tree -->
+<!-- Begin C Code -->
+<div id="ccodebody" class="ui-tabs-panel hidden">
+
+<table class="myfunc-list" cellspacing="0" cellpadding="0" onclick="reportFileClick(event);">
+<tbody>
+<tr class="report" id="metrics.html"><td class="report"><a href="#">Static Code Metrics Report</a></td></tr>
+</tbody>
+</table><div class="grayline methodset" onclick="ccodeClick(event,1);">
+<a class="expanded">Target Source Files</a>
+</div>
+<!-- Begin C Code List -->
+<div id="ccodelistbody1" class="visible">
+<table class="myfunc-list" cellspacing="0" cellpadding="0" onclick="cFileClick(event);">
+<tbody>
+<tr class="ccode" id="controller_eb_c.html"><td class="ccode"><a href="#">controller_eb.c</a></td></tr>
+<tr class="ccode" id="controller_eb_h.html"><td class="ccode"><a href="#">controller_eb.h</a></td></tr>
+<tr class="ccode" id="controller_eb_types_h.html"><td class="ccode"><a href="#">controller_eb_types.h</a></td></tr>
+<tr class="ccode" id="rtwtypes_h.html"><td class="ccode"><a href="#">rtwtypes.h</a></td></tr>
+</tbody>
+</table>
+</div>
+<!-- End C Code List -->
+</div>
+<!-- End C Code -->
+</div>
+<!-- Tooltips -->
+<div class="aux hidden">
+<div class="tooltips">
+<div class="tooltip" id="TT1"><table class="tooltip"><tr><th>Size</th><td>3 x 1</td></tr><tr><th>Class</th><td>double</td></tr><tr><th>Complex</th><td>No</td></tr></table></div>
+<div class="tooltip" id="TT2"><table class="tooltip"><tr><th>Size</th><td>3 x 3</td></tr><tr><th>Class</th><td>double</td></tr><tr><th>Complex</th><td>No</td></tr></table></div>
+<div class="tooltip" id="TT3"><table class="tooltip"><tr><th>Size</th><td>1 x 1</td></tr><tr><th>Class</th><td>struct</td></tr></table></div>
+<div class="tooltip" id="TT4"><table class="tooltip"><tr><th>Size</th><td>1 x 1</td></tr><tr><th>Class</th><td>double</td></tr><tr><th>Complex</th><td>No</td></tr></table></div>
+<div class="tooltip" id="TT5"><table class="tooltip"><tr><th>Size</th><td>1 x 1</td></tr><tr><th>Class</th><td>struct</td></tr></table></div>
+<div class="tooltip" id="TT6"><table class="tooltip"><tr><th>Size</th><td>1 x 1</td></tr><tr><th>Class</th><td>logical</td></tr></table></div>
+<div class="tooltip" id="TT7"><table class="tooltip"><tr><th>Size</th><td>1 x 23</td></tr><tr><th>Class</th><td>char</td></tr></table></div>
+<div class="tooltip" id="TT8"><table class="tooltip"><tr><th>Size</th><td>1 x 2</td></tr><tr><th>Class</th><td>cell</td></tr></table></div>
+<div class="tooltip" id="TT9"><table class="tooltip"><tr><th>Size</th><td>1 x 1</td></tr><tr><th>Class</th><td>coder.internal.indexInt</td></tr><tr><th>Complex</th><td>No</td></tr></table></div>
+<div class="tooltip" id="TT10"><table class="tooltip"><tr><th>Size</th><td>1 x 1</td></tr><tr><th>Class</th><td>cell</td></tr></table></div>
+<div class="tooltip" id="TT11"><table class="tooltip"><tr><th>Size</th><td>1 x 7</td></tr><tr><th>Class</th><td>char</td></tr></table></div>
+<div class="tooltip" id="TT12"><table class="tooltip"><tr><th>Size</th><td>1 x 1</td></tr><tr><th>Class</th><td>char</td></tr></table></div>
+<div class="tooltip" id="TT13"><table class="tooltip"><tr><th>Size</th><td>1 x 13</td></tr><tr><th>Class</th><td>char</td></tr></table></div>
+<div class="tooltip" id="TT14"><table class="tooltip"><tr><th>Size</th><td>1 x 0</td></tr><tr><th>Class</th><td>cell</td></tr></table></div>
+<div class="tooltip" id="TT15"><table class="tooltip"><tr><th>Size</th><td>1 x 6</td></tr><tr><th>Class</th><td>char</td></tr></table></div>
+<div class="tooltip" id="TT16"><table class="tooltip"><tr><th>Size</th><td>1 x 3</td></tr><tr><th>Class</th><td>double</td></tr><tr><th>Complex</th><td>No</td></tr></table></div>
+<div class="tooltip" id="TT17"><table class="tooltip"><tr><th>Size</th><td>1 x 9</td></tr><tr><th>Class</th><td>cell</td></tr></table></div>
+<div class="tooltip" id="TT18"><table class="tooltip"><tr><th>Size</th><td>1 x 1</td></tr><tr><th>Class</th><td>int32</td></tr><tr><th>Complex</th><td>No</td></tr></table></div>
+<div class="tooltip" id="TT19"><table class="tooltip"><tr><th>Size</th><td>4 x 1</td></tr><tr><th>Class</th><td>double</td></tr><tr><th>Complex</th><td>No</td></tr></table></div>
+<div class="tooltip" id="TT20"><table class="tooltip"><tr><th>Size</th><td>1 x 30</td></tr><tr><th>Class</th><td>char</td></tr></table></div>
+<div class="tooltip" id="TT21"><table class="tooltip"><tr><th>Size</th><td>1 x 4</td></tr><tr><th>Class</th><td>char</td></tr></table></div>
+<div class="tooltip" id="TT22"><table class="tooltip"><tr><th>Size</th><td>1 x 9</td></tr><tr><th>Class</th><td>double</td></tr><tr><th>Complex</th><td>No</td></tr></table></div>
+</div>
+</div>
+<!-- End Tooltips -->
+
+<div class="south">
+<ul class="ui-tabs-nav">
+<li class="ui-tabs-nav-item ui-tabs-selected"><span class="tab-link" id="summary"><span>Summary</span></span></li>
+<li class="ui-tabs-nav-item"><span class="tab-link" id="messages"><span>All Messages (0)</span></span></li>
+<li class="ui-tabs-nav-item"><span class="tab-link" id="watchlist"><span>Variables</span></span></li>
+<li class="ui-tabs-nav-item hidden"><span class="tab-link" id="watchload"><span>Variables</span></span></li>
+<li class="ui-tabs-nav-item"><span class="tab-link" id="buildlog1"><span>Target Build Log</span></span></li>
+</ul>
+
+<!-- Compilation Summary -->
+<div id="summarybody" class="ui-tabs-panel">
+<table cellpadding="1" cellspacing="4">
+<tr><td>C source code generated on:</td><td>16-May-2018 15:06:44</td></tr>
+<tr><td>Coding target:</td><td>Dynamic Library</td></tr>
+<tr><td>Number of errors:</td><td><a href="javascript:selectMessagesTab();">0</a></td></tr>
+<tr><td>Number of warnings:</td><td><a href="javascript:selectMessagesTab();">0</a></td></tr>
+<tr><td>Number of notices:</td><td><a href="javascript:selectMessagesTab();">0</a></td></tr>
+</table>
+<p/><p/><table>
+<tr><td><b>Tell Us What You Think</b></td></tr>
+<tr><td>We value your feedback. Please take a few minutes to answer this short questionnaire regarding the Code Generation Report.</td></tr>
+<tr><td><a href="matlab: web('http://www.customersat3.com/TakeSurvey.asp?si=ELu7GTnTYtk%3D','-browser');">&gt;&gt;Provide Feedback</a></td></tr>
+</table>
+</div>
+
+<!-- Message Table -->
+<div id="messagesbody" class="ui-tabs-panel hidden">
+<div>
+<div class="msgsuccess">Code generation successful. Click here to <a href="javaScript:selectSummaryTab();">view summary</a>.</div>
+</div>
+</div>
+<!-- Watchlist Table -->
+<div id="watchlistbody" class="ui-tabs-panel hidden">
+</div>
+<div id="watchloadbody" class="ui-tabs-panel hidden">
+Loading Variables table ...
+</div>
+
+<!-- Target Build Log -->
+<div id="buildlog1body" class="ui-tabs-panel hidden">
+<div class="grayline"></div>
+<table cellpadding="4" cellspacing="1"><tr>
+<td align="left" class="td-linebottomrt-gray" colspan="2">Build Parameters</td>
+</tr>
+<tr><td align="left" valign="top" class="td-linebottomrt">Build directory</td>
+<td align="left" valign="top" class="td-linebottomrt-link"><a href="matlab: cd('C:\Users\Eitan\Dropbox\Research\Gazebo\controller\Generic UAV Controller\codegen\dll\controller_eb')">C:\Users\Eitan\Dropbox\Research\Gazebo\controller\Generic UAV Controller\codegen\dll\controller_eb</a></td></tr>
+<tr><td align="left" valign="top" class="td-linebottomrt">Make wrapper</td>
+<td align="left" valign="top" class="td-linebottomrt-link">.\controller_eb_rtw.bat</td></tr>
+<tr><td align="left" valign="top" class="td-linebottomrt">Make command</td>
+<td align="left" valign="top" class="td-linebottomrt-link">nmake -f controller_eb_rtw.mk all</td></tr>
+</table>
+<br/>
+<table border="1" cellpadding="4" cellspacing="1" width="100%">
+<tr><td align="left" class="td-linebottomrt-gray">Build Log</td></tr>
+<tr><td valign="top" class="td-script">
+<pre>
+<span class="td-line-number">    1   </span><span class="td-line-normal"></span>
+<span class="td-line-number">    2   </span><span class="td-line-normal">Microsoft (R) Program Maintenance Utility Version 11.00.50727.1</span>
+<span class="td-line-number">    3   </span><span class="td-line-normal">Copyright (C) Microsoft Corporation.  All rights reserved.</span>
+<span class="td-line-number">    4   </span><span class="td-line-normal"></span>
+<span class="td-line-number">    5   </span><span class="td-line-normal">	cl -c -DCRTAPI1=_cdecl -DCRTAPI2=_cdecl -nologo -GS -D_AMD64_=1 -DWIN64 -D_WIN64 -DWIN32 -D_WIN32 -W4 -D_WINNT -D_WIN32_WINNT=0x0502 -DNTDDI_VERSION=0x05020000 -D_WIN32_IE=0x0600 -DWINVER=0x0502 -D_MT -MT -D_CRT_SECURE_NO_WARNINGS  /O2 /Oy- -DMODEL=controller_eb -DHAVESTDIO -DUSE_RTMODEL -Fo"controller_eb.obj" "C:\Users\Eitan\Dropbox\Research\Gazebo\CONTRO~1\GENERI~1\codegen\dll\controller_eb\controller_eb.c"</span>
+<span class="td-line-number">    6   </span><span class="td-line-normal">controller_eb.c</span>
+<span class="td-line-number">    7   </span><span class="td-line-normal">	D:\Programs\MATLAB~2\sys\perl\win32\bin\perl.exe D:\Programs\MATLAB~2\rtw\c\tools\mkvc_lnk.pl controller_eb.lnk controller_eb.obj</span>
+<span class="td-line-number">    8   </span><span class="td-line-normal">### Creating dynamic library ".\controller_eb.dll" ...</span>
+<span class="td-line-number">    9   </span><span class="td-line-normal">	link /RELEASE  /INCREMENTAL:NO /NOLOGO -subsystem:console,5.02 kernel32.lib ws2_32.lib mswsock.lib advapi32.lib  -dll -def:controller_eb.def -out:.\controller_eb.dll @controller_eb.lnk  </span>
+<span class="td-line-number">   10   </span><span class="td-line-normal">   Creating library .\controller_eb.lib and object .\controller_eb.exp</span>
+<span class="td-line-number">   11   </span><span class="td-line-normal">### Created: .\controller_eb.dll</span>
+<span class="td-line-number">   12   </span><span class="td-line-normal">### Successfully generated all binary outputs.</span>
+</pre>
+</td></tr></table>
+
+</div>
+</div>
+<!-- Begin MATLAB Code Panel -->
+<div class="center">
+<div class="center-title">
+<div class="ui-tabs-nav-item ui-tabs-selected">
+<span class="functiontitle">
+</span>
+<!-- Begin Call Sites -->
+<span id="callsiteselecttable" class="call-sites-tbl">
+<span id="callsiteselectlabel" class="filtered">Calls:</span>
+<select id="callsiteselect" onchange="callSiteChange(event)">
+<option value="callsiteprompt">Select a function call:</option>
+</select>
+</span>
+<!-- End Call Sites -->
+</div>
+</div>
+<div class="ui-tabs-panel">
+<div class="code" onmouseover="mcodeMouseOver(event);" onmouseout="mcodeMouseOut(event);"onclick="mcodeClick(event);">
+</div>
+</div>
+</div>
+<!-- End MATLAB Code Panel -->
+</body>
+</html>

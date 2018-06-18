@@ -1,0 +1,4 @@
+EXPORTS
+maneuver_generator
+maneuver_generator_initialize
+maneuver_generator_terminate

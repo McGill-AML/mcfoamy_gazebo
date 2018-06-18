@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller.h
+limits
+-
+algorithm
+-
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/src/controller.cpp
+gazebo_example/controller.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/src/gazebo_example/controller.h
+

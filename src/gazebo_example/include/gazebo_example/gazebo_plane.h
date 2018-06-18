@@ -4,9 +4,9 @@
 #include <boost/thread/mutex.hpp>
 
 #include <ros/ros.h>
-#include <geometry_msgs/Wrench.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
+#include "gazebo_example/actuator.h"
 
 #include <ros/callback_queue.h>
 #include <ros/advertise_options.h>
@@ -17,6 +17,8 @@
 #include <gazebo/common/Time.hh>
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/common/Events.hh>
+#include "McFoamy_FM_v2/McFoamy_FM_v2.h"
+
 
 namespace gazebo
 {
@@ -41,7 +43,8 @@ protected:
   // Force/Torque for the update
   math::Vector3 force_;
   math::Vector3 torque_;
-  
+
+  double actuator_[4];
   // ROS related attributes
   uint8_t MAX_PUB_QUEUE_SIZE;
   uint8_t MAX_SUB_QUEUE_SIZE;
@@ -53,10 +56,12 @@ protected:
   // ROS Subscribers/Publishers
   ros::Publisher pose_pub_;
   ros::Publisher twist_pub_;
-  ros::Subscriber wrench_sub_;
+  ros::Subscriber actuator_sub_;
+
   
   // ROS Subscribers callbacks
-  void wrenchCallback(const geometry_msgs::Wrench::ConstPtr& wrench_msg);
+  void actuatorCallback(const gazebo_example::actuator::ConstPtr& actuator_msg);
+
   
   // Custom Callback Queue for ROS messages
   ros::CallbackQueue queue_;
@@ -71,6 +76,8 @@ protected:
   virtual void UpdateChild();
   
   void publishLinkState();
+  double saturate(double value, double min, double max);
+  void aerodynamics();
 
 };
 

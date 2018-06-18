@@ -59,11 +59,13 @@ void PlanePlugin::QueueThread()
   }
 }
 
-void PlanePlugin::wrenchCallback(const geometry_msgs::Wrench::ConstPtr& wrench_msg)
+void PlanePlugin::actuatorCallback(const gazebo_example::actuator::ConstPtr& actuator_msg)
 {
   boost::mutex::scoped_lock scoped_lock(lock_);
-  force_ = math::Vector3(wrench_msg->force.x, wrench_msg->force.y, wrench_msg->force.z);
-  torque_ = math::Vector3(wrench_msg->torque.x, wrench_msg->torque.y, wrench_msg->torque.z);
+  actuator_[0] = actuator_msg->u1;
+  actuator_[1] = actuator_msg->u2;
+  actuator_[2] = actuator_msg->u3;
+  actuator_[3] = actuator_msg->u4;
 }
 
 
@@ -90,11 +92,11 @@ void PlanePlugin::InitROSNode()
   
   // subscribe to the odometry topic
   ros::SubscribeOptions so =
-    ros::SubscribeOptions::create<geometry_msgs::Wrench>("external_wrench", MAX_SUB_QUEUE_SIZE,
-        boost::bind(&PlanePlugin::wrenchCallback, this, _1),
+    ros::SubscribeOptions::create<gazebo_example::actuator>("actuator", MAX_SUB_QUEUE_SIZE,
+        boost::bind(&PlanePlugin::actuatorCallback, this, _1),
         ros::VoidPtr(), &queue_);
     
-  wrench_sub_ = rosnode_->subscribe(so);
+  actuator_sub_ = rosnode_->subscribe(so);
   
   // start custom queue for ROS message
   callback_queue_thread_ =
@@ -107,8 +109,9 @@ void PlanePlugin::UpdateChild()
 {
   {
     boost::mutex::scoped_lock scoped_lock(lock_);
-    link_->AddForce(force_);
-    link_->AddTorque(torque_);
+    aerodynamics();
+    link_->AddRelativeForce(force_);
+    link_->AddRelativeTorque(torque_);
   }
   
   publishLinkState();
@@ -130,7 +133,7 @@ void PlanePlugin::publishLinkState()
   pose_pub_.publish(pose_msg);
   
   math::Vector3 velocity = link_->GetWorldLinearVel();
-  math::Vector3 angular_velocity = link_->GetWorldAngularAccel();
+  math::Vector3 angular_velocity = link_->GetWorldAngularVel();
   geometry_msgs::Twist twist_msg;
   twist_msg.linear.x = velocity.x;
   twist_msg.linear.y = velocity.y;
@@ -142,6 +145,54 @@ void PlanePlugin::publishLinkState()
   
   twist_pub_.publish(twist_msg);
 }
+
+double PlanePlugin::saturate(double value, double min, double max)
+{
+  double output = value;
+  if (value < min){output = min;}
+  if (value > max){output = max;}
+  return output;
+}
+
+
+
+void PlanePlugin::aerodynamics()
+{ 
+  math::Vector3 velocity_bg = link_->GetRelativeLinearVel();
+  math::Vector3 angular_velocity_bg = link_->GetRelativeAngularVel();
+  math::Vector3 velocity_b(velocity_bg[0],-velocity_bg[1],-velocity_bg[2]);
+  math::Vector3 angular_velocity_b(angular_velocity_bg[0],-angular_velocity_bg[1],-angular_velocity_bg[2]);
+  //saturate actuators and add rate limiters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  double delta_a_max = 52.0;
+  double delta_e_max = 59.0;
+  double delta_r_max = 49.0;
+  double omega_t_min = 1716.0;
+  double omega_t_max = 6710.0;
+
+
+  double Fx_b;
+  double Fy_b;
+  double Fz_b;
+  double Mx_b;
+  double My_b;
+  double Mz_b;
+  McFoamy_FM_v2(saturate(actuator_[0],-delta_a_max,delta_a_max)*.017453, saturate(actuator_[1],-delta_e_max,delta_e_max)*.017453, saturate(actuator_[2],-delta_r_max,delta_r_max)*.017453, saturate(actuator_[3],omega_t_min,omega_t_max), velocity_b.x,velocity_b.y,velocity_b.z,angular_velocity_b.x,angular_velocity_b.y,angular_velocity_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
+  //McFoamy_FM_v2(actuator_[0]*.017453, actuator_[1]*.017453, actuator_[2]*.017453, actuator_[3], velocity_b.x,velocity_b.y,velocity_b.z,angular_velocity_b.x,angular_velocity_b.y,angular_velocity_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
+
+  /*double dFx =4.5;
+  double dFy=4.4;
+  double dFz=300.3;
+  double dMx=0.0;
+  double dMy=0.0;
+  double dMz=0.0;
+  force2_ = math::Vector3(dFx, dFy, dFz);
+  torque2_ = math::Vector3(dMx, dMy, dMz);*/
+  //force_ = math::Vector3(Fx, Fy, Fz);
+  force_ = math::Vector3(Fx_b, -Fy_b, -Fz_b); //negative signs account for gazebo body frame different from mine
+  torque_ = math::Vector3(Mx_b, -My_b, -Mz_b);
+
+}
+
 
 // Register this plugin with the simulator
 GZ_REGISTER_MODEL_PLUGIN(PlanePlugin);

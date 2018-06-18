@@ -3,6 +3,6 @@ prefix=/home/eitan/mcfoamy_gazebo/devel
 Name: gazebo_example
 Description: Description of gazebo_example
 Version: 0.0.0
-Cflags: -I/home/eitan/mcfoamy_gazebo/src/mcfoamy/include
+Cflags: -I/home/eitan/mcfoamy_gazebo/devel/include -I/home/eitan/mcfoamy_gazebo/src/gazebo_example/include
 Libs: -L/home/eitan/mcfoamy_gazebo/devel/lib 
-Requires: roscpp rospy std_msgs gazebo_ros
+Requires: roscpp rospy std_msgs gazebo_ros message_runtime

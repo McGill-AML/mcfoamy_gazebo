@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/McFoamy_FM_v2/McFoamy_FM_v2.c
+McFoamy_FM_v2.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/McFoamy_FM_v2/McFoamy_FM_v2.h
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/McFoamy_FM_v2/McFoamy_FM_v2.h
+math.h
+-
+stddef.h
+-
+stdlib.h
+-
+string.h
+-
+rtwtypes.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/McFoamy_FM_v2/rtwtypes.h
+McFoamy_FM_v2_types.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/McFoamy_FM_v2/McFoamy_FM_v2_types.h
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/McFoamy_FM_v2/McFoamy_FM_v2_types.h
+rtwtypes.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/McFoamy_FM_v2/rtwtypes.h
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/McFoamy_FM_v2/rtwtypes.h
+

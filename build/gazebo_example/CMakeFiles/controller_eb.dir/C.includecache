@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/controller_eb/controller_eb.c
+controller_eb.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/controller_eb/controller_eb.h
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/controller_eb/controller_eb.h
+math.h
+-
+stddef.h
+-
+stdlib.h
+-
+string.h
+-
+rtwtypes.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/controller_eb/rtwtypes.h
+controller_eb_types.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/controller_eb/controller_eb_types.h
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/controller_eb/controller_eb_types.h
+rtwtypes.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/controller_eb/rtwtypes.h
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/controller_eb/rtwtypes.h
+

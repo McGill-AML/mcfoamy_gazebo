@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   gazebo_ros
+  message_generation
 )
 
 # Depend on system install of Gazebo
@@ -48,11 +49,10 @@ catkin_python_setup()
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+ add_message_files(
+   FILES
+   actuator.msg
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -69,10 +69,10 @@ catkin_python_setup()
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -106,7 +106,7 @@ catkin_python_setup()
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES gazebo_example
-  CATKIN_DEPENDS roscpp rospy std_msgs gazebo_ros
+  CATKIN_DEPENDS roscpp rospy std_msgs gazebo_ros message_runtime
 #  DEPENDS system_lib
 )
 
@@ -126,8 +126,13 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 
 ## Declare a C++ library
+add_library(McFoamy_FM_v2 include/McFoamy_FM_v2/McFoamy_FM_v2.c)
+add_library(controller_eb include/controller_eb/controller_eb.c)
+add_library(maneuver_generator include/maneuver_generator/maneuver_generator.c)
+
+
 add_library(gazebo_plane src/gazebo_plane.cpp)
-target_link_libraries(gazebo_plane ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+target_link_libraries(gazebo_plane ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES} McFoamy_FM_v2)
 
 add_library(controller src/controller.cpp)
 
@@ -142,6 +147,9 @@ add_dependencies(controller_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 target_link_libraries(controller_node
    ${catkin_LIBRARIES}
    controller
+   controller_eb
+   maneuver_generator
+   ${GAZEBO_LIBRARIES}
 )
 
 #############

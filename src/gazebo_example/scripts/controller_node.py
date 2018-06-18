@@ -2,7 +2,9 @@
 
 import rospy
 from std_msgs.msg import String
-from geometry_msgs.msg import Wrench, Pose, Twist
+from geometry_msgs.msg import Pose, Twist
+from gazebo_example.msg import actuator
+
 from std_srvs.srv import Trigger, TriggerResponse
 
 from gazebo_example.controllers import PID, State
@@ -17,8 +19,8 @@ class ContollerNode(object):
         self._twist = Twist()
         
     def init(self):
-        self._wrench_pub = rospy.Publisher("external_wrench", 
-                                           Wrench, 
+        self._actuator_pub = rospy.Publisher("actuator", 
+                                           actuator, 
                                            queue_size=self.MAX_PUB_QUEUE)
         self._pose_sub = rospy.Subscriber("pose", Pose, self._pose_callback)
         self._twist_sub = rospy.Subscriber("twist", Twist, self._twist_callback)
@@ -36,7 +38,7 @@ class ContollerNode(object):
         while not rospy.is_shutdown():
             # ros::spinOnce not needed in Python
             
-            self._wrench_pub.publish(self._compute_control_wrench(frequency))
+            self._actuator_pub.publish(self._compute_control_actuation(frequency))
             rate.sleep()
             
     def _wait_for_trigger(self):
@@ -45,15 +47,18 @@ class ContollerNode(object):
               break
           rospy.loginfo_throttle(10, "Waiting for control start trigger")
           
-    def _compute_control_wrench(self, frequency):
+    def _compute_control_actuation(self, frequency):
         desired_state = State(7.0, 0.0)
         measured_state = State(self._pose.position.z, self._twist.linear.z)
         force_z = self._pid.output(desired_state, measured_state, 1.0/frequency)
         
-        command_wrench = Wrench()
-        command_wrench.force.z = force_z
+        command_actuator = actuator()
+        command_actuator.u1 = 0
+        command_actuator.u2 = 0
+        command_actuator.u3 = 0
+        command_actuator.u4 = 000
         
-        return command_wrench
+        return command_actuator
         
     def _pose_callback(self, data):
         self._pose = data

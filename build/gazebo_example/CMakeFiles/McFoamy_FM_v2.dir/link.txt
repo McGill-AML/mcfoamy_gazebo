@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC   -shared -Wl,-soname,libMcFoamy_FM_v2.so -o /home/eitan/mcfoamy_gazebo/devel/lib/libMcFoamy_FM_v2.so CMakeFiles/McFoamy_FM_v2.dir/include/McFoamy_FM_v2/McFoamy_FM_v2.c.o  -L/usr/lib/x86_64-linux-gnu/gazebo-7/plugins 

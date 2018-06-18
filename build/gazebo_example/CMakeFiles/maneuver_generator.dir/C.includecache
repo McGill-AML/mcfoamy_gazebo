@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator.c
+math.h
+-
+maneuver_generator.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator.h
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator.h
+math.h
+-
+stddef.h
+-
+stdlib.h
+-
+rtwtypes.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/rtwtypes.h
+maneuver_generator_types.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator_types.h
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator_types.h
+rtwtypes.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/rtwtypes.h
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/rtwtypes.h
+
