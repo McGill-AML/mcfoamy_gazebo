@@ -1066,6 +1066,21 @@ gazebo_ros_gencfg/fast:
 .PHONY : gazebo_ros_gencfg/fast
 
 # Convenience name for target.
+gazebo_example/CMakeFiles/motionplan_node.dir/rule:
+	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f CMakeFiles/Makefile2 gazebo_example/CMakeFiles/motionplan_node.dir/rule
+.PHONY : gazebo_example/CMakeFiles/motionplan_node.dir/rule
+
+# Convenience name for target.
+motionplan_node: gazebo_example/CMakeFiles/motionplan_node.dir/rule
+
+.PHONY : motionplan_node
+
+# fast build rule for target.
+motionplan_node/fast:
+	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/build
+.PHONY : motionplan_node/fast
+
+# Convenience name for target.
 gazebo_example/CMakeFiles/controller.dir/rule:
 	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f CMakeFiles/Makefile2 gazebo_example/CMakeFiles/controller.dir/rule
 .PHONY : gazebo_example/CMakeFiles/controller.dir/rule
@@ -1602,6 +1617,33 @@ src/gazebo_plane.cpp.s:
 	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/gazebo_plane.dir/build.make gazebo_example/CMakeFiles/gazebo_plane.dir/src/gazebo_plane.cpp.s
 .PHONY : src/gazebo_plane.cpp.s
 
+src/motionplan_node.o: src/motionplan_node.cpp.o
+
+.PHONY : src/motionplan_node.o
+
+# target to build an object file
+src/motionplan_node.cpp.o:
+	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o
+.PHONY : src/motionplan_node.cpp.o
+
+src/motionplan_node.i: src/motionplan_node.cpp.i
+
+.PHONY : src/motionplan_node.i
+
+# target to preprocess a source file
+src/motionplan_node.cpp.i:
+	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.i
+.PHONY : src/motionplan_node.cpp.i
+
+src/motionplan_node.s: src/motionplan_node.cpp.s
+
+.PHONY : src/motionplan_node.s
+
+# target to generate assembly for a file
+src/motionplan_node.cpp.s:
+	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.s
+.PHONY : src/motionplan_node.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -1675,6 +1717,7 @@ help:
 	@echo "... controller_eb"
 	@echo "... rosgraph_msgs_generate_messages_lisp"
 	@echo "... gazebo_ros_gencfg"
+	@echo "... motionplan_node"
 	@echo "... controller"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... std_srvs_generate_messages_nodejs"
@@ -1718,6 +1761,9 @@ help:
 	@echo "... src/gazebo_plane.o"
 	@echo "... src/gazebo_plane.i"
 	@echo "... src/gazebo_plane.s"
+	@echo "... src/motionplan_node.o"
+	@echo "... src/motionplan_node.i"
+	@echo "... src/motionplan_node.s"
 .PHONY : help
 
 

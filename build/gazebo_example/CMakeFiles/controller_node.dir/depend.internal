@@ -8,8 +8,6 @@ gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/controller_eb/rtwtypes.h
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller.h
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller_node.h
- /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator.h
- /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator_types.h
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/src/controller_node.cpp
  /opt/ros/kinetic/include/geometry_msgs/Point.h
  /opt/ros/kinetic/include/geometry_msgs/Pose.h
@@ -328,3 +326,14 @@ gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o
  /usr/include/sdformat-4.4/sdf/sdf.hh
  /usr/include/sdformat-4.4/sdf/sdf_config.h
  /usr/include/sdformat-4.4/sdf/system_util.hh
+ /usr/include/x86_64-linux-gnu/bits/select.h
+ /usr/include/x86_64-linux-gnu/bits/select2.h
+ /usr/include/x86_64-linux-gnu/bits/sigset.h
+ /usr/include/x86_64-linux-gnu/bits/time.h
+ /usr/include/x86_64-linux-gnu/bits/timex.h
+ /usr/include/x86_64-linux-gnu/bits/types.h
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h
+ /usr/include/x86_64-linux-gnu/sys/select.h
+ /usr/include/x86_64-linux-gnu/sys/time.h
+ /usr/include/x86_64-linux-gnu/sys/timeb.h

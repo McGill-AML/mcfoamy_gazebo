@@ -7,5 +7,28 @@
     <include>
       <uri>model://sun</uri>
     </include>
+  <model name="forest">
+      <static>true</static>
+      <link name="tree0">
+        <pose>21 0 0 0 0 1.83148750207 </pose>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>file://models_low_res/Tree2.dae</uri>
+              <scale>0.834058720344 0.834058720344 0.834058720344</scale>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>file://models_low_res/Tree2.dae</uri>
+              <scale>0.834058720344 0.834058720344 0.834058720344</scale>
+            </mesh>
+          </geometry>
+        </collision>
+      </link>
+      </model>
+
   </world>
 </sdf>

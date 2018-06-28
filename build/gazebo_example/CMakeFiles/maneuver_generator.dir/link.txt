@@ -1,1 +1,1 @@
-/usr/bin/cc  -fPIC   -shared -Wl,-soname,libmaneuver_generator.so -o /home/eitan/mcfoamy_gazebo/devel/lib/libmaneuver_generator.so CMakeFiles/maneuver_generator.dir/include/maneuver_generator/maneuver_generator.c.o  -L/usr/lib/x86_64-linux-gnu/gazebo-7/plugins 
+/usr/bin/cc  -fPIC     -shared -Wl,-soname,libmaneuver_generator.so -o /home/eitan/mcfoamy_gazebo/devel/lib/libmaneuver_generator.so CMakeFiles/maneuver_generator.dir/include/maneuver_generator/maneuver_generator.c.o  -L/usr/lib/x86_64-linux-gnu/gazebo-7/plugins 

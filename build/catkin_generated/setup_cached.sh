@@ -7,7 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/eitan/mcfoamy_gazebo/devel:$CMAKE_PREFIX_PATH"
 export PWD="/home/eitan/mcfoamy_gazebo/build"
-export ROSLISP_PACKAGE_DIRECTORIES="/home/eitan/mcfoamy_gazebo/devel/share/common-lisp"
-export ROS_PACKAGE_PATH="/home/eitan/mcfoamy_gazebo/src:$ROS_PACKAGE_PATH"

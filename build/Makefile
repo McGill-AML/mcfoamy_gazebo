@@ -1063,6 +1063,19 @@ gazebo_ros_gencfg/fast:
 .PHONY : gazebo_ros_gencfg/fast
 
 #=============================================================================
+# Target rules for targets named motionplan_node
+
+# Build rule for target.
+motionplan_node: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 motionplan_node
+.PHONY : motionplan_node
+
+# fast build rule for target.
+motionplan_node/fast:
+	$(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/build
+.PHONY : motionplan_node/fast
+
+#=============================================================================
 # Target rules for targets named controller
 
 # Build rule for target.
@@ -1469,6 +1482,7 @@ help:
 	@echo "... controller_eb"
 	@echo "... rosgraph_msgs_generate_messages_lisp"
 	@echo "... gazebo_ros_gencfg"
+	@echo "... motionplan_node"
 	@echo "... controller"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... std_srvs_generate_messages_nodejs"

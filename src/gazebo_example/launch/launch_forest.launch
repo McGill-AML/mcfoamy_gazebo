@@ -6,6 +6,7 @@
     <!-- more default parameters can be changed here -->
   </include>
   
+
   
   <!-- Spawn a robot into Gazebo Xacro -->
   <group ns="plane_xacro_default">
@@ -15,7 +16,9 @@
     <!-- Spawn a robot into Gazebo -->
     <node name="spawn_xacro" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model plane_xacro" />
     
+    <node name="motionplan_node" pkg="gazebo_example" type="motionplan_node" output="screen" />
     <node name="controller_node" pkg="gazebo_example" type="controller_node" output="screen" />
+        
   </group>
   
 

@@ -396,6 +396,7 @@ gazebo_example/all: gazebo_example/CMakeFiles/gazebo_example_generate_messages.d
 gazebo_example/all: gazebo_example/CMakeFiles/controller_node.dir/all
 gazebo_example/all: gazebo_example/CMakeFiles/McFoamy_FM_v2.dir/all
 gazebo_example/all: gazebo_example/CMakeFiles/controller_eb.dir/all
+gazebo_example/all: gazebo_example/CMakeFiles/motionplan_node.dir/all
 gazebo_example/all: gazebo_example/CMakeFiles/controller.dir/all
 
 .PHONY : gazebo_example/all
@@ -461,6 +462,7 @@ gazebo_example/clean: gazebo_example/CMakeFiles/actionlib_generate_messages_eus.
 gazebo_example/clean: gazebo_example/CMakeFiles/controller_eb.dir/clean
 gazebo_example/clean: gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean
 gazebo_example/clean: gazebo_example/CMakeFiles/gazebo_ros_gencfg.dir/clean
+gazebo_example/clean: gazebo_example/CMakeFiles/motionplan_node.dir/clean
 gazebo_example/clean: gazebo_example/CMakeFiles/controller.dir/clean
 gazebo_example/clean: gazebo_example/CMakeFiles/std_msgs_generate_messages_py.dir/clean
 gazebo_example/clean: gazebo_example/CMakeFiles/std_srvs_generate_messages_nodejs.dir/clean
@@ -1256,7 +1258,6 @@ clean: gazebo_example/CMakeFiles/tf2_msgs_generate_messages_lisp.dir/clean
 # Target rules for target gazebo_example/CMakeFiles/controller_node.dir
 
 # All Build rule for target.
-gazebo_example/CMakeFiles/controller_node.dir/all: gazebo_example/CMakeFiles/maneuver_generator.dir/all
 gazebo_example/CMakeFiles/controller_node.dir/all: gazebo_example/CMakeFiles/gazebo_example_generate_messages_py.dir/all
 gazebo_example/CMakeFiles/controller_node.dir/all: gazebo_example/CMakeFiles/gazebo_example_generate_messages_nodejs.dir/all
 gazebo_example/CMakeFiles/controller_node.dir/all: gazebo_example/CMakeFiles/gazebo_example_generate_messages_lisp.dir/all
@@ -1343,7 +1344,7 @@ all: gazebo_example/CMakeFiles/controller_node.dir/all
 
 # Build rule for subdir invocation for target.
 gazebo_example/CMakeFiles/controller_node.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/eitan/mcfoamy_gazebo/build/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/eitan/mcfoamy_gazebo/build/CMakeFiles 13
 	$(MAKE) -f CMakeFiles/Makefile2 gazebo_example/CMakeFiles/controller_node.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/eitan/mcfoamy_gazebo/build/CMakeFiles 0
 .PHONY : gazebo_example/CMakeFiles/controller_node.dir/rule
@@ -2523,6 +2524,115 @@ gazebo_example/CMakeFiles/gazebo_ros_gencfg.dir/clean:
 
 # clean rule for target.
 clean: gazebo_example/CMakeFiles/gazebo_ros_gencfg.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target gazebo_example/CMakeFiles/motionplan_node.dir
+
+# All Build rule for target.
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/maneuver_generator.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_example_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_example_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_example_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/trajectory_msgs_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/trajectory_msgs_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/trajectory_msgs_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/trajectory_msgs_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_msgs_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/dynamic_reconfigure_gencfg.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/dynamic_reconfigure_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/dynamic_reconfigure_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf2_msgs_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf2_msgs_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf2_msgs_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf2_msgs_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_srvs_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/roscpp_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_msgs_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/roscpp_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_example_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_srvs_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_msgs_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_msgs_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/geometry_msgs_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_msgs_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/roscpp_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_msgs_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_srvs_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/trajectory_msgs_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/sensor_msgs_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/roscpp_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/geometry_msgs_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_msgs_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_msgs_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_srvs_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_ros_gencfg.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_msgs_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_srvs_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/roscpp_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/sensor_msgs_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_example_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/gazebo_msgs_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/sensor_msgs_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/tf2_msgs_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_msgs_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/std_msgs_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/sensor_msgs_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_generate_messages_nodejs.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_generate_messages_py.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_generate_messages_lisp.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_msgs_generate_messages_eus.dir/all
+gazebo_example/CMakeFiles/motionplan_node.dir/all: gazebo_example/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/all
+	$(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/depend
+	$(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/eitan/mcfoamy_gazebo/build/CMakeFiles --progress-num=31,32 "Built target motionplan_node"
+.PHONY : gazebo_example/CMakeFiles/motionplan_node.dir/all
+
+# Include target in all.
+all: gazebo_example/CMakeFiles/motionplan_node.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+gazebo_example/CMakeFiles/motionplan_node.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/eitan/mcfoamy_gazebo/build/CMakeFiles 11
+	$(MAKE) -f CMakeFiles/Makefile2 gazebo_example/CMakeFiles/motionplan_node.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/eitan/mcfoamy_gazebo/build/CMakeFiles 0
+.PHONY : gazebo_example/CMakeFiles/motionplan_node.dir/rule
+
+# Convenience name for target.
+motionplan_node: gazebo_example/CMakeFiles/motionplan_node.dir/rule
+
+.PHONY : motionplan_node
+
+# clean rule for target.
+gazebo_example/CMakeFiles/motionplan_node.dir/clean:
+	$(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/clean
+.PHONY : gazebo_example/CMakeFiles/motionplan_node.dir/clean
+
+# clean rule for target.
+clean: gazebo_example/CMakeFiles/motionplan_node.dir/clean
 
 .PHONY : clean
 

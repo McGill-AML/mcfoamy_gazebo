@@ -8,7 +8,6 @@
 #include "gazebo_example/controller.h"
 #include "gazebo_example/actuator.h"
 #include "controller_eb/controller_eb.h"
-#include "maneuver_generator/maneuver_generator.h"
 
 #include <gazebo/physics/physics.hh>
 
@@ -33,6 +32,8 @@ private:
   ros::Publisher actuator_pub_;
   ros::Subscriber pose_sub_;
   ros::Subscriber twist_sub_;
+  ros::Subscriber refpose_sub_;
+  ros::Subscriber reftwist_sub_;
   ros::ServiceServer start_service_;
   
   controllers::PID pid_;
@@ -40,12 +41,16 @@ private:
 
   geometry_msgs::Pose pose_;
   geometry_msgs::Twist twist_;
+  geometry_msgs::Pose refpose_;
+  geometry_msgs::Twist reftwist_;
   
   void wait_for_trigger();
   gazebo_example::actuator compute_control_actuation(const double frequency);
   
   void poseCallback(const geometry_msgs::Pose::ConstPtr& msg);
   void twistCallback(const geometry_msgs::Twist::ConstPtr& msg);
+  void refposeCallback(const geometry_msgs::Pose::ConstPtr& msg);
+  void reftwistCallback(const geometry_msgs::Twist::ConstPtr& msg);
   bool start_controller(std_srvs::Trigger::Request  &req,
                         std_srvs::Trigger::Response &res);
 };

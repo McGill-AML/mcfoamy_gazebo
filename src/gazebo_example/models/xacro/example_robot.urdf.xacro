@@ -32,7 +32,7 @@
 
   <joint name="camera_joint" type="fixed">
     <axis xyz="0 1 0" />
-    <origin xyz=".05 0 .9" rpy="0 0 0"/>
+    <origin xyz=".2 0 .2" rpy="0 0 0"/>
     <parent link="${name}_link"/>
     <child link="kinect"/>
   </joint>
@@ -55,9 +55,9 @@
     </visual>
 
     <inertial>
-      <mass value="1e-5" />
+      <mass value="1e-19" />
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      <inertia ixx="1e-19" ixy="0" ixz="0" iyy="1e-19" iyz="0" izz="1e-19" />
     </inertial>
   </link>
 
@@ -73,7 +73,7 @@
         </image>
         <clip>
           <near>0.05</near>
-          <far>3</far>
+          <far>10</far>
         </clip>
       </camera>
         <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
@@ -85,7 +85,7 @@
           <cameraInfoTopicName>/camera/depth/camera_info</cameraInfoTopicName>
           <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
           <depthImageInfoTopicName>/camera/depth/camera_info</depthImageInfoTopicName>
-          <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
+          <pointCloudTopicName>/plane_xacro_default/points</pointCloudTopicName>
           <frameName>camera_link</frameName>
           <pointCloudCutoff>0.05</pointCloudCutoff>
           <distortionK1>0</distortionK1>

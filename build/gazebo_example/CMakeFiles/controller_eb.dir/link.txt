@@ -1,1 +1,1 @@
-/usr/bin/cc  -fPIC   -shared -Wl,-soname,libcontroller_eb.so -o /home/eitan/mcfoamy_gazebo/devel/lib/libcontroller_eb.so CMakeFiles/controller_eb.dir/include/controller_eb/controller_eb.c.o  -L/usr/lib/x86_64-linux-gnu/gazebo-7/plugins 
+/usr/bin/cc  -fPIC     -shared -Wl,-soname,libcontroller_eb.so -o /home/eitan/mcfoamy_gazebo/devel/lib/libcontroller_eb.so CMakeFiles/controller_eb.dir/include/controller_eb/controller_eb.c.o  -L/usr/lib/x86_64-linux-gnu/gazebo-7/plugins 
