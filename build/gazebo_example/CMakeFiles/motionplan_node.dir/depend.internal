@@ -508,8 +508,10 @@ gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o
  /usr/include/pcl-1.7/pcl/PolygonMesh.h
  /usr/include/pcl-1.7/pcl/TextureMesh.h
  /usr/include/pcl-1.7/pcl/Vertices.h
+ /usr/include/pcl-1.7/pcl/common/common.h
  /usr/include/pcl-1.7/pcl/common/concatenate.h
  /usr/include/pcl-1.7/pcl/common/copy_point.h
+ /usr/include/pcl-1.7/pcl/common/impl/common.hpp
  /usr/include/pcl-1.7/pcl/common/impl/copy_point.hpp
  /usr/include/pcl-1.7/pcl/common/impl/io.hpp
  /usr/include/pcl-1.7/pcl/common/io.h
@@ -525,6 +527,15 @@ gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o
  /usr/include/pcl-1.7/pcl/io/impl/pcd_io.hpp
  /usr/include/pcl-1.7/pcl/io/lzf.h
  /usr/include/pcl-1.7/pcl/io/pcd_io.h
+ /usr/include/pcl-1.7/pcl/octree/impl/octree_pointcloud.hpp
+ /usr/include/pcl-1.7/pcl/octree/impl/octree_search.hpp
+ /usr/include/pcl-1.7/pcl/octree/octree_base.h
+ /usr/include/pcl-1.7/pcl/octree/octree_container.h
+ /usr/include/pcl-1.7/pcl/octree/octree_iterator.h
+ /usr/include/pcl-1.7/pcl/octree/octree_key.h
+ /usr/include/pcl-1.7/pcl/octree/octree_nodes.h
+ /usr/include/pcl-1.7/pcl/octree/octree_pointcloud.h
+ /usr/include/pcl-1.7/pcl/octree/octree_search.h
  /usr/include/pcl-1.7/pcl/pcl_base.h
  /usr/include/pcl-1.7/pcl/pcl_config.h
  /usr/include/pcl-1.7/pcl/pcl_exports.h

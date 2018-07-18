@@ -170,12 +170,7 @@ void PlanePlugin::aerodynamics()
   double omega_t_max = 6710.0;
 
 
-  double Fx_b;
-  double Fy_b;
-  double Fz_b;
-  double Mx_b;
-  double My_b;
-  double Mz_b;
+
   McFoamy_FM_v2(saturate(actuator_[0],-delta_a_max,delta_a_max)*.017453, saturate(actuator_[1],-delta_e_max,delta_e_max)*.017453, saturate(actuator_[2],-delta_r_max,delta_r_max)*.017453, saturate(actuator_[3],omega_t_min,omega_t_max), velocity_b.x,velocity_b.y,velocity_b.z,angular_velocity_b.x,angular_velocity_b.y,angular_velocity_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
   //McFoamy_FM_v2(actuator_[0]*.017453, actuator_[1]*.017453, actuator_[2]*.017453, actuator_[3], velocity_b.x,velocity_b.y,velocity_b.z,angular_velocity_b.x,angular_velocity_b.y,angular_velocity_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
 

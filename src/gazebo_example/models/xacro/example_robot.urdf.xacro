@@ -24,7 +24,7 @@
       <collision>
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
-          <mesh filename="package://gazebo_example/meshes/plane.dae"/>
+          <box size="0.2 1.0 0.2"/>
         </geometry>
       </collision>
     </link>
@@ -63,16 +63,16 @@
 
     <gazebo reference="kinect">
     <sensor type="depth" name="camera">
-      <update_rate>20.0</update_rate>
+      <update_rate>90.0</update_rate>
       <camera>
-        <horizontal_fov>1.047198</horizontal_fov>
+        <horizontal_fov>1.50098</horizontal_fov>
         <image>
-          <width>640</width>
-          <height>480</height>
+          <width>1280</width>
+          <height>720</height>
           <format>R8G8B8</format>
         </image>
         <clip>
-          <near>0.05</near>
+          <near>0.2</near>
           <far>10</far>
         </clip>
       </camera>
@@ -99,142 +99,6 @@
           <focalLength>0</focalLength>
           <hackBaseline>0</hackBaseline>
         </plugin>
-    </sensor>
-  </gazebo>
-
-
-  <!--<joint name="camera_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz=".05 0 .9" rpy="0 0 0"/>
-    <parent link="${name}_link"/>
-    <child link="camera_link"/>
-  </joint>
-
-  <link name="camera_link">
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-    <box size=".05 .05 .05"/>
-      </geometry>
-    </collision>
-
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-    <box size=".05 .05 .05"/>
-      </geometry>
-      <material name="red"/>
-    </visual>
-
-    <inertial>
-      <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>-->
-
-  <!-- camera -->
-  
-  <gazebo reference="camera_link1">
-    <sensor type="camera" name="camera1">
-      <update_rate>30.0</update_rate>
-      <camera name="head">
-        <horizontal_fov>1.3962634</horizontal_fov>
-        <image>
-          <width>800</width>
-          <height>800</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-        <noise>
-          <type>gaussian</type>
-          <!-- Noise is sampled independently per pixel on each frame.
-               That pixel's noise value is added to each of its color
-               channels, which at that point lie in the range [0,1]. -->
-          <mean>0.0</mean>
-          <stddev>0.007</stddev>
-        </noise>
-      </camera>
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>0.0</updateRate>
-        <cameraName>rrbot/camera1</cameraName>
-        <imageTopicName>image_raw</imageTopicName>
-        <cameraInfoTopicName>camera_info</cameraInfoTopicName>-->
-        <frameName>camera_link_optical</frameName>
-        <!-- setting hackBaseline to anything but 0.0 will cause a misalignment
-            between the gazebo sensor image and the frame it is supposed to
-            be attached to -->
-        <hackBaseline>0.0</hackBaseline>
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
-        <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
-        <CxPrime>0</CxPrime>
-        <Cx>0.0</Cx>
-        <Cy>0.0</Cy>
-        <focalLength>0.0</focalLength>
-      </plugin>
-    </sensor>
-  </gazebo>
-
-    <gazebo reference="camera_link2">
-    <sensor type="multicamera" name="stereo_camera">
-      <update_rate>30.0</update_rate>
-      <camera name="left">
-        <horizontal_fov>1.3962634</horizontal_fov>
-        <image>
-          <width>800</width>
-          <height>800</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.007</stddev>
-        </noise>
-      </camera>
-      <camera name="right">
-        <pose>0 -0.07 0 0 0 0</pose>
-        <horizontal_fov>1.3962634</horizontal_fov>
-        <image>
-          <width>800</width>
-          <height>800</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.007</stddev>
-        </noise>
-      </camera>
-      <plugin name="stereo_camera_controller" filename="libgazebo_ros_multicamera.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>0.0</updateRate>
-        <cameraName>multisense_sl/camera</cameraName>
-        <imageTopicName>image_raw</imageTopicName>
-        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-        <frameName>left_camera_optical_frame</frameName>
-        <!--<rightFrameName>right_camera_optical_frame</rightFrameName>-->
-        <hackBaseline>0.07</hackBaseline>
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
-        <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
-      </plugin>
     </sensor>
   </gazebo>
 

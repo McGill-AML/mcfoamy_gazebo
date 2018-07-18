@@ -79,6 +79,13 @@ protected:
   double saturate(double value, double min, double max);
   void aerodynamics();
 
+  double Fx_b;
+  double Fy_b;
+  double Fz_b;
+  double Mx_b;
+  double My_b;
+  double Mz_b;
+
 };
 
 

@@ -12,7 +12,9 @@ typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 MotionplanNode::MotionplanNode():
   start_(false)
   , node_handle("")
-{}
+{
+
+}
 
 bool MotionplanNode::init()
 {
@@ -27,6 +29,7 @@ bool MotionplanNode::init()
   start_service_ = node_handle.advertiseService("start_motionplan",
                                                 &MotionplanNode::start_motionplan,
                                                 this);
+
   return true;
 }
 
@@ -34,7 +37,7 @@ void MotionplanNode::run()
 {
   wait_for_trigger();
   
-  const double frequency = 100.0; 
+  const double frequency = 50.0; 
   ros::Rate loop_rate(frequency);
   
   while(ros::ok())
@@ -65,85 +68,125 @@ void MotionplanNode::wait_for_trigger()
 
 void MotionplanNode::compute_refstate()
 {
-  int i = 0;
-  //double lambda = 0.0;
-  //double Kg = 0.0;
-  //double Ko = 500.0;
-  //double Kr = 10.0;
-  //gazebo::math::Vector3 G_a(1000.0 - pose_.position.x, 0.0 - -pose_.position.y, 10.0 - -pose_.position.z);
-
-  //gazebo::math::Matrix3 _C_cb(0.0,-sin(lambda),cos(lambda),1.0,0.0,0.0,0.0,cos(lambda),sin(lambda));
 
   gazebo::math::Vector3 _r_a(pose_.position.x, -pose_.position.y, -pose_.position.z);
   gazebo::math::Quaternion _q(pose_.orientation.w, pose_.orientation.x, pose_.orientation.y, pose_.orientation.z);
   gazebo::math::Vector3 _v_a(twist_.linear.x, -twist_.linear.y, -twist_.linear.z);
   gazebo::math::Matrix3 _C_ba = _q.GetAsMatrix3();
   gazebo::math::Vector3 _v_b = _C_ba * _v_a;
-  //gazebo::math::Vector3 _v_c = _C_cb * _C_ba * _v_a;
-  double left_points = 0.0;
-  double right_points = 0.0;
-  double delta_psi;
-  //gazebo::math::Vector3 Fo(0.0,0.0,0.0);
-  //gazebo::math::Vector3 Fo1(0.0,0.0,0.0);
-  //gazebo::math::Vector3 Fo2(0.0,0.0,0.0);
-  //gazebo::math::Vector3 Fo3(0.0,0.0,0.0);
-  //gazebo::math::Vector3 Fo4(0.0,0.0,0.0);
-  //gazebo::math::Vector3 temp;
-  //double max = 0.0;
+
+  float lambda = 0.0;
+  gazebo::math::Matrix3 _C_cb(0.0,-sin(lambda),cos(lambda),1.0,0.0,0.0,0.0,cos(lambda),sin(lambda));
+  gazebo::math::Matrix3 _C_ca = _C_cb * _C_ba;
 
 
-  //double c1 = .00001;
-  //double c2 = 4.0;
-  //double c3 = 10.0;
-  //double Fi = 0.0;
-  BOOST_FOREACH (const pcl::PointXYZ& pt, points_)
-  if (std::isnan(pt.x)){++i;}
-  else{
-    ++i;
-    //gazebo::math::Vector3 ri_c(pt.x, pt.y, pt.z);
-    if (pt.x<0.0){++left_points;}
-    if (pt.x>0.0){++right_points;}
+  gazebo::math::Matrix3 _C_al(cos(-_q.GetYaw()),-sin(-_q.GetYaw()),0.0,sin((-_q.GetYaw())),cos((-_q.GetYaw())),0.0,0.0,0.0,1.0);
 
-    //if (temp.x>0.0 && temp.y<0.0){Fo4 = Fo4 + temp;}
-
-    //Fi =Fi -c1*_v_c.Normalize().Dot(ri_c.Normalize())*pow(1.0-ri_c.GetLength()/c3,2.0)/(1.0+pow(ri_c.GetLength()/c3,3.0));
-
-    //Fo = Fo + (1.0-ri_c.GetLength()/Kr)/(1.0+ri_c.GetLength()/Kr) * (-ri_c.Normalize()+_v_c.Normalize()).Normalize();
-    //Fo = Fo + _v_c.Normalize().Dot(ri_c.Normalize()) * (1.0-ri_c.GetLength()/Kr)/(1.0+ri_c.GetLength()/Kr) * (-ri_c.Normalize()-(_v_c.Normalize().Dot(ri_c.Normalize()))*_v_c.Normalize()).Normalize();
-    //temp = _v_c.Normalize().Dot(ri_c.Normalize()) *  (-ri_c.Normalize()-(_v_c.Normalize().Dot(ri_c.Normalize()))*_v_c.Normalize()).Normalize();
-    //temp = _v_c.Normalize().Dot(ri_c.Normalize()) *  (-ri_c.Normalize()-(_v_c.Normalize().Dot(ri_c.Normalize()))*_v_c.Normalize()).Normalize();
-
-    //if (temp.x>0.0 && temp.y>0.0){Fo1 = Fo1 + temp;}
-    //if (temp.x<0.0 && temp.y>0.0){Fo2 = Fo2 + temp;}
-    //if (temp.x<0.0 && temp.y<0.0){Fo3 = Fo3 + temp;}
-    //if (temp.x>0.0 && temp.y<0.0){Fo4 = Fo4 + temp;}
-
-    //Fo = Fo + _v_c.Normalize().Dot(ri_c.Normalize()) *  (-ri_c.Normalize()-(_v_c.Normalize().Dot(ri_c.Normalize()))*_v_c.Normalize()).Normalize();
-
+  for (int i = 0; i < 100; ++i){
+    gazebo::math::Vector3 traj_l(traj1_l[i][0],traj1_l[i][1],traj1_l[i][2]);
+    gazebo::math::Vector3 traj_c = _C_ca * _C_al * traj_l;
+    traj1_c[i][0] = traj_c.x;
+    traj1_c[i][1] = traj_c.y;
+    traj1_c[i][2] = traj_c.z;
+    traj1_c[i][3] = traj1_l[i][3];
   }
-    //double F = -c2 * _v_a.Normalize().Dot(G_a.Normalize()) + Fi;
-    //Fo = Fo1;
-    //if (Fo2.GetLength()> Fo.GetLength()){Fo = Fo2;}
-    //if (Fo3.GetLength()> Fo.GetLength()){Fo = Fo3;}
-    //if (Fo4.GetLength()> Fo.GetLength()){Fo = Fo4;}
 
-  //gazebo::math::Vector3 F = Kg * _C_cb * _C_ba * G_a.Normalize() + Ko * 4.0*Fo/double(i);
-  //gazebo::math::Vector3 Pw = _r_a*0.0 + _C_ba.Inverse() * _C_cb.Inverse() * F;
+  for (int i = 0; i < 100; ++i){
+    gazebo::math::Vector3 traj_l(traj1_l[i][0],traj1_l[i][1],traj1_l[i][2]);
+    gazebo::math::Vector3 traj_c = _C_ca * _C_al * traj_l;
+    traj2_c[i][0] = traj_c.x;
+    traj2_c[i][1] = traj_c.y;
+    traj2_c[i][2] = traj_c.z;
+    traj2_c[i][3] = traj2_l[i][3];
+  }
 
-  //printf ("\t(%f, %f, %f)\n", pt.x, pt.y, pt.z);
-  //printf ("\t(%f, %f, %f)\n", points_[10000].x, points_[10000].y, points_[10000].z);
-  //printf ("%i \n", sum);
-  double k = 20.0;
-  if (left_points > right_points){delta_psi = k*left_points/i;}
-  else{delta_psi = k*right_points/i;}
+
+  for (int i = 0; i < 100; ++i){
+    gazebo::math::Vector3 traj_l(traj1_l[i][0],traj1_l[i][1],traj1_l[i][2]);
+    gazebo::math::Vector3 traj_c = _C_ca * _C_al * traj_l;
+    traj3_c[i][0] = traj_c.x;
+    traj3_c[i][1] = traj_c.y;
+    traj3_c[i][2] = traj_c.z;
+    traj3_c[i][3] = traj3_l[i][3];
+  }
+  std::vector<int> pointIdxNKNSearch(1);
+  std::vector<float> pointNKNSquaredDistance(1);
+  pcl::PointXYZ searchPoint;
+
+  float distsq1 = 1000.0;
+  for (int i = 0; i < 100; ++i){
+    searchPoint.x = traj1_c[i][0];
+    searchPoint.y = traj1_c[i][1];
+    searchPoint.z = traj1_c[i][2];
+
+
+    if (octree.getLeafCount() > 0){
+      if (octree.nearestKSearch (searchPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0){
+        if (pointNKNSquaredDistance[0] < distsq1){
+          distsq1 = pointNKNSquaredDistance[0];
+        }
+      }
+    }
+  }
+
+  float distsq2 = 1000.0;
+  for (int i = 0; i < 100; ++i){
+    searchPoint.x = traj2_c[i][0];
+    searchPoint.y = traj2_c[i][1];
+    searchPoint.z = traj2_c[i][2];
+
+
+    if (octree.getLeafCount() > 0){
+      if (octree.nearestKSearch (searchPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0){
+        if (pointNKNSquaredDistance[0] < distsq2){
+          distsq2 = pointNKNSquaredDistance[0];
+        }
+      }
+    }
+  }
+
+  float distsq3 = 1000.0;
+  for (int i = 0; i < 100; ++i){
+    searchPoint.x = traj1_c[i][0];
+    searchPoint.y = traj1_c[i][1];
+    searchPoint.z = traj1_c[i][2];
+
+
+    if (octree.getLeafCount() > 0){
+      if (octree.nearestKSearch (searchPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0){
+        if (pointNKNSquaredDistance[0] < distsq3){
+          distsq3 = pointNKNSquaredDistance[0];
+        }
+      }
+    }
+  }
+
+  int traj = 1;
+  if (distsq1 < 1.0){
+    if (distsq2 > distsq3){
+      traj = 2;
+    }else{
+      traj = 3;
+    }
+  }
+  if (traj == 1){
+    psi_global = traj1_l[0][3];
+  }
+  if (traj == 2){
+    psi_global = traj2_l[0][3];
+  }
+  if (traj == 3){
+    psi_global = traj3_l[0][3];
+  }
+
   p_global.x = cos(psi_global)*cos(psi_global) * (_r_a.x-p_0.x) + sin(psi_global)*cos(psi_global)*(_r_a.y-p_0.y) + p_0.x;
   p_global.y = sin(psi_global)*sin(psi_global) * (_r_a.y-p_0.y) + sin(psi_global)*cos(psi_global)*(_r_a.x-p_0.x) + p_0.y;
 
   refpose_.position.x = p_global.x;
-  refpose_.position.y = p_global.y + u_global * (sin(psi_global + delta_psi) - sin(psi_global))/100.0;
+  refpose_.position.y = p_global.y;
   refpose_.position.z = p_final.z;
   
-  gazebo::math::Quaternion q_ref(0.0,-theta_global,-(psi_global + delta_psi));
+  gazebo::math::Quaternion q_ref(0.0,-theta_global,-(psi_global));
 
   refpose_.orientation.w = q_ref.w;
   refpose_.orientation.x = q_ref.x;
@@ -158,23 +201,6 @@ void MotionplanNode::compute_refstate()
   reftwist_.angular.y = 0.0;
   reftwist_.angular.z = 0.0;
 
-  /*refpose_.position.x = Pw.x;
-  refpose_.position.y = Pw.y;
-  refpose_.position.z = -10.0 + 0.0*Pw.z;
-  
-  refpose_.orientation.w = 1.0;
-  refpose_.orientation.x = 0.0;
-  refpose_.orientation.y = 0.0;
-  refpose_.orientation.z = 0.0;
-  
-  
-  reftwist_.linear.x = 5.0;
-  reftwist_.linear.y = 0.0;
-  reftwist_.linear.z = 0.0;
-  
-  reftwist_.angular.x = 0.0;
-  reftwist_.angular.y = 0.0;
-  reftwist_.angular.z = 0.0;*/
   
 }
 
@@ -192,6 +218,8 @@ void MotionplanNode::twistCallback(const geometry_msgs::Twist::ConstPtr& msg)
 void MotionplanNode::callback(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& msg)
 {
   points_ = *msg;
+
+
   //printf ("Cloud: width = %d, height = %d\n", msg->width, msg->height);
   //BOOST_FOREACH (const pcl::PointXYZ& pt, msg->points)
   //printf ("\t(%f, %f, %f)\n", pt.x, pt.y, pt.z);
@@ -212,10 +240,33 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
   u_global = 5.0;
   theta_global = 0.0191*u_global*u_global - 0.3022*u_global + 1.3262;
   q_global.SetFromEuler({0.0,-theta_global,-psi_global});
+  cloud->width = 1280;
+  cloud->height = 720;
+  octree.setInputCloud (cloud);
+  octree.addPointsFromInputCloud ();
+  for (int i = 0; i < 100; ++i){
+    traj1_l[i][0] = .1 * i;
+    traj1_l[i][1] = 0.0;
+    traj1_l[i][2] = 0.0;
+    traj1_l[i][3] = 0.0;
+  }
 
+  for (int i = 0; i < 100; ++i){
+    traj2_l[i][0] = .07 * i;
+    traj2_l[i][1] = .07 * i;
+    traj2_l[i][2] = 0.0;
+    traj2_l[i][3] = 3.14/4.0;
+  }
+  for (int i = 0; i < 100; ++i){
+    traj3_l[i][0] = .07 * i;
+    traj3_l[i][1] = -.07 * i;
+    traj3_l[i][2] = 0.0;
+    traj3_l[i][3] = -3.14/4.0;
+  }
 }
 
 } // gazebo_example namespace
+
 
 
 int main(int argc, char **argv)
