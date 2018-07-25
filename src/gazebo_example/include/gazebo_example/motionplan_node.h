@@ -11,7 +11,6 @@
 
 #include "pcl_ros/point_cloud.h"
 #include "pcl/point_types.h"
-#include "pcl/octree/octree_search.h"
 
 #include <iostream>
 #include <vector>
@@ -19,6 +18,7 @@
 
 #include "boost/foreach.hpp"
 #include "maneuver_generator/maneuver_generator.h"
+#include "gazebo_example/Trajectory.cpp"
 
 namespace gazebo_example
 {
@@ -65,14 +65,14 @@ private:
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = pcl::PointCloud<pcl::PointXYZ>::Ptr (&points_);
   pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree = pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> (.1);//resolution is 128
   std::vector<int> indices;
-  float traj1_l[100][4];
-  float traj2_l[100][4];
-  float traj3_l[100][4];
-  float traj1_c[100][4];
-  float traj2_c[100][4];
-  float traj3_c[100][4];
+  //pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;
+
+  std::vector<std::string> filenames;
 
 
+
+  TrajectoryLibrary Traj_Lib;
+  
 
   void wait_for_trigger();
   void compute_refstate();

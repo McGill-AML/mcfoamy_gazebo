@@ -12,7 +12,7 @@ class MotionPlanner
 {
 public:
 	MotionPlanner(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud); 
-	void NearestNeighbor(int TrajecoryID);
+	double MotionPlanner::NearestNeighbor(double point[3]);
 private:
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
 

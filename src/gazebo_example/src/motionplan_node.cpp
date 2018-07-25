@@ -82,102 +82,10 @@ void MotionplanNode::compute_refstate()
 
   gazebo::math::Matrix3 _C_al(cos(-_q.GetYaw()),-sin(-_q.GetYaw()),0.0,sin((-_q.GetYaw())),cos((-_q.GetYaw())),0.0,0.0,0.0,1.0);
 
-  for (int i = 0; i < 100; ++i){
-    gazebo::math::Vector3 traj_l(traj1_l[i][0],traj1_l[i][1],traj1_l[i][2]);
-    gazebo::math::Vector3 traj_c = _C_ca * _C_al * traj_l;
-    traj1_c[i][0] = traj_c.x;
-    traj1_c[i][1] = traj_c.y;
-    traj1_c[i][2] = traj_c.z;
-    traj1_c[i][3] = traj1_l[i][3];
-  }
 
-  for (int i = 0; i < 100; ++i){
-    gazebo::math::Vector3 traj_l(traj1_l[i][0],traj1_l[i][1],traj1_l[i][2]);
-    gazebo::math::Vector3 traj_c = _C_ca * _C_al * traj_l;
-    traj2_c[i][0] = traj_c.x;
-    traj2_c[i][1] = traj_c.y;
-    traj2_c[i][2] = traj_c.z;
-    traj2_c[i][3] = traj2_l[i][3];
-  }
+  printf("%f\n", Traj_Lib.GetTrajectoryAtIndex(0).DistanceToTrajectory(octree));
+  printf("%i\n", Traj_Lib.SelectTrajectory(2.0,octree));
 
-
-  for (int i = 0; i < 100; ++i){
-    gazebo::math::Vector3 traj_l(traj1_l[i][0],traj1_l[i][1],traj1_l[i][2]);
-    gazebo::math::Vector3 traj_c = _C_ca * _C_al * traj_l;
-    traj3_c[i][0] = traj_c.x;
-    traj3_c[i][1] = traj_c.y;
-    traj3_c[i][2] = traj_c.z;
-    traj3_c[i][3] = traj3_l[i][3];
-  }
-  std::vector<int> pointIdxNKNSearch(1);
-  std::vector<float> pointNKNSquaredDistance(1);
-  pcl::PointXYZ searchPoint;
-
-  float distsq1 = 1000.0;
-  for (int i = 0; i < 100; ++i){
-    searchPoint.x = traj1_c[i][0];
-    searchPoint.y = traj1_c[i][1];
-    searchPoint.z = traj1_c[i][2];
-
-
-    if (octree.getLeafCount() > 0){
-      if (octree.nearestKSearch (searchPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0){
-        if (pointNKNSquaredDistance[0] < distsq1){
-          distsq1 = pointNKNSquaredDistance[0];
-        }
-      }
-    }
-  }
-
-  float distsq2 = 1000.0;
-  for (int i = 0; i < 100; ++i){
-    searchPoint.x = traj2_c[i][0];
-    searchPoint.y = traj2_c[i][1];
-    searchPoint.z = traj2_c[i][2];
-
-
-    if (octree.getLeafCount() > 0){
-      if (octree.nearestKSearch (searchPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0){
-        if (pointNKNSquaredDistance[0] < distsq2){
-          distsq2 = pointNKNSquaredDistance[0];
-        }
-      }
-    }
-  }
-
-  float distsq3 = 1000.0;
-  for (int i = 0; i < 100; ++i){
-    searchPoint.x = traj1_c[i][0];
-    searchPoint.y = traj1_c[i][1];
-    searchPoint.z = traj1_c[i][2];
-
-
-    if (octree.getLeafCount() > 0){
-      if (octree.nearestKSearch (searchPoint, 1, pointIdxNKNSearch, pointNKNSquaredDistance) > 0){
-        if (pointNKNSquaredDistance[0] < distsq3){
-          distsq3 = pointNKNSquaredDistance[0];
-        }
-      }
-    }
-  }
-
-  int traj = 1;
-  if (distsq1 < 1.0){
-    if (distsq2 > distsq3){
-      traj = 2;
-    }else{
-      traj = 3;
-    }
-  }
-  if (traj == 1){
-    psi_global = traj1_l[0][3];
-  }
-  if (traj == 2){
-    psi_global = traj2_l[0][3];
-  }
-  if (traj == 3){
-    psi_global = traj3_l[0][3];
-  }
 
   p_global.x = cos(psi_global)*cos(psi_global) * (_r_a.x-p_0.x) + sin(psi_global)*cos(psi_global)*(_r_a.y-p_0.y) + p_0.x;
   p_global.y = sin(psi_global)*sin(psi_global) * (_r_a.y-p_0.y) + sin(psi_global)*cos(psi_global)*(_r_a.x-p_0.x) + p_0.y;
@@ -200,6 +108,7 @@ void MotionplanNode::compute_refstate()
   reftwist_.angular.x = 0.0;
   reftwist_.angular.y = 0.0;
   reftwist_.angular.z = 0.0;
+
 
   
 }
@@ -242,27 +151,15 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
   q_global.SetFromEuler({0.0,-theta_global,-psi_global});
   cloud->width = 1280;
   cloud->height = 720;
+  //kdtree.setInputCloud (cloud);
   octree.setInputCloud (cloud);
   octree.addPointsFromInputCloud ();
-  for (int i = 0; i < 100; ++i){
-    traj1_l[i][0] = .1 * i;
-    traj1_l[i][1] = 0.0;
-    traj1_l[i][2] = 0.0;
-    traj1_l[i][3] = 0.0;
-  }
 
-  for (int i = 0; i < 100; ++i){
-    traj2_l[i][0] = .07 * i;
-    traj2_l[i][1] = .07 * i;
-    traj2_l[i][2] = 0.0;
-    traj2_l[i][3] = 3.14/4.0;
-  }
-  for (int i = 0; i < 100; ++i){
-    traj3_l[i][0] = .07 * i;
-    traj3_l[i][1] = -.07 * i;
-    traj3_l[i][2] = 0.0;
-    traj3_l[i][3] = -3.14/4.0;
-  }
+  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/straight.csv");
+  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/straight.csv");
+  Traj_Lib.LoadLibrary(filenames);
+
+
 }
 
 } // gazebo_example namespace
