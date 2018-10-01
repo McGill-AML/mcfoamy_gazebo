@@ -59,13 +59,19 @@ void PlanePlugin::QueueThread()
   }
 }
 
-void PlanePlugin::actuatorCallback(const gazebo_example::actuator::ConstPtr& actuator_msg)
+
+void PlanePlugin::actuatorCallback(const std_msgs::Float64MultiArray::ConstPtr& actuator_msg)
 {
-  boost::mutex::scoped_lock scoped_lock(lock_);
-  actuator_[0] = actuator_msg->u1;
-  actuator_[1] = actuator_msg->u2;
-  actuator_[2] = actuator_msg->u3;
-  actuator_[3] = actuator_msg->u4;
+
+  int i = 0;
+  // print all the remaining numbers
+  for(std::vector<double>::const_iterator it = actuator_msg->data.begin(); it != actuator_msg->data.end(); ++it)
+  {
+    actuator_[i] = *it;
+    i++;
+  }
+
+  return;
 }
 
 
@@ -92,7 +98,7 @@ void PlanePlugin::InitROSNode()
   
   // subscribe to the odometry topic
   ros::SubscribeOptions so =
-    ros::SubscribeOptions::create<gazebo_example::actuator>("actuator", MAX_SUB_QUEUE_SIZE,
+    ros::SubscribeOptions::create<std_msgs::Float64MultiArray>("actuator", MAX_SUB_QUEUE_SIZE,
         boost::bind(&PlanePlugin::actuatorCallback, this, _1),
         ros::VoidPtr(), &queue_);
     
@@ -158,36 +164,9 @@ void PlanePlugin::publishLinkState()
   twist_msg.angular.y = omega_nb_b.y;
   twist_msg.angular.z = omega_nb_b.z;
   twist_pub_.publish(twist_msg);
-}/*
+}
 
-void PlanePlugin::publishLinkState()
-{
-  math::Pose pose = link_->GetWorldPose();  
-  geometry_msgs::Pose pose_msg;
-  pose_msg.position.x = pose.pos.x;
-  pose_msg.position.y = pose.pos.y;
-  pose_msg.position.z = pose.pos.z;
-  
-  pose_msg.orientation.w = pose.rot.w;
-  pose_msg.orientation.x = pose.rot.x;
-  pose_msg.orientation.y = pose.rot.y;
-  pose_msg.orientation.z = pose.rot.z;
-  
-  pose_pub_.publish(pose_msg);
-  
-  math::Vector3 velocity = link_->GetWorldLinearVel();
-  math::Vector3 angular_velocity = link_->GetWorldAngularVel();
-  geometry_msgs::Twist twist_msg;
-  twist_msg.linear.x = velocity.x;
-  twist_msg.linear.y = velocity.y;
-  twist_msg.linear.z = velocity.z;
-  
-  twist_msg.angular.x = angular_velocity.x;
-  twist_msg.angular.y = angular_velocity.y;
-  twist_msg.angular.z = angular_velocity.z;
-  
-  twist_pub_.publish(twist_msg);
-}*/
+
 
 double PlanePlugin::saturate(double value, double min, double max)
 {

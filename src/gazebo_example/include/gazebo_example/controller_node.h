@@ -8,8 +8,6 @@
 #include "std_srvs/Trigger.h"
 
 #include "gazebo_example/controller.h"
-#include "gazebo_example/actuator.h"
-#include "controller_eb/controller_eb.h"
 
 #include <gazebo/physics/physics.hh>
 #include "gazebo_example/Trajectory.cpp"
@@ -41,7 +39,6 @@ private:
   ros::Subscriber pose_sub_;
   ros::Subscriber twist_sub_;
   ros::Subscriber init_pose_sub_;
-  //ros::Subscriber init_twist_sub_;
   ros::Subscriber trajectory_sub_;
   ros::ServiceServer start_service_;
   
@@ -60,7 +57,7 @@ private:
   std_msgs::Int16 trajectory_;
   geometry_msgs::Pose ref_pose_;
   geometry_msgs::Twist ref_twist_;
-  gazebo_example::actuator command_actuator;
+  std_msgs::Float64MultiArray command_actuator;
 
   std::vector<std::string> filenames;
   TrajectoryLibrary Traj_Lib;
@@ -72,12 +69,11 @@ private:
 
   gazebo::math::Vector3 GetReferencePosition(Eigen::VectorXd state, gazebo::math::Vector3 initial_position, double initial_yaw);
   gazebo::math::Quaternion GetReferenceQuaternion(Eigen::VectorXd state, double initial_yaw);
-  gazebo_example::actuator compute_control_actuation(const double frequency);
+  std_msgs::Float64MultiArray compute_control_actuation(const double frequency);
   
   void poseCallback(const geometry_msgs::Pose::ConstPtr& msg);
   void twistCallback(const geometry_msgs::Twist::ConstPtr& msg);
   void init_poseCallback(const geometry_msgs::Pose::ConstPtr& msg);
-  //void init_twistCallback(const geometry_msgs::Twist::ConstPtr& msg);
   void trajectoryCallback(const std_msgs::Int16::ConstPtr& msg);
 
   bool start_controller(std_srvs::Trigger::Request  &req,

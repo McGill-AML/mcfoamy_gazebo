@@ -17,7 +17,8 @@ ControllerNode::ControllerNode():
 
 bool ControllerNode::init()
 {
-  actuator_pub_ = node_handle.advertise<gazebo_example::actuator>("actuator", MAX_PUB_QUEUE);
+  //actuator_pub_ = node_handle.advertise<gazebo_example::actuator>("actuator", MAX_PUB_QUEUE);
+  actuator_pub_ = node_handle.advertise<std_msgs::Float64MultiArray>("actuator", MAX_PUB_QUEUE);
   ref_pose_pub_ = node_handle.advertise<geometry_msgs::Pose>("ref_pose", MAX_PUB_QUEUE);
   ref_twist_pub_ = node_handle.advertise<geometry_msgs::Twist>("ref_twist", MAX_PUB_QUEUE);
 
@@ -27,8 +28,6 @@ bool ControllerNode::init()
                                      &ControllerNode::twistCallback, this);
   init_pose_sub_ = node_handle.subscribe("init_pose", MAX_SUB_QUEUE, 
                                     &ControllerNode::init_poseCallback, this);
-  /*init_twist_sub_ = node_handle.subscribe("init_twist", MAX_SUB_QUEUE, 
-                                     &ControllerNode::init_twistCallback, this);*/
   trajectory_sub_ = node_handle.subscribe("trajectory", MAX_SUB_QUEUE, 
                                      &ControllerNode::trajectoryCallback, this); 
   start_service_ = node_handle.advertiseService("start_controller",
@@ -55,6 +54,7 @@ void ControllerNode::run()
     
     // Compute and publish controller output
     actuator_pub_.publish(compute_control_actuation(frequency));
+
     ref_pose_pub_.publish(ref_pose_);
     ref_twist_pub_.publish(ref_twist_);
     
@@ -96,24 +96,14 @@ gazebo::math::Quaternion ControllerNode::GetReferenceQuaternion(Eigen::VectorXd 
 
 
 
-gazebo_example::actuator ControllerNode::compute_control_actuation(const double frequency)
+std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const double frequency)
 {
-
-  /*gazebo::math::Vector3 _r_a(pose_.position.x, pose_.position.y, pose_.position.z);
-  gazebo::math::Quaternion _q(pose_.orientation.w, pose_.orientation.x, pose_.orientation.y, pose_.orientation.z);
-  gazebo::math::Vector3 _v_b(twist_.linear.x, twist_.linear.y, twist_.linear.z);
-  gazebo::math::Vector3 _omega_b(twist_.angular.x, twist_.angular.y, twist_.angular.z);
-  //gazebo::math::Matrix3 _C_ba = _q.GetAsMatrix3().Inverse();
-  gazebo::math::Matrix3 _C_ba = _q.GetAsMatrix3();*/
 
   gazebo::math::Vector3 p_i(pose_.position.x, pose_.position.y, pose_.position.z);
   gazebo::math::Quaternion q(pose_.orientation.w, pose_.orientation.x, pose_.orientation.y, pose_.orientation.z);
   gazebo::math::Vector3 v_b(twist_.linear.x, twist_.linear.y, twist_.linear.z);
   gazebo::math::Vector3 omega_b(twist_.angular.x, twist_.angular.y, twist_.angular.z);
   gazebo::math::Matrix3 C_bi = q.GetAsMatrix3().Inverse();
-
-  //gazebo::math::Vector3 _v_b = _C_ba*_v_a;
-  //gazebo::math::Vector3 _omega_b = _C_ba*_omega_a;
 
   gazebo::math::Vector3 initial_position(init_pose_.position.x, init_pose_.position.y, init_pose_.position.z);
   gazebo::math::Quaternion initial_quaternion(init_pose_.orientation.w, init_pose_.orientation.x, init_pose_.orientation.y, init_pose_.orientation.z);
@@ -128,76 +118,14 @@ gazebo_example::actuator ControllerNode::compute_control_actuation(const double 
   //trajectory =2;
   //printf("%f\n", trajectory_time);
   reference_state = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetStateAtTime(trajectory_time);
-  //reference_state = Traj_Lib.GetTrajectoryAtIndex(0).GetStateAtTime(4000);
 
-
-  //gazebo::math::Vector3 _r_ref_a(0.0,30.0,0.0);
-  //gazebo::math::Vector3 _r_ref_a = GetReferencePosition(reference_state, initial_position, initial_quaternion.GetYaw());
   gazebo::math::Vector3 p_ref_i = GetReferencePosition(reference_state, initial_position, initial_quaternion.GetYaw());
   p_ref_i.z = -10.0;
-  //gazebo::math::Vector3 p_ref_i(10.0,0.0,-10.0);
-
   gazebo::math::Quaternion q_ref = GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw());
-  //gazebo::math::Quaternion _q_ref(0,0,0);
-  //gazebo::math::Vector3 _v_ref_r(reference_state[8],reference_state[9],reference_state[10]);
-  //gazebo::math::Vector3 _v_ref_r(5.0,0.0,0.0);
-  //gazebo::math::Vector3 _omega_ra_r(reference_state[11],reference_state[12],reference_state[13]);
-  //gazebo::math::Vector3 _omega_ra_r(0,0,0);
-  //gazebo::math::Matrix3 _C_ra = _q_ref.GetAsMatrix3();
-
-  //gazebo::math::Quaternion q_ref(0,0.2,0.0);
   gazebo::math::Vector3 v_ref_r(reference_state[8],reference_state[9],reference_state[10]);
-  //gazebo::math::Vector3 v_ref_r(5.0,0.0,0.0);
   gazebo::math::Vector3 omega_ref_r(reference_state[11],reference_state[12],reference_state[13]);
-  //gazebo::math::Vector3 omega_ref_r(0,0,0);
   gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();
 
-  /*double r_a[3] = {_r_a[0], _r_a[1], _r_a[2]};
-  //double C_ba[9] = {_C_ba[0][0],_C_ba[1][0],_C_ba[2][0],_C_ba[0][1],_C_ba[1][1],_C_ba[2][1],_C_ba[0][2],_C_ba[1][2],_C_ba[2][2]};
-  double C_ba[9] = {_C_ba[0][0],_C_ba[0][1],_C_ba[0][2],_C_ba[1][0],_C_ba[1][1],_C_ba[1][2],_C_ba[2][0],_C_ba[2][1],_C_ba[2][2]};
-  double v_b[3] = {_v_b[0], _v_b[1], _v_b[2]};
-  double omega_ba_b[3] = {_omega_b[0], _omega_b[1], _omega_b[2]};
-
-  //double r_ref_a[3] = {_r_ref_a[0], _r_ref_a[1], -5.0};
-  //double r_ref_a[3] = {_r_ref_a[0], _r_ref_a[1], _r_ref_a[2]};
-  double r_ref_a[3] = {_r_a[0], _r_a[1], _r_a[2]};
-
-  //double C_ra[9] = {_C_ra[0][0],_C_ra[1][0],_C_ra[2][0],_C_ra[0][1],_C_ra[1][1],_C_ra[2][1],_C_ra[0][2],_C_ra[1][2],_C_ra[2][2]};
-  double C_ra[9] = {_C_ra[0][0],_C_ra[0][1],_C_ra[0][2],_C_ra[1][0],_C_ra[1][1],_C_ra[1][2],_C_ra[2][0],_C_ra[2][1],_C_ra[2][2]};
-  //double C_ra[9] = {1,0,0,0,1,0,0,0,1};
-
-  double v_ref_r[3] = {_v_ref_r[0], _v_ref_r[1], _v_ref_r[2]};
-  double omega_ra_r[3] = {_omega_ra_r[0], _omega_ra_r[1], _omega_ra_r[2]};
-
-  ref_pose_.position.x = r_ref_a[0];
-  ref_pose_.position.y = r_ref_a[1];
-  ref_pose_.position.z = r_ref_a[2];
-  
-
-  ref_pose_.orientation.w = _q_ref.w;
-  ref_pose_.orientation.x = _q_ref.x;
-  ref_pose_.orientation.y = _q_ref.y;
-  ref_pose_.orientation.z = _q_ref.z;
-
-  ref_twist_.linear.x = v_ref_r[0];
-  ref_twist_.linear.y = v_ref_r[1];
-  ref_twist_.linear.z = v_ref_r[2];
-  
-  ref_twist_.angular.x = omega_ra_r[0];
-  ref_twist_.angular.y = omega_ra_r[1];
-  ref_twist_.angular.z = omega_ra_r[2];*/
-
-  //double u1;
-  //double u2;
-  //double u3;
-  //double u4;
-
-  //controller_eb(C_ba, r_a, v_b, omega_ba_b, C_ra, r_ref_a, v_ref_r, omega_ra_r, 1.0 / frequency, maneuver_switch, &u1, &u2, &u3, &u4);
-  //std::vector<double> u {u1, u2, u3, u4}; 
-  /*u[0] = u1;
-  u[1] = u2;
-  u[2] = u3;
-  u[3] = u4;*/
   //Constants and Aircraft Properties
   double ro = 1.225f; //Air Density (kg/m^3)
   double A_prop = 0.0507f; //Propeller Area (m^2)
@@ -313,10 +241,13 @@ gazebo_example::actuator ControllerNode::compute_control_actuation(const double 
   omega_t = saturate(omega_t, omega_t_min, omega_t_max);
   omega_t_old = omega_t;
 
-  command_actuator.u1 = -delta_a; //aileron (Rad)
-  command_actuator.u2 = delta_e; //elevator (Rad)
-  command_actuator.u3 = delta_r; //rudder (Rad)
-  command_actuator.u4 = omega_t; //throttle (rpm)
+  std::vector<double> u;
+  u.push_back(-delta_a); //aileron (Rad)
+  u.push_back(delta_e); //elevator (Rad)
+  u.push_back(delta_r); //rudder (Rad)
+  u.push_back(omega_t); //throttle (rpm)
+
+  command_actuator.data = u;
 
   ref_pose_.position.x = p_ref_i[0];
   ref_pose_.position.y = p_ref_i[1];
@@ -335,13 +266,6 @@ gazebo_example::actuator ControllerNode::compute_control_actuation(const double 
   ref_twist_.angular.y = omega_ref_r[1];
   ref_twist_.angular.z = omega_ref_r[2];
 
-  ref_twist_.linear.x = delta_a;
-  ref_twist_.linear.y = delta_e;
-  ref_twist_.linear.z = delta_r;
-  
-  ref_twist_.angular.x = omega_t;
-  ref_twist_.angular.y = M_b[1];
-  ref_twist_.angular.z = M_b[2];
 
 
   previous_trajectory = trajectory_.data;

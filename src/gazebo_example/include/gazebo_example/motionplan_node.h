@@ -6,17 +6,8 @@
 #include "std_msgs/Int16.h"
 #include "std_srvs/Trigger.h"
 
-#include "gazebo_example/actuator.h"
-
 #include <gazebo/physics/physics.hh>
-
-
-
-
-
-
 #include "boost/foreach.hpp"
-#include "maneuver_generator/maneuver_generator.h"
 #include "gazebo_example/Trajectory.cpp"
 
 namespace gazebo_example
@@ -49,7 +40,6 @@ private:
   geometry_msgs::Twist twist_;
 
   geometry_msgs::Pose init_pose_;
-  //geometry_msgs::Twist init_twist_;
   std_msgs::Int16 trajectory_;
   pcl::PointCloud<pcl::PointXYZ> traj_pcl_;
   pcl::PointCloud<pcl::PointXYZ>::Ptr traj_pcl_ptr_ = pcl::PointCloud<pcl::PointXYZ>::Ptr (&traj_pcl_);

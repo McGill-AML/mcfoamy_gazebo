@@ -6,22 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/home/eitan/mcfoamy_gazebo/devel/include/gazebo_example/actuator.h
-string
--
-vector
--
-map
--
-ros/types.h
--
-ros/serialization.h
--
-ros/builtin_message_traits.h
--
-ros/message_operations.h
--
-
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory.cpp
 Trajectory.hpp
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory.hpp
@@ -91,34 +75,12 @@ std_msgs/Int16.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/std_msgs/Int16.h
 std_srvs/Trigger.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/std_srvs/Trigger.h
-gazebo_example/actuator.h
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/actuator.h
 gazebo/physics/physics.hh
 -
 boost/foreach.hpp
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/boost/foreach.hpp
-maneuver_generator/maneuver_generator.h
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/maneuver_generator/maneuver_generator.h
 gazebo_example/Trajectory.cpp
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/Trajectory.cpp
-
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator.h
-math.h
--
-stddef.h
--
-stdlib.h
--
-rtwtypes.h
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/rtwtypes.h
-maneuver_generator_types.h
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator_types.h
-
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/maneuver_generator_types.h
-rtwtypes.h
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/rtwtypes.h
-
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/maneuver_generator/rtwtypes.h
 
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/src/motionplan_node.cpp
 gazebo_example/motionplan_node.h

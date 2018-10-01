@@ -6,8 +6,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose.h>
-#include "gazebo_example/actuator.h"
-
+#include <std_msgs/Float64MultiArray.h>
 #include <ros/callback_queue.h>
 #include <ros/advertise_options.h>
 
@@ -66,7 +65,7 @@ protected:
 
   
   // ROS Subscribers callbacks
-  void actuatorCallback(const gazebo_example::actuator::ConstPtr& actuator_msg);
+  void actuatorCallback(const std_msgs::Float64MultiArray::ConstPtr& actuator_msg);
 
   
   // Custom Callback Queue for ROS messages
