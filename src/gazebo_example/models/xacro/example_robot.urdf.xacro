@@ -5,7 +5,7 @@
   
   <xacro:macro name="plane_xacro" params="name:=robot">
     <gazebo>
-      <plugin filename="/home/eitan/gazebo_example/devel/lib/libgazebo_plane.so" name="gazebo_plane">
+      <plugin filename="/home/eitan/mcfoamy_gazebo/devel/lib/libgazebo_plane.so" name="gazebo_plane">
         <robotNamespace>${name}</robotNamespace>
       </plugin>
     </gazebo>
@@ -87,7 +87,8 @@
           <depthImageInfoTopicName>/camera/depth/camera_info</depthImageInfoTopicName>
           <pointCloudTopicName>/plane_xacro_default/points</pointCloudTopicName>
           <frameName>camera_link</frameName>
-          <pointCloudCutoff>0.05</pointCloudCutoff>
+          <pointCloudCutoff>0.2</pointCloudCutoff>
+          <pointCloudCutoffMax>10.0</pointCloudCutoffMax>
           <distortionK1>0</distortionK1>
           <distortionK2>0</distortionK2>
           <distortionK3>0</distortionK3>

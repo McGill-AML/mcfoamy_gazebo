@@ -3,18 +3,17 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Twist.h"
+#include "std_msgs/Int16.h"
 #include "std_srvs/Trigger.h"
 
 #include "gazebo_example/actuator.h"
 
 #include <gazebo/physics/physics.hh>
 
-#include "pcl_ros/point_cloud.h"
-#include "pcl/point_types.h"
 
-#include <iostream>
-#include <vector>
-#include <ctime>
+
+
+
 
 #include "boost/foreach.hpp"
 #include "maneuver_generator/maneuver_generator.h"
@@ -37,8 +36,10 @@ private:
   bool start_;
   
   ros::NodeHandle node_handle;
-  ros::Publisher refpose_pub_;
-  ros::Publisher reftwist_pub_;
+  ros::Publisher init_pose_pub_;
+  //ros::Publisher init_twist_pub_;
+  ros::Publisher trajectory_pub_;
+  ros::Publisher traj_pcl_pub_;
   ros::Subscriber pose_sub_;
   ros::Subscriber twist_sub_;
   ros::Subscriber points_sub_;
@@ -47,8 +48,13 @@ private:
   geometry_msgs::Pose pose_;
   geometry_msgs::Twist twist_;
 
-  geometry_msgs::Pose refpose_;
-  geometry_msgs::Twist reftwist_;
+  geometry_msgs::Pose init_pose_;
+  //geometry_msgs::Twist init_twist_;
+  std_msgs::Int16 trajectory_;
+  pcl::PointCloud<pcl::PointXYZ> traj_pcl_;
+  pcl::PointCloud<pcl::PointXYZ>::Ptr traj_pcl_ptr_ = pcl::PointCloud<pcl::PointXYZ>::Ptr (&traj_pcl_);
+
+  //pcl::PointCloud<pcl::PointXYZ>::Ptr traj_pcl_;
 
   gazebo::math::Vector3 p_0;
   gazebo::math::Vector3 p_final;
@@ -69,10 +75,7 @@ private:
 
   std::vector<std::string> filenames;
 
-
-
   TrajectoryLibrary Traj_Lib;
-  
 
   void wait_for_trigger();
   void compute_refstate();

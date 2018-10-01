@@ -946,6 +946,12 @@ lib:FILEPATH=/opt/ros/kinetic/lib/libdynamic_reconfigure_config_init_mutex.so
 //Dependencies for target
 maneuver_generator_LIB_DEPENDS:STATIC=
 
+//Value Computed by CMake
+mcfoamy_gazebo_BINARY_DIR:STATIC=/home/eitan/mcfoamy_gazebo/build/gazebo_example
+
+//Value Computed by CMake
+mcfoamy_gazebo_SOURCE_DIR:STATIC=/home/eitan/mcfoamy_gazebo/src/gazebo_example
+
 //The directory containing a CMake configuration file for message_filters.
 message_filters_DIR:PATH=/opt/ros/kinetic/share/message_filters/cmake
 

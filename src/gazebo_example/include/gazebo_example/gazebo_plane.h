@@ -44,6 +44,12 @@ protected:
   math::Vector3 force_;
   math::Vector3 torque_;
 
+  math::Vector3 pos_n;
+  math::Quaternion q_nb;
+  math::Vector3 vel_b;
+  math::Vector3 omega_nb_b;
+
+
   double actuator_[4];
   // ROS related attributes
   uint8_t MAX_PUB_QUEUE_SIZE;

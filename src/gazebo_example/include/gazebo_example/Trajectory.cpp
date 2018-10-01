@@ -13,25 +13,19 @@ Trajectory::Trajectory(std::string filename_csv) {
     number_of_lines = GetNumberOfLines(filename_csv);
     LoadTrajectory(filename_csv, number_of_lines, data);
     dt = data(1,0) - data(0,0); //assume constant delta t in trajectory
-	aircraft_geometry[0][0] = 0.1;
-	aircraft_geometry[0][1] = 0.0;
-	aircraft_geometry[0][2] = 0.0;
+    aircraft_geometry.push_back(gazebo::math::Vector3(0.1,0.0,0.0));
+    aircraft_geometry.push_back(gazebo::math::Vector3(0.0,0.5,0.0));
+    aircraft_geometry.push_back(gazebo::math::Vector3(0.0,-0.5,0.0));
+    aircraft_geometry.push_back(gazebo::math::Vector3(-0.7,0.0,0.0));
 
-	aircraft_geometry[1][0] = 0.0;
-	aircraft_geometry[1][1] = 0.5;
-	aircraft_geometry[1][2] = 0.0;
+  	d_min = 0.2;
+    d_max = 1.0;
+    max_speed = 10.0;
 
-	aircraft_geometry[2][0] = 0.0;
-	aircraft_geometry[2][1] = -0.5;
-	aircraft_geometry[2][2] = 0.0;
+    lambda = 0.0;
+    //C_cb = gazebo::math::Matrix3(0.0,-sin(lambda),cos(lambda),1.0,0.0,0.0,0.0,cos(lambda),sin(lambda));
+    C_cb = gazebo::math::Matrix3(0.0, 1.0, 0.0, -sin(lambda), 0.0, cos(lambda), cos(lambda), 0.0, sin(lambda));
 
-	aircraft_geometry[3][0] = -0.7;
-	aircraft_geometry[3][1] = 0.0;
-	aircraft_geometry[3][2] = 0.0;
-
-	d_min = 0.2;
-  	d_max = 1.0;
-  	max_speed = 10.0;
 }
 
 
@@ -78,7 +72,30 @@ Eigen::VectorXd Trajectory::GetStateAtIndex(int index){
  	return data.row(index);
 }
 
-double Trajectory::DistanceToTrajectory(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree)
+int Trajectory::GetIndexAtTime(double time){
+  int index = int(time/dt);
+  if (index > number_of_lines-1){
+    index = number_of_lines-1;
+  }
+  return index;
+}
+
+Eigen::VectorXd Trajectory::GetStateAtTime(double time){
+  return GetStateAtIndex(GetIndexAtTime(time));
+}
+
+
+
+gazebo::math::Vector3 Trajectory::TransformPointToCameraFrame(gazebo::math::Quaternion q, int index){
+  gazebo::math::Matrix3 C_psi(cos(q.GetYaw()),-sin(q.GetYaw()),0.0,sin(q.GetYaw()),cos(q.GetYaw()),0.0,0.0,0.0,1.0);//rotate by yaw, but because gazebo uses forward-left-up
+  Eigen::VectorXd state = GetStateAtIndex(index);
+  gazebo::math::Vector3 p_psi(state(1),state(2),state(3));
+  gazebo::math::Vector3 p_c = C_cb * q.GetAsMatrix3().Inverse() * C_psi * p_psi;
+  //gazebo::math::Vector3 p_c = C_cb * q.GetAsMatrix3() * p_psi;
+  return p_c;
+}
+
+double Trajectory::DistanceToTrajectory(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q)
 {
   pcl::PointXYZ searchPoint;
   std::vector<int> closest_point_index(1);
@@ -86,18 +103,17 @@ double Trajectory::DistanceToTrajectory(pcl::octree::OctreePointCloudSearch<pcl:
   double distance = 100.0;
 
   int i = 0;
-  Eigen::VectorXd state = GetStateAtIndex(i); 
-  searchPoint.x = state[1];
-  searchPoint.y = state[2];
-  searchPoint.z = state[3];
+  searchPoint.x = 0.0;
+  searchPoint.y = 0.0;
+  searchPoint.z = 0.0;
   if (octree.getLeafCount() > 0){
     if (octree.nearestKSearch (searchPoint, 1, closest_point_index, closest_distance_squared) > 0){
       while(i < number_of_lines){
 
-        state = GetStateAtIndex(i); 
-        searchPoint.x = state[1];
-        searchPoint.y = state[2];
-        searchPoint.z = state[3];
+        p_c = TransformPointToCameraFrame(q,i); 
+        searchPoint.x = p_c[0];
+        searchPoint.y = p_c[1];
+        searchPoint.z = p_c[2];
 
         octree.nearestKSearch (searchPoint, 1, closest_point_index, closest_distance_squared);
         if (sqrt(closest_distance_squared[0]) < distance){
@@ -106,11 +122,27 @@ double Trajectory::DistanceToTrajectory(pcl::octree::OctreePointCloudSearch<pcl:
         // Don't keep searching for min distance because this trajectory is crashing anyways
         if (sqrt(closest_distance_squared[0]) < d_min/2.0){
           break;
-        }
-        else
+        }/*else if (sqrt(closest_distance_squared[0]) < d_max/2.0){
+          Eigen::VectorXd state = GetStateAtIndex(i);
+          gazebo::math::Vector3 p_psi(state(1),state(2),state(3));
+          gazebo::math::Matrix3 C_psi(cos(q.GetYaw()),-sin(q.GetYaw()),0.0,sin(q.GetYaw()),cos(q.GetYaw()),0.0,0.0,0.0,1.0);//rotate by negative yaw, but because gazebo uses forward-left-up, GetYaw function returns negative yaw
+
+          gazebo::math::Quaternion q_r(state(4),state(5),state(6),state(7));
+          for (int ii = 0; ii < aircraft_geometry.size(); ++i){
+            gazebo::math::Vector3 new_search_point = C_cb * q.GetAsMatrix3() * C_psi * (q_r.GetAsMatrix3().Inverse() * aircraft_geometry[i] + p_psi);
+            searchPoint.x = new_search_point[0];
+            searchPoint.y = new_search_point[1];
+            searchPoint.z = new_search_point[2];
+            octree.nearestKSearch (searchPoint, 1, closest_point_index, closest_distance_squared);
+            if (sqrt(closest_distance_squared[0]) < distance){
+              distance = sqrt(closest_distance_squared[0]);
+            }
+          }
+        }*/else
         {
-          double t_free = sqrt(closest_distance_squared[0])/max_speed;
-          i = i + int(t_free / dt); // assuming fixed time step in trajectory
+          i = i + 1;
+          //double t_free = sqrt(closest_distance_squared[0])/max_speed;
+          //i = i + int(t_free / dt); // assuming fixed time step in trajectory
         }
         // Checking distance using orientation of aircraft because distance is less than wingspan/2
         /*if (sqrt(closest_distance_squared[0]) > d_min/2.0 && sqrt(closest_distance_squared[0]) < d_max/2.0){
@@ -146,11 +178,11 @@ Trajectory TrajectoryLibrary::GetTrajectoryAtIndex(int index){
  	return trajectory_library[index];
 }
 
-int TrajectoryLibrary::SelectTrajectory(double safety_distance, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree){
+int TrajectoryLibrary::SelectTrajectory(double safety_distance, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q){
 	int i = 0;
 
 	while (i < number_of_trajectories){
-		if (trajectory_library[i].DistanceToTrajectory(octree) > safety_distance){
+		if (trajectory_library[i].DistanceToTrajectory(octree,q) > safety_distance){
 			return i;
 			break;
 		}
@@ -158,6 +190,8 @@ int TrajectoryLibrary::SelectTrajectory(double safety_distance, pcl::octree::Oct
 	}
 	return -1;
 }
+
+
 
 int TrajectoryLibrary::GetNumberOfTrajectories(){
   return number_of_trajectories;

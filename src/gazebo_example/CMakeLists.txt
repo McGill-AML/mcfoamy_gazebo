@@ -157,6 +157,7 @@ target_link_libraries(controller_node
    controller
    controller_eb
    ${GAZEBO_LIBRARIES}
+   ${PCL_LIBRARIES}
 )
 
 ## Specify libraries to link a library or executable target against

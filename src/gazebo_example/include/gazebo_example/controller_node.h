@@ -3,6 +3,8 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Twist.h"
+#include "std_msgs/Int16.h"
+#include "std_msgs/Float64MultiArray.h"
 #include "std_srvs/Trigger.h"
 
 #include "gazebo_example/controller.h"
@@ -10,6 +12,10 @@
 #include "controller_eb/controller_eb.h"
 
 #include <gazebo/physics/physics.hh>
+#include "gazebo_example/Trajectory.cpp"
+#include "gazebo_example/LowPassFilter2p.cpp"
+
+#include <Eigen/Core>
 
 
 namespace gazebo_example
@@ -21,7 +27,7 @@ public:
   static const unsigned int MAX_PUB_QUEUE;
   static const unsigned int MAX_SUB_QUEUE;
   
-   ControllerNode();
+  ControllerNode();
   bool init();
   void run();
   
@@ -30,27 +36,50 @@ private:
   
   ros::NodeHandle node_handle;
   ros::Publisher actuator_pub_;
+  ros::Publisher ref_pose_pub_;
+  ros::Publisher ref_twist_pub_;
   ros::Subscriber pose_sub_;
   ros::Subscriber twist_sub_;
-  ros::Subscriber refpose_sub_;
-  ros::Subscriber reftwist_sub_;
+  ros::Subscriber init_pose_sub_;
+  //ros::Subscriber init_twist_sub_;
+  ros::Subscriber trajectory_sub_;
   ros::ServiceServer start_service_;
   
   controllers::PID pid_;
-    double maneuver_switch;
+  double maneuver_switch;
+  int previous_trajectory;
+  double trajectory_starttime;
+  double trajectory_time;
+  int trajectory;
+  float delta_hi_i;
 
   geometry_msgs::Pose pose_;
   geometry_msgs::Twist twist_;
-  geometry_msgs::Pose refpose_;
-  geometry_msgs::Twist reftwist_;
-  
+  geometry_msgs::Pose init_pose_;
+  //geometry_msgs::Twist init_twist_;
+  std_msgs::Int16 trajectory_;
+  geometry_msgs::Pose ref_pose_;
+  geometry_msgs::Twist ref_twist_;
+  gazebo_example::actuator command_actuator;
+
+  std::vector<std::string> filenames;
+  TrajectoryLibrary Traj_Lib;
+  Eigen::VectorXd reference_state;
+  LowPassFilter2p lp_Vs;
+  double omega_t_old;
   void wait_for_trigger();
+  double saturate(double value, double min, double max);
+
+  gazebo::math::Vector3 GetReferencePosition(Eigen::VectorXd state, gazebo::math::Vector3 initial_position, double initial_yaw);
+  gazebo::math::Quaternion GetReferenceQuaternion(Eigen::VectorXd state, double initial_yaw);
   gazebo_example::actuator compute_control_actuation(const double frequency);
   
   void poseCallback(const geometry_msgs::Pose::ConstPtr& msg);
   void twistCallback(const geometry_msgs::Twist::ConstPtr& msg);
-  void refposeCallback(const geometry_msgs::Pose::ConstPtr& msg);
-  void reftwistCallback(const geometry_msgs::Twist::ConstPtr& msg);
+  void init_poseCallback(const geometry_msgs::Pose::ConstPtr& msg);
+  //void init_twistCallback(const geometry_msgs::Twist::ConstPtr& msg);
+  void trajectoryCallback(const std_msgs::Int16::ConstPtr& msg);
+
   bool start_controller(std_srvs::Trigger::Request  &req,
                         std_srvs::Trigger::Response &res);
 };

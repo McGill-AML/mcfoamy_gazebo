@@ -110,12 +110,55 @@ void PlanePlugin::UpdateChild()
   {
     boost::mutex::scoped_lock scoped_lock(lock_);
     aerodynamics();
-    link_->AddRelativeForce(force_);
-    link_->AddRelativeTorque(torque_);
+    //link_->AddRelativeForce(force_);
+    //link_->AddRelativeTorque(torque_);
+    link_->AddForce(force_);
+    link_->AddTorque(torque_);
   }
   
   publishLinkState();
 }
+
+void PlanePlugin::publishLinkState()
+{
+  // frames
+  // g - gazebo (ENU), east, north, up
+  // r - rotors imu frame (FLU), forward, left, up
+  // b - px4 (FRD) forward, right down
+  // n - px4 (NED) north, east, down
+  math::Quaternion q_gr = link_->GetWorldPose().rot;
+  math::Quaternion q_br(0, 1, 0, 0);
+  math::Quaternion q_ng(0, 0.70711, 0.70711, 0);
+
+  math::Quaternion q_gb = q_gr*q_br.GetInverse();
+  q_nb = q_ng*q_gb;
+
+  math::Vector3 pos_g = link_->GetWorldPose().pos;
+
+  pos_n = q_ng.RotateVector(pos_g);
+
+  vel_b = q_br.RotateVector(link_->GetRelativeLinearVel());
+  omega_nb_b = q_br.RotateVector(link_->GetRelativeAngularVel());
+
+  geometry_msgs::Pose pose_msg;
+  pose_msg.position.x = pos_n.x;
+  pose_msg.position.y = pos_n.y;
+  pose_msg.position.z = pos_n.z;
+  pose_msg.orientation.w = q_nb.w;
+  pose_msg.orientation.x = q_nb.x;
+  pose_msg.orientation.y = q_nb.y;
+  pose_msg.orientation.z = q_nb.z;  
+  pose_pub_.publish(pose_msg);
+
+  geometry_msgs::Twist twist_msg;
+  twist_msg.linear.x = vel_b.x;
+  twist_msg.linear.y = vel_b.y;
+  twist_msg.linear.z = vel_b.z;
+  twist_msg.angular.x = omega_nb_b.x;
+  twist_msg.angular.y = omega_nb_b.y;
+  twist_msg.angular.z = omega_nb_b.z;
+  twist_pub_.publish(twist_msg);
+}/*
 
 void PlanePlugin::publishLinkState()
 {
@@ -144,7 +187,7 @@ void PlanePlugin::publishLinkState()
   twist_msg.angular.z = angular_velocity.z;
   
   twist_pub_.publish(twist_msg);
-}
+}*/
 
 double PlanePlugin::saturate(double value, double min, double max)
 {
@@ -158,10 +201,10 @@ double PlanePlugin::saturate(double value, double min, double max)
 
 void PlanePlugin::aerodynamics()
 { 
-  math::Vector3 velocity_bg = link_->GetRelativeLinearVel();
+  /*math::Vector3 velocity_bg = link_->GetRelativeLinearVel();
   math::Vector3 angular_velocity_bg = link_->GetRelativeAngularVel();
   math::Vector3 velocity_b(velocity_bg[0],-velocity_bg[1],-velocity_bg[2]);
-  math::Vector3 angular_velocity_b(angular_velocity_bg[0],-angular_velocity_bg[1],-angular_velocity_bg[2]);
+  math::Vector3 angular_velocity_b(angular_velocity_bg[0],-angular_velocity_bg[1],-angular_velocity_bg[2]);*/
   //saturate actuators and add rate limiters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   double delta_a_max = 52.0;
   double delta_e_max = 59.0;
@@ -169,22 +212,25 @@ void PlanePlugin::aerodynamics()
   double omega_t_min = 1716.0;
   double omega_t_max = 6710.0;
 
+  McFoamy_FM_v2(saturate(actuator_[0],-delta_a_max,delta_a_max)*.017453, saturate(actuator_[1],-delta_e_max,delta_e_max)*.017453, saturate(actuator_[2],-delta_r_max,delta_r_max)*.017453, saturate(actuator_[3],omega_t_min,omega_t_max), vel_b.x,vel_b.y,vel_b.z,omega_nb_b.x,omega_nb_b.y,omega_nb_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
+  //math::Quaternion q_br(0, 1, 0, 0);
+  //force_ = q_br.RotateVectorReverse(math::Vector3(Fx_b, Fy_b, Fz_b)); 
+  //torque_ = q_br.RotateVectorReverse(math::Vector3(Mx_b, My_b, Mz_b));
 
+  math::Quaternion q_gr = link_->GetWorldPose().rot;
+  math::Quaternion q_br(0, 1, 0, 0);
+  math::Quaternion q_ng(0, 0.70711, 0.70711, 0);
 
+  math::Quaternion q_gb = q_gr*q_br.GetInverse();
+  force_ = q_gb.RotateVector(math::Vector3(Fx_b, Fy_b, Fz_b)); 
+  torque_ = q_gb.RotateVector(math::Vector3(Mx_b, My_b, Mz_b));
+
+  /*
   McFoamy_FM_v2(saturate(actuator_[0],-delta_a_max,delta_a_max)*.017453, saturate(actuator_[1],-delta_e_max,delta_e_max)*.017453, saturate(actuator_[2],-delta_r_max,delta_r_max)*.017453, saturate(actuator_[3],omega_t_min,omega_t_max), velocity_b.x,velocity_b.y,velocity_b.z,angular_velocity_b.x,angular_velocity_b.y,angular_velocity_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
-  //McFoamy_FM_v2(actuator_[0]*.017453, actuator_[1]*.017453, actuator_[2]*.017453, actuator_[3], velocity_b.x,velocity_b.y,velocity_b.z,angular_velocity_b.x,angular_velocity_b.y,angular_velocity_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
 
-  /*double dFx =4.5;
-  double dFy=4.4;
-  double dFz=300.3;
-  double dMx=0.0;
-  double dMy=0.0;
-  double dMz=0.0;
-  force2_ = math::Vector3(dFx, dFy, dFz);
-  torque2_ = math::Vector3(dMx, dMy, dMz);*/
-  //force_ = math::Vector3(Fx, Fy, Fz);
   force_ = math::Vector3(Fx_b, -Fy_b, -Fz_b); //negative signs account for gazebo body frame different from mine
-  torque_ = math::Vector3(Mx_b, -My_b, -Mz_b);
+  torque_ = math::Vector3(Mx_b, -My_b, -Mz_b);*/
+ 
 
 }
 
