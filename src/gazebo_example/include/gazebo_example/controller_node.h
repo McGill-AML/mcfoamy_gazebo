@@ -58,7 +58,8 @@ private:
   geometry_msgs::Pose ref_pose_;
   geometry_msgs::Twist ref_twist_;
   std_msgs::Float64MultiArray command_actuator;
-
+  gazebo::math::Vector3 initial_position;
+  gazebo::math::Quaternion initial_quaternion;
   std::vector<std::string> filenames;
   TrajectoryLibrary Traj_Lib;
   Eigen::VectorXd reference_state;

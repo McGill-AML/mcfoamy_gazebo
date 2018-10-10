@@ -110,6 +110,14 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
 
   if (trajectory_.data != previous_trajectory){
     trajectory_starttime = ros::Time::now().toSec();
+    initial_position.x = init_pose_.position.x;
+    initial_position.y = init_pose_.position.y;
+    initial_position.z = init_pose_.position.z;
+    initial_quaternion.w = init_pose_.orientation.w;
+    initial_quaternion.x = init_pose_.orientation.x;
+    initial_quaternion.y = init_pose_.orientation.y;
+    initial_quaternion.z = init_pose_.orientation.z;
+
   }
   trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
   if (trajectory == -1){
