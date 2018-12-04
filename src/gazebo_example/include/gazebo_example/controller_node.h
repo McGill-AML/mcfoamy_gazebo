@@ -10,7 +10,7 @@
 #include "gazebo_example/controller.h"
 
 #include <gazebo/physics/physics.hh>
-#include "gazebo_example/Trajectory.cpp"
+#include "gazebo_example/Trajectory2.cpp"
 #include "gazebo_example/LowPassFilter2p.cpp"
 
 #include <Eigen/Core>

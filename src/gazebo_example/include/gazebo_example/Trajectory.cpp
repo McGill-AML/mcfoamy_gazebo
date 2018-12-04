@@ -171,6 +171,10 @@ void TrajectoryLibrary::LoadLibrary(std::vector<std::string> filenames){
 	number_of_trajectories = filenames.size();
 	for (int i = 0; i < number_of_trajectories; ++i){
 		trajectory_library.push_back(Trajectory(filenames[i]));
+    d_global.push_back(0.0);
+    d_obstacle.push_back(0.0);
+    d_psi.push_back(0.0);
+    C.push_back(0.0);
 	}
 }
 
@@ -195,4 +199,131 @@ int TrajectoryLibrary::SelectTrajectory(double safety_distance, pcl::octree::Oct
 
 int TrajectoryLibrary::GetNumberOfTrajectories(){
   return number_of_trajectories;
+}
+
+void TrajectoryLibrary::SetGlobalLine(gazebo::math::Vector3 p_0, double psi_0){
+  p_0_global = p_0;
+  psi_0_global = psi_0;
+}
+
+void TrajectoryLibrary::DistanceToGlobalLine(gazebo::math::Vector3 p_i){
+  Eigen::VectorXd state;
+
+  for (int i = 0; i < number_of_trajectories; ++i){
+    state = trajectory_library[i].GetStateAtIndex(trajectory_library[i].number_of_lines-1);
+    gazebo::math::Vector3 p_end(state(1),state(2),state(3));
+    p_end = p_end + p_i;
+    d_global[i] = sqrt(pow(-sin(psi_0_global)*(p_end-p_0_global).x + cos(psi_0_global)*(p_end-p_0_global).y,2.0) + pow(p_end.z - p_0_global.z,2.0));
+  } 
+}
+
+void TrajectoryLibrary::DistanceToObstacle(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q){
+  
+  for (int i = 0; i < number_of_trajectories; ++i){
+    d_obstacle[i] = trajectory_library[i].DistanceToTrajectory(octree,q);
+  }
+}
+
+void TrajectoryLibrary::HeadingToGlobalLine(gazebo::math::Quaternion q){
+  Eigen::VectorXd state;
+  double psi_end;
+  double delta_psi;
+
+  for (int i = 0; i < number_of_trajectories; ++i){
+    state = trajectory_library[i].GetStateAtIndex(trajectory_library[i].number_of_lines-1);
+    gazebo::math::Quaternion q_end(state(4),state(5),state(6),state(7));
+    psi_end = q.GetYaw() + q_end.GetYaw();
+    delta_psi = psi_end - psi_0_global;
+    if (delta_psi > 3.14){delta_psi = delta_psi - 2.0*3.14;}
+    if (delta_psi < -3.14){delta_psi = delta_psi + 2.0*3.14;}
+
+    d_psi[i] = fabs(delta_psi);
+
+  } 
+}
+
+void TrajectoryLibrary::Cost(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q,gazebo::math::Vector3 p_i){
+  DistanceToGlobalLine(p_i);
+  DistanceToObstacle(octree,q);
+  HeadingToGlobalLine(q);
+  double C1 = 100000.0;
+  double C2 = 100.0;
+  double C3 = 0.0;
+  double d_crash = 0.5;
+  double d_far = 3.0;
+  double cost;
+
+  for (int i = 0; i < number_of_trajectories; ++i){
+    if (d_obstacle[i] < d_crash){
+      cost = C1 + d_global[i] + C3*d_psi[i];
+    }
+    else if (d_obstacle[i] < d_far){
+      cost = C2 * (d_obstacle[i] - d_crash) + d_global[i] + C3*d_psi[i];
+    }
+    else{
+      cost = d_global[i] + C3*d_psi[i];
+    }
+
+    C[i] = cost;
+    //printf("%i\n", i);
+    //printf("%f\n",d_obstacle[i] );
+    //printf("%f\n",d_global[i] );
+    //printf("%f\n",d_psi[i] );
+  } 
+}
+
+
+
+int TrajectoryLibrary::SelectTrajectory2(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q,gazebo::math::Vector3 p_i){
+  double lowest_cost = C[0];
+  int best_trajectory = 0;
+  Cost(octree,q,p_i);
+
+  for (int i = 0; i < number_of_trajectories; ++i){
+    if (C[i] < lowest_cost){
+      lowest_cost = C[i];
+      best_trajectory = i;
+    }
+  }
+  return best_trajectory; 
+}
+
+void TrajectoryLibrary::printC(){
+  for (int i = 0; i < number_of_trajectories; i++){
+printf("%f\n", float(C[i]));
+printf("%f\n", float(d_obstacle[i]));
+
+}
+}
+
+void node::SetParent(int x){
+  parent = x;
+}
+
+int node::GetParent(){
+  return parent;
+}
+
+void node::SetIndex(int x){
+  index = x;
+}
+
+int node::GetIndex(){
+  return index;
+}
+
+void node::SetSortedManeuvers(std::vector<int> x){
+  sorted_maneuvers = x;
+}
+
+std::vector<int> node::GetSortedManeuvers(){
+  return sorted_maneuvers;
+}
+
+void node::SetPosition(gazebo::math::Vector3 x){
+  position = x;
+}
+
+gazebo::math::Vector3 node::GetPosition(){
+  return position;
 }

@@ -14,11 +14,11 @@ cmath
 
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.hpp
 
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory.cpp
-Trajectory.hpp
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.cpp
+Trajectory2.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.hpp
 
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.hpp
 iostream
 -
 vector
@@ -29,6 +29,8 @@ math.h
 -
 csvparser.c
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/csvparser.c
+sort.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/sort.h
 stdio.h
 -
 string
@@ -79,8 +81,8 @@ gazebo_example/controller.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/controller.h
 gazebo/physics/physics.hh
 -
-gazebo_example/Trajectory.cpp
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/Trajectory.cpp
+gazebo_example/Trajectory2.cpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/Trajectory2.cpp
 gazebo_example/LowPassFilter2p.cpp
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/LowPassFilter2p.cpp
 Eigen/Core
@@ -100,6 +102,12 @@ csvparser.h
 
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/csvparser.h
 stdio.h
+-
+
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/sort.h
+vector
+-
+algorithm
 -
 
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/src/controller_node.cpp

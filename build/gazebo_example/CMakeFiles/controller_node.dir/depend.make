@@ -3,12 +3,13 @@
 
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.cpp
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.hpp
-gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory.cpp
-gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory.hpp
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.cpp
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.hpp
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller_node.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/csvparser.c
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/csvparser.h
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/sort.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/src/controller_node.cpp
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Point.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Pose.h

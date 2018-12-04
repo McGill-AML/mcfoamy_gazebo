@@ -55,8 +55,7 @@ void ControllerNode::run()
     // Compute and publish controller output
     actuator_pub_.publish(compute_control_actuation(frequency));
 
-    ref_pose_pub_.publish(ref_pose_);
-    ref_twist_pub_.publish(ref_twist_);
+
     
     // Wait to maintain constant frequency
     loop_rate.sleep();
@@ -105,10 +104,12 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   gazebo::math::Vector3 omega_b(twist_.angular.x, twist_.angular.y, twist_.angular.z);
   gazebo::math::Matrix3 C_bi = q.GetAsMatrix3().Inverse();
 
-  gazebo::math::Vector3 initial_position(init_pose_.position.x, init_pose_.position.y, init_pose_.position.z);
-  gazebo::math::Quaternion initial_quaternion(init_pose_.orientation.w, init_pose_.orientation.x, init_pose_.orientation.y, init_pose_.orientation.z);
+  //gazebo::math::Vector3 initial_position(init_pose_.position.x, init_pose_.position.y, init_pose_.position.z);
+  //gazebo::math::Quaternion initial_quaternion(init_pose_.orientation.w, init_pose_.orientation.x, init_pose_.orientation.y, init_pose_.orientation.z);
 
-  if (trajectory_.data != previous_trajectory){
+
+
+  /*if (trajectory_.data != previous_trajectory){
     trajectory_starttime = ros::Time::now().toSec();
     initial_position.x = init_pose_.position.x;
     initial_position.y = init_pose_.position.y;
@@ -118,10 +119,13 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     initial_quaternion.y = init_pose_.orientation.y;
     initial_quaternion.z = init_pose_.orientation.z;
 
-  }
+  }*/
+
+
   trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
+  //printf("%f\n", trajectory_time);
   if (trajectory == -1){
-    trajectory = 2;
+    trajectory = 0;
   }
   //trajectory =2;
   //printf("%f\n", trajectory_time);
@@ -274,7 +278,8 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   ref_twist_.angular.y = omega_ref_r[1];
   ref_twist_.angular.z = omega_ref_r[2];
 
-
+  ref_pose_pub_.publish(ref_pose_);
+  ref_twist_pub_.publish(ref_twist_);
 
   previous_trajectory = trajectory_.data;
   
@@ -295,6 +300,15 @@ void ControllerNode::twistCallback(const geometry_msgs::Twist::ConstPtr& msg)
 void ControllerNode::init_poseCallback(const geometry_msgs::Pose::ConstPtr& msg)
 {
   init_pose_ = *msg;
+  trajectory_starttime = ros::Time::now().toSec();
+  initial_position.x = init_pose_.position.x;
+  initial_position.y = init_pose_.position.y;
+  initial_position.z = init_pose_.position.z;
+  initial_quaternion.w = init_pose_.orientation.w;
+  initial_quaternion.x = init_pose_.orientation.x;
+  initial_quaternion.y = init_pose_.orientation.y;
+  initial_quaternion.z = init_pose_.orientation.z;
+
 }
 
 /*void ControllerNode::init_twistCallback(const geometry_msgs::Twist::ConstPtr& msg)

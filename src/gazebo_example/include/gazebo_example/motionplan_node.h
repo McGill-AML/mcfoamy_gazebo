@@ -8,7 +8,8 @@
 
 #include <gazebo/physics/physics.hh>
 #include "boost/foreach.hpp"
-#include "gazebo_example/Trajectory.cpp"
+#include "gazebo_example/Trajectory2.cpp"
+#include "visualization_msgs/Marker.h"
 
 namespace gazebo_example
 {
@@ -35,6 +36,8 @@ private:
   ros::Subscriber twist_sub_;
   ros::Subscriber points_sub_;
   ros::ServiceServer start_service_; 
+  ros::Publisher vis_pub ;
+
 
   geometry_msgs::Pose pose_;
   geometry_msgs::Twist twist_;
@@ -59,7 +62,7 @@ private:
 
   pcl::PointCloud<pcl::PointXYZ> points_;
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = pcl::PointCloud<pcl::PointXYZ>::Ptr (&points_);
-  pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree = pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> (.1);//resolution is 128
+  //pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree = pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> (.1);//resolution is 128
   std::vector<int> indices;
   //pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;
 
