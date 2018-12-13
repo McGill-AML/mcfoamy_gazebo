@@ -177,6 +177,19 @@ double Trajectory::DistanceToIntermediateGoal(double yaw_offset, gazebo::math::V
   return (intermediate_goal_i - End_Position(yaw_offset, position_offset_i)).GetLength();
 }
 
+double Trajectory::YawDistanceToGoal(double yaw_offset, gazebo::math::Vector3 p_i, gazebo::math::Vector3 p_goal_i){
+  double yaw_distance = atan2((p_goal_i - p_i).y , (p_goal_i - p_i).x) - End_Yaw(yaw_offset);
+  if (yaw_distance > 3.14159265){
+    yaw_distance = yaw_distance - 2.0 * 3.14159265;
+  }
+  if (yaw_distance < -3.14159265){
+    yaw_distance = yaw_distance + 2.0 * 3.14159265;
+  }
+
+  return fabs(yaw_distance);
+  
+}
+
 gazebo::math::Vector3 Trajectory::End_Position(double yaw_offset, gazebo::math::Vector3 position_offset_i){
   gazebo::math::Matrix3 C_yaw_offset(cos(yaw_offset),-sin(yaw_offset),0.0,sin(yaw_offset),cos(yaw_offset),0.0,0.0,0.0,1.0);//rotate by yaw offset
   Eigen::VectorXd final_state = GetStateAtIndex(number_of_lines-1);
@@ -187,7 +200,16 @@ gazebo::math::Vector3 Trajectory::End_Position(double yaw_offset, gazebo::math::
 double Trajectory::End_Yaw(double yaw_offset){
   Eigen::VectorXd final_state = GetStateAtIndex(number_of_lines-1);
   gazebo::math::Quaternion q_final(final_state(4),final_state(5),final_state(6),final_state(7));
-  return yaw_offset + q_final.GetYaw();
+  double end_yaw = yaw_offset + q_final.GetYaw();
+  if (end_yaw > 3.14159265){
+    end_yaw = end_yaw - 2.0 * 3.14159265;
+  }
+
+
+  if (end_yaw < -3.14159265){
+    end_yaw = end_yaw + 2.0 * 3.14159265;
+  }
+  return end_yaw;
 }
 
 bool Trajectory::InFieldOfView(gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i){
@@ -255,6 +277,8 @@ double node::GetYaw(){
 }
 
 TrajectoryLibrary::TrajectoryLibrary(){
+  lambda = 0.0;
+  C_cb = gazebo::math::Matrix3(0.0, 1.0, 0.0, -sin(lambda), 0.0, cos(lambda), cos(lambda), 0.0, sin(lambda));
 
 }
 
@@ -283,7 +307,24 @@ std::vector<node> TrajectoryLibrary::SelectTrajectories(pcl::octree::OctreePoint
   size_t number_of_nodes = 1;
   q_start.SetIndex(index);
 
-  gazebo::math::Vector3 intermediate_goal_i(8,0,3);
+  //compute intermediate goal. For now only in 2D.
+  gazebo::math::Vector3 p_rel_goal_c = C_cb * q.GetAsMatrix3().Inverse() * (p_goal_i - p_initial_i);
+  double HFOV = 85.2*3.14/180.0;//for realsense d435
+  double VFOV = 58.0*3.14/180.0;//for realsense d435
+  double range = 10.0; //for realsense d435
+
+  double gamma = atan2(p_rel_goal_c.x,p_rel_goal_c.z);
+  if (gamma > HFOV/2.0){
+    gazebo::math::Vector3 relative_intermediate_goal_c(range * sin(HFOV/2.0), range * cos(HFOV/2.0),0.0);
+  }
+  else if (gamma < -HFOV/2.0){
+    gazebo::math::Vector3 relative_intermediate_goal_c(range * sin(-HFOV/2.0), range * cos(-HFOV/2.0),0.0);
+  }
+  else {
+    gazebo::math::Vector3 relative_intermediate_goal_c(range * sin(gamma), range * cos(gamma),0.0);
+  }
+  gazebo::math::Vector3 intermediate_goal_i = q.GetAsMatrix3() * C_cb.Inverse() * p_rel_goal_c + p_initial_i;
+
   std::vector<double> distances_to_goal;
   for (int i = 0; i < number_of_trajectories; ++i){
     distances_to_goal.push_back(GetTrajectoryAtIndex(i).DistanceToIntermediateGoal(q_start.GetYaw(),q_start.GetPosition(), intermediate_goal_i));
@@ -371,9 +412,238 @@ std::vector<node> TrajectoryLibrary::SelectTrajectories(pcl::octree::OctreePoint
   for (int i = final_nodes_index.size() - 1; i > -1; --i){
     final_nodes.push_back(nodes[final_nodes_index[i]]);
   }
-  return final_nodes;
+  //return final_nodes;
+  return nodes;
+}
+
+void TrajectoryLibrary::SelectTrajectories2(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q,gazebo::math::Vector3 p_initial_i,gazebo::math::Vector3 p_goal_i, std::vector<node> *nodes_out, std::vector<node> *final_nodes_out, gazebo::math::Vector3 *intermediate_goal_i_out){
+  std::vector<node> nodes;
+  node q_start;
+  q_start.SetPosition(p_initial_i);
+  q_start.SetYaw(q.GetYaw());
+  q_start.SetParent(-1);
+  size_t index = 0;
+  size_t number_of_nodes = 1;
+  q_start.SetIndex(index);
+
+  //compute intermediate goal. For now only in 2D.
+  gazebo::math::Vector3 p_rel_goal_c = C_cb * q.GetAsMatrix3().Inverse() * (p_goal_i - p_initial_i);
+  double HFOV = 85.2*3.14/180.0;//for realsense d435
+  double VFOV = 58.0*3.14/180.0;//for realsense d435
+  double range = 10.0; //for realsense d435
+  gazebo::math::Vector3 relative_intermediate_goal_c;
+  double gamma = atan2(p_rel_goal_c.x,p_rel_goal_c.z);
+  if (gamma > 0.9*(HFOV/2.0)){
+    gamma = 0.9*(HFOV/2.0);
+  }
+  if (gamma < 0.9*(-HFOV/2.0)){
+    gamma = 0.9*(-HFOV/2.0);
+  }
+
+  relative_intermediate_goal_c.x = 0.9 * range * sin(gamma);
+  relative_intermediate_goal_c.y = 0.0;
+  relative_intermediate_goal_c.z = 0.9 * range * cos(gamma);
+  
+  gazebo::math::Vector3 intermediate_goal_i = q.GetAsMatrix3() * C_cb.Inverse() * relative_intermediate_goal_c + p_initial_i;
+
+  std::vector<double> distances_to_goal;
+  for (int i = 0; i < number_of_trajectories; ++i){
+    distances_to_goal.push_back(GetTrajectoryAtIndex(i).DistanceToIntermediateGoal(q_start.GetYaw(),q_start.GetPosition(), intermediate_goal_i));
+  } 
+
+  std::vector<size_t> sorted_distances_to_goal_indices;
+  std::vector<double> sorted_distances_to_goal;
+  sort(distances_to_goal,sorted_distances_to_goal,sorted_distances_to_goal_indices);
+  q_start.SetSortedManeuvers(sorted_distances_to_goal_indices);
+  nodes.push_back(q_start);
+
+  std::vector<size_t> indices;
+  size_t deleted_maneuvers;
+
+  node q_curr = q_start;
+  double tolerance = 3.0;
+  bool nobreak;
+  node q_new;
+
+  while ((q_curr.GetPosition() - intermediate_goal_i).GetLength() > tolerance){
+    indices.push_back(index);
+    deleted_maneuvers = 0;
+    nobreak = true;
+
+
+    for (size_t i = 0; i < q_curr.GetSortedManeuvers().size(); ++i){     
+      if (GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).NoCollision(octree,q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i) && GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).InFieldOfView(q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i)){
+        //make new node
+        q_new.SetParent(index);
+        q_new.SetIndex(number_of_nodes);
+        q_new.SetPosition(GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).End_Position(q_curr.GetYaw(),q_curr.GetPosition()));
+        distances_to_goal.clear();
+        sorted_distances_to_goal.clear();
+        sorted_distances_to_goal_indices.clear();
+        for (int j = 0; j < number_of_trajectories; ++j){
+          distances_to_goal.push_back(GetTrajectoryAtIndex(j).DistanceToIntermediateGoal(q_new.GetYaw(),q_new.GetPosition(), intermediate_goal_i));
+        }
+        sort(distances_to_goal,sorted_distances_to_goal,sorted_distances_to_goal_indices);
+        q_new.SetSortedManeuvers(sorted_distances_to_goal_indices);
+        q_new.SetYaw(GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).End_Yaw(q_curr.GetYaw()));
+        nodes.push_back(q_new);
+        ++number_of_nodes;
+        index = q_new.GetIndex();
+        q_curr = q_new;
+        nobreak = false;
+        break; 
+      }
+      else{
+        //q_curr.SetSortedManeuvers(q_curr.GetSortedManeuvers().erase(q_curr.GetSortedManeuvers().begin() + i-deleted_maneuvers));
+        std::vector<size_t> temp_sorted_maneuvers = q_curr.GetSortedManeuvers();
+        temp_sorted_maneuvers.erase(temp_sorted_maneuvers.begin() + i-deleted_maneuvers);
+        q_curr.SetSortedManeuvers(temp_sorted_maneuvers);
+        ++deleted_maneuvers;
+        nodes[index] = q_curr;
+      }
+    }
+    if (nobreak){
+      index = q_curr.GetParent();
+      if (index == -1){
+        break;
+      }
+      q_curr = nodes[index];
+      //q_curr.SetSortedManeuvers(q_curr.GetSortedManeuvers().erase(q_curr.GetSortedManeuvers().begin()));
+      std::vector<size_t> temp_sorted_maneuvers = q_curr.GetSortedManeuvers();
+      temp_sorted_maneuvers.erase(temp_sorted_maneuvers.begin());
+      q_curr.SetSortedManeuvers(temp_sorted_maneuvers);
+      nodes[index] = q_curr;
+    }
+    if (indices.size()>1000){
+      printf("%i\n", indices.size());
+      break;
+    } 
+
+
+  }
+
+  std::vector<node> final_nodes;
+  std::vector<int> final_nodes_index;
+  int i = nodes.size()-1;
+  while (nodes[i].GetParent() > -1){
+    final_nodes_index.push_back(nodes[i].GetIndex());
+    i = nodes[i].GetParent();
+  }
+  final_nodes.push_back(nodes[0]);
+  for (int i = final_nodes_index.size() - 1; i > -1; --i){
+    final_nodes.push_back(nodes[final_nodes_index[i]]);
+  }
+
+  *nodes_out = nodes;
+  *final_nodes_out = final_nodes;
+  *intermediate_goal_i_out = intermediate_goal_i;
+
+}
+
+void TrajectoryLibrary::SelectTrajectories3(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q,gazebo::math::Vector3 p_initial_i,gazebo::math::Vector3 p_goal_i, std::vector<node> *nodes_out, std::vector<node> *final_nodes_out){
+  std::vector<node> nodes;
+  node q_start;
+  q_start.SetPosition(p_initial_i);
+  q_start.SetYaw(q.GetYaw());
+  q_start.SetParent(-1);
+  size_t index = 0;
+  size_t number_of_nodes = 1;
+  q_start.SetIndex(index);
+
+
+  std::vector<double> distances_to_goal;
+  for (int i = 0; i < number_of_trajectories; ++i){
+    distances_to_goal.push_back(GetTrajectoryAtIndex(i).YawDistanceToGoal(q_start.GetYaw(),p_initial_i, p_goal_i));
+  } 
+
+  std::vector<size_t> sorted_distances_to_goal_indices;
+  std::vector<double> sorted_distances_to_goal;
+  sort(distances_to_goal,sorted_distances_to_goal,sorted_distances_to_goal_indices);
+  q_start.SetSortedManeuvers(sorted_distances_to_goal_indices);
+  nodes.push_back(q_start);
+
+  std::vector<size_t> indices;
+  size_t deleted_maneuvers;
+
+  node q_curr = q_start;
+  double tolerance = 3.0;
+  bool nobreak;
+  node q_new;
+  bool loop_on = true;
+
+  while (loop_on){
+    indices.push_back(index);
+    deleted_maneuvers = 0;
+    nobreak = true;
+
+
+    for (size_t i = 0; i < q_curr.GetSortedManeuvers().size(); ++i){     
+      if (GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).NoCollision(octree,q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i)){
+        if (GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).InFieldOfView(q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i)){
+        }
+        else{
+          //this trajectory took us out of field of view so last new node
+          loop_on = false;
+        }
+        //make new node
+        q_new.SetParent(index);
+        q_new.SetIndex(number_of_nodes);
+        q_new.SetPosition(GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).End_Position(q_curr.GetYaw(),q_curr.GetPosition()));
+        distances_to_goal.clear();
+        sorted_distances_to_goal.clear();
+        sorted_distances_to_goal_indices.clear();
+        for (int j = 0; j < number_of_trajectories; ++j){
+          distances_to_goal.push_back(GetTrajectoryAtIndex(j).YawDistanceToGoal(q_new.GetYaw(), p_initial_i, p_goal_i));
+        }
+        sort(distances_to_goal,sorted_distances_to_goal,sorted_distances_to_goal_indices);
+        q_new.SetSortedManeuvers(sorted_distances_to_goal_indices);
+        q_new.SetYaw(GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).End_Yaw(q_curr.GetYaw()));
+        nodes.push_back(q_new);
+        ++number_of_nodes;
+        index = q_new.GetIndex();
+        q_curr = q_new;
+        nobreak = false;
+        break; 
+      }
+      else{
+        //q_curr.SetSortedManeuvers(q_curr.GetSortedManeuvers().erase(q_curr.GetSortedManeuvers().begin() + i-deleted_maneuvers));
+        std::vector<size_t> temp_sorted_maneuvers = q_curr.GetSortedManeuvers();
+        temp_sorted_maneuvers.erase(temp_sorted_maneuvers.begin() + i-deleted_maneuvers);
+        q_curr.SetSortedManeuvers(temp_sorted_maneuvers);
+        ++deleted_maneuvers;
+        nodes[index] = q_curr;
+      }
+    }
+    if (nobreak){
+      index = q_curr.GetParent();
+      if (index == -1){
+        break;
+      }
+      q_curr = nodes[index];
+      //q_curr.SetSortedManeuvers(q_curr.GetSortedManeuvers().erase(q_curr.GetSortedManeuvers().begin()));
+      std::vector<size_t> temp_sorted_maneuvers = q_curr.GetSortedManeuvers();
+      temp_sorted_maneuvers.erase(temp_sorted_maneuvers.begin());
+      q_curr.SetSortedManeuvers(temp_sorted_maneuvers);
+      nodes[index] = q_curr;
+    }
 
 
 
+  }
+
+  std::vector<node> final_nodes;
+  std::vector<int> final_nodes_index;
+  int i = nodes.size()-1;
+  while (nodes[i].GetParent() > -1){
+    final_nodes_index.push_back(nodes[i].GetIndex());
+    i = nodes[i].GetParent();
+  }
+  final_nodes.push_back(nodes[0]);
+  for (int i = final_nodes_index.size() - 1; i > -1; --i){
+    final_nodes.push_back(nodes[final_nodes_index[i]]);
+  }
+
+  *nodes_out = nodes;
+  *final_nodes_out = final_nodes;
 
 }

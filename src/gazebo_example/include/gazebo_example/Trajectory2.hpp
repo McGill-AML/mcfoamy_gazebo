@@ -35,6 +35,7 @@ public:
   double DistanceToObstacle(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i);
   gazebo::math::Vector3 TransformPointToCameraFrame(gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i, int index);
   double DistanceToIntermediateGoal(double yaw_offset, gazebo::math::Vector3 position_offset_i, gazebo::math::Vector3 intermediate_goal_i);
+  double YawDistanceToGoal(double yaw_offset, gazebo::math::Vector3 p_i, gazebo::math::Vector3 p_goal_i);
   void SetNumberOfLines(const std::string& filename);
   int GetNumberOfLines();
   bool NoCollision(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i);
@@ -94,11 +95,16 @@ public:
   Trajectory GetTrajectoryAtIndex(int index);
   int GetNumberOfTrajectories();
   std::vector<node> SelectTrajectories(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q,gazebo::math::Vector3 p_initial_i,gazebo::math::Vector3 p_goal_i);
+  void SelectTrajectories2(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q,gazebo::math::Vector3 p_initial_i,gazebo::math::Vector3 p_goal_i, std::vector<node> *nodes_out, std::vector<node> *final_nodes_out, gazebo::math::Vector3 *intermediate_goal_i_out);
+  void SelectTrajectories3(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q,gazebo::math::Vector3 p_initial_i,gazebo::math::Vector3 p_goal_i, std::vector<node> *nodes_out, std::vector<node> *final_nodes_out);
 
 private:
   double max_distance;
   int max_distance_index;
   std::vector<Trajectory> trajectory_library;
-  int number_of_trajectories; 
+  int number_of_trajectories;
+
+  float lambda;
+  gazebo::math::Matrix3 C_cb; 
 
 };

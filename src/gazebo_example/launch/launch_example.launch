@@ -9,7 +9,6 @@
 
   
   <!-- Spawn a robot into Gazebo Xacro -->
-  <group ns="plane_xacro_default">
     <!-- Convert an xacro and put on parameter server -->
     <param name="robot_description" command="$(find xacro)/xacro $(find gazebo_example)/models/xacro/example_robot.urdf.xacro --inorder" />
 
@@ -19,7 +18,6 @@
     <node name="motionplan_node" pkg="gazebo_example" type="motionplan_node" output="screen" />
     <node name="controller_node" pkg="gazebo_example" type="controller_node" output="screen" />
 
-  </group>
   
 
 </launch>

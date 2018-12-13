@@ -30,7 +30,7 @@ void PlanePlugin::Load( physics::ModelPtr parent, sdf::ElementPtr sdf )
   ParseParameters(sdf);
   
   world_ = parent->GetWorld();
-  link_ = parent->GetLink(this->robot_namespace_ +"_link");
+  link_ = parent->GetLink("airframe");
   
   // Make sure the ROS node for Gazebo has already been initalized
   if (!ros::isInitialized())
@@ -164,6 +164,20 @@ void PlanePlugin::publishLinkState()
   twist_msg.angular.y = omega_nb_b.y;
   twist_msg.angular.z = omega_nb_b.z;
   twist_pub_.publish(twist_msg);
+
+  static tf::TransformBroadcaster br;
+  tf::Transform transform;
+  transform.setOrigin( tf::Vector3(pos_g.x, pos_g.y, pos_g.z) );
+  tf::Quaternion q(q_gr.x, q_gr.y, q_gr.z, q_gr.w);
+  transform.setRotation(q);
+  br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "airframe"));
+
+  tf::Transform transform2;
+  transform2.setOrigin( tf::Vector3(0.0,0.0,0.0) );
+  tf::Quaternion q2(0.5,-0.5,0.5,-0.5);
+  transform2.setRotation(q2);
+  br.sendTransform(tf::StampedTransform(transform2, ros::Time::now(), "kinect", "kinect_camera_frame"));
+
 }
 
 

@@ -1,15 +1,21 @@
 <?xml version="1.0" ?>
-<robot name="example_robot_xacro" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="mcfoamy" xmlns:xacro="http://www.ros.org/wiki/xacro">
   
-  <xacro:arg name="robot_name" default="plane_xacro_default"/>
   
-  <xacro:macro name="plane_xacro" params="name:=robot">
+
+  
     <gazebo>
       <plugin filename="/home/eitan/mcfoamy_gazebo/devel/lib/libgazebo_plane.so" name="gazebo_plane">
-        <robotNamespace>${name}</robotNamespace>
-      </plugin>
+     </plugin>
     </gazebo>
-    <link name="${name}_link">
+    <link name="world"/>   
+
+    <joint name="fixed" type="floating">
+      <parent link="world"/>
+      <child link="airframe"/>
+    </joint>
+
+    <link name="airframe">
       <inertial>
         <mass value=".45"/>
         <origin xyz="0 0 0"/>
@@ -33,7 +39,7 @@
   <joint name="camera_joint" type="fixed">
     <axis xyz="0 1 0" />
     <origin xyz=".2 0 .2" rpy="0 0 0"/>
-    <parent link="${name}_link"/>
+    <parent link="airframe"/>
     <child link="kinect"/>
   </joint>
 
@@ -85,8 +91,8 @@
           <cameraInfoTopicName>/camera/depth/camera_info</cameraInfoTopicName>
           <depthImageTopicName>/camera/depth/image_raw</depthImageTopicName>
           <depthImageInfoTopicName>/camera/depth/camera_info</depthImageInfoTopicName>
-          <pointCloudTopicName>/plane_xacro_default/points</pointCloudTopicName>
-          <frameName>camera_link</frameName>
+          <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
+          <frameName>kinect_camera_frame</frameName>
           <pointCloudCutoff>0.2</pointCloudCutoff>
           <pointCloudCutoffMax>10.0</pointCloudCutoffMax>
           <distortionK1>0</distortionK1>
@@ -105,7 +111,5 @@
 
 
 
-  </xacro:macro>
-  
-  <xacro:plane_xacro name="$(arg robot_name)" />
+
 </robot>

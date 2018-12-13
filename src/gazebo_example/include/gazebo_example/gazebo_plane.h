@@ -18,6 +18,7 @@
 #include <gazebo/common/Events.hh>
 #include "McFoamy_FM_v2/McFoamy_FM_v2.h"
 
+#include <tf/transform_broadcaster.h>
 
 namespace gazebo
 {

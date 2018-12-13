@@ -86,6 +86,7 @@ gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o
  /opt/ros/kinetic/include/std_srvs/TriggerRequest.h
  /opt/ros/kinetic/include/std_srvs/TriggerResponse.h
  /opt/ros/kinetic/include/visualization_msgs/Marker.h
+ /opt/ros/kinetic/include/visualization_msgs/MarkerArray.h
  /opt/ros/kinetic/include/xmlrpcpp/XmlRpcDecl.h
  /opt/ros/kinetic/include/xmlrpcpp/XmlRpcValue.h
  /usr/include/eigen3/Eigen/Cholesky

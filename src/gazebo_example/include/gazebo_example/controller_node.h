@@ -46,8 +46,12 @@ private:
   double maneuver_switch;
   int previous_trajectory;
   double trajectory_starttime;
+  double trajectory_starttime_old;
   double trajectory_time;
   int trajectory;
+  int trajectory_old;
+  bool new_trajectory_recieved;
+
   float delta_hi_i;
 
   geometry_msgs::Pose pose_;

@@ -10,6 +10,7 @@
 #include "boost/foreach.hpp"
 #include "gazebo_example/Trajectory2.cpp"
 #include "visualization_msgs/Marker.h"
+#include "visualization_msgs/MarkerArray.h"
 
 namespace gazebo_example
 {
@@ -31,12 +32,13 @@ private:
   ros::Publisher init_pose_pub_;
   //ros::Publisher init_twist_pub_;
   ros::Publisher trajectory_pub_;
-  ros::Publisher traj_pcl_pub_;
+  //ros::Publisher traj_pcl_pub_;
   ros::Subscriber pose_sub_;
   ros::Subscriber twist_sub_;
   ros::Subscriber points_sub_;
   ros::ServiceServer start_service_; 
   ros::Publisher vis_pub ;
+  ros::Publisher vis_pub_ ;
 
 
   geometry_msgs::Pose pose_;
@@ -44,8 +46,8 @@ private:
 
   geometry_msgs::Pose init_pose_;
   std_msgs::Int16 trajectory_;
-  pcl::PointCloud<pcl::PointXYZ> traj_pcl_;
-  pcl::PointCloud<pcl::PointXYZ>::Ptr traj_pcl_ptr_ = pcl::PointCloud<pcl::PointXYZ>::Ptr (&traj_pcl_);
+  //pcl::PointCloud<pcl::PointXYZ> traj_pcl_;
+  //pcl::PointCloud<pcl::PointXYZ>::Ptr traj_pcl_ptr_ = pcl::PointCloud<pcl::PointXYZ>::Ptr (&traj_pcl_);
 
   //pcl::PointCloud<pcl::PointXYZ>::Ptr traj_pcl_;
 
