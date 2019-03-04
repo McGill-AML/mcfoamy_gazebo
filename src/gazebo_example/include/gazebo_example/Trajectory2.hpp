@@ -36,13 +36,18 @@ public:
   gazebo::math::Vector3 TransformPointToCameraFrame(gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i, int index);
   double DistanceToIntermediateGoal(double yaw_offset, gazebo::math::Vector3 position_offset_i, gazebo::math::Vector3 intermediate_goal_i);
   double YawDistanceToGoal(double yaw_offset, gazebo::math::Vector3 p_i, gazebo::math::Vector3 p_goal_i);
+  double AngleDistanceToGoal(double yaw_offset, gazebo::math::Vector3 p_initial_i, gazebo::math::Vector3 p_goal_i);
+  double AngleDistanceToGoal2(double yaw_offset, gazebo::math::Vector3 position_offset_i, gazebo::math::Vector3 p_initial_i, gazebo::math::Vector3 p_goal_i);
+  double DistanceToGoal(double yaw_offset, gazebo::math::Vector3 position_offset_i, gazebo::math::Vector3 p_initial_i, gazebo::math::Vector3 p_goal_i);
   void SetNumberOfLines(const std::string& filename);
   int GetNumberOfLines();
   bool NoCollision(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i);
   gazebo::math::Vector3 End_Position(double yaw_offset, gazebo::math::Vector3 position_offset_i);
   double End_Yaw(double yaw_offset);
+  gazebo::math::Quaternion End_Quaternion(double yaw_offset);
   bool InFieldOfView(gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i);
-
+  gazebo::math::Vector3 GetPosition(double yaw_offset, gazebo::math::Vector3 position_offset_i, double t);
+  gazebo::math::Quaternion GetQuaternion(double yaw_offset, double t);
 
 private:
   int trajectory_number;

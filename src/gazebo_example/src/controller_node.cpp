@@ -36,7 +36,10 @@ bool ControllerNode::init()
   pid_ = controllers::PID(5.0, 5.0, 0.0);
   previous_trajectory = -2;
   trajectory = 0;
+  trajectory_old = 0;
   omega_t_old = 0.0;
+  maneuver_switch = false;
+  delta_hi_i = 0.0;
   return true;
 }
 
@@ -121,10 +124,15 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
 
   }*/
   if (new_trajectory_recieved){
-    if (trajectory == trajectory_old && trajectory == 9){
-      
-
-    }else{
+    if (trajectory == -1){
+      trajectory = 0;
+    }
+    
+    if (trajectory_old != 1  && ros::Time::now().toSec() - trajectory_starttime < Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetStateAtIndex(Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetNumberOfLines() - 1)(0)){
+      trajectory = trajectory_old;      
+    }
+    else{
+      maneuver_switch = true;
       trajectory_starttime = ros::Time::now().toSec();
       initial_position.x = init_pose_.position.x;
       initial_position.y = init_pose_.position.y;
@@ -139,21 +147,64 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     trajectory_old = trajectory;
     trajectory_starttime_old = trajectory_starttime;
   }
+  /*if (new_trajectory_recieved){
+    if (ros::Time::now().toSec() - trajectory_starttime < Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetStateAtIndex(Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetNumberOfLines() - 1)(0)){
+      if (trajectory == -1 && trajectory_old != 0){
+        trajectory = 0;
+        trajectory_starttime = ros::Time::now().toSec();
+        initial_position.x = init_pose_.position.x;
+        initial_position.y = init_pose_.position.y;
+        initial_position.z = init_pose_.position.z;
+        initial_quaternion.w = init_pose_.orientation.w;
+        initial_quaternion.x = init_pose_.orientation.x;
+        initial_quaternion.y = init_pose_.orientation.y;
+        initial_quaternion.z = init_pose_.orientation.z;
+      }
+      else{
+        trajectory = trajectory_old;
+      }
+      
+    }
+    else{
+      if (trajectory == -1){
+        trajectory = 0;
+      }
+      trajectory_starttime = ros::Time::now().toSec();
+      initial_position.x = init_pose_.position.x;
+      initial_position.y = init_pose_.position.y;
+      initial_position.z = init_pose_.position.z;
+      initial_quaternion.w = init_pose_.orientation.w;
+      initial_quaternion.x = init_pose_.orientation.x;
+      initial_quaternion.y = init_pose_.orientation.y;
+      initial_quaternion.z = init_pose_.orientation.z;
+    }
+
+    new_trajectory_recieved = false;
+    trajectory_old = trajectory;
+    trajectory_starttime_old = trajectory_starttime;
+  }*/
 
   trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
   //printf("%f\n", trajectory_time);
-  if (trajectory == 9){
-  }
+
   //trajectory =2;
   //printf("%f\n", trajectory_time);
   reference_state = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetStateAtTime(trajectory_time);
 
-  gazebo::math::Vector3 p_ref_i = GetReferencePosition(reference_state, initial_position, initial_quaternion.GetYaw());
-  p_ref_i.z = -10.0;
-  gazebo::math::Quaternion q_ref = GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw());
+  //gazebo::math::Vector3 p_ref_i = GetReferencePosition(reference_state, initial_position, initial_quaternion.GetYaw());
+  //gazebo::math::Quaternion q_ref = GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw());
+  gazebo::math::Vector3 p_ref_i = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetPosition(initial_quaternion.GetYaw(), initial_position, trajectory_time);
+  //p_ref_i.z = -10;//testing
+  gazebo::math::Quaternion q_ref = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetQuaternion(initial_quaternion.GetYaw(), trajectory_time);
   gazebo::math::Vector3 v_ref_r(reference_state[8],reference_state[9],reference_state[10]);
   gazebo::math::Vector3 omega_ref_r(reference_state[11],reference_state[12],reference_state[13]);
   gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();
+
+  /*printf("%f\n", (p_ref_i - GetReferencePosition(reference_state, initial_position, initial_quaternion.GetYaw())).GetLength()  );
+  printf("%f\n", q_ref.w - GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw()).w);
+  printf("%f\n", q_ref.x - GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw()).x);
+  printf("%f\n", q_ref.y - GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw()).y);
+  printf("%f\n", q_ref.z - GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw()).z);*/
 
   //Constants and Aircraft Properties
   double ro = 1.225f; //Air Density (kg/m^3)
@@ -176,8 +227,8 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   gazebo::math::Matrix3 I_b(0.003922, 0.0, 0.000441, 0.0, 0.015940, 0.0, 0.000441, 0.0, .01934);
 
 
-  double Kap = 110;
-  double Kad = 20;
+  double Kap = 160.0;
+  double Kad = 8.0;
   double Kpp = 0.08;
   double Kpd = 0.1;
   double Khp = 5.0;
@@ -334,20 +385,106 @@ void ControllerNode::trajectoryCallback(const std_msgs::Int16::ConstPtr& msg)
 bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request& req,
                                                       std_srvs::Trigger::Response& res)
 {
+  if (start_ != true){
+    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_extended4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_45.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/Climb2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/Climbn2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/Climb4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/Climbn4.csv");  
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/Climb6.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/Climbn6.csv");*/
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
+
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_extended4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_6.csv");
+    //ilenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_-6.csv");
+
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_6.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-6.csv");
+
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_6.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-6.csv");
+
+
+    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_0.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_6.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-6.csv");
+
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_0.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_-4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_6.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_-6.csv");
+
+
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_45_0.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_45_2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_45_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_45_4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_45_-4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_45_6.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_45_-6.csv");
+
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45_0.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45_2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45_4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45_-4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45_6.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45_-6.csv");*/
+
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_6.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_-6.csv");
+
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_4.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_6.csv");
+    Traj_Lib.LoadLibrary(filenames);
+
+
+  }
   start_ = true;
   res.success = true;
 
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_extended4.csv");
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15.csv");
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15.csv");
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30.csv");
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30.csv");
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_45.csv");
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45.csv");
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60.csv");
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60.csv");
-  filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
-  Traj_Lib.LoadLibrary(filenames);
+
 }
 
 } // gazebo_example namespace

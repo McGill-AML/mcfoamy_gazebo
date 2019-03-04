@@ -18,7 +18,7 @@ Trajectory::Trajectory(std::string filename_csv) {
     aircraft_geometry.push_back(gazebo::math::Vector3(-0.7,0.0,0.0));
 
   	d_min = 0.2;
-    d_max = 1.0;
+    d_max = 1.0*2.0;
     max_speed = 10.0;
 
     lambda = 0.0;
@@ -178,7 +178,9 @@ double Trajectory::DistanceToIntermediateGoal(double yaw_offset, gazebo::math::V
 }
 
 double Trajectory::YawDistanceToGoal(double yaw_offset, gazebo::math::Vector3 p_i, gazebo::math::Vector3 p_goal_i){
-  double yaw_distance = atan2((p_goal_i - p_i).y , (p_goal_i - p_i).x) - End_Yaw(yaw_offset);
+  //double yaw_distance = atan2((p_goal_i - p_i).y , (p_goal_i - p_i).x) - End_Yaw(yaw_offset);
+  double yaw_distance = atan2((p_goal_i - p_i).y , (p_goal_i - p_i).x) - End_Quaternion(yaw_offset).GetYaw();
+
   if (yaw_distance > 3.14159265){
     yaw_distance = yaw_distance - 2.0 * 3.14159265;
   }
@@ -190,9 +192,35 @@ double Trajectory::YawDistanceToGoal(double yaw_offset, gazebo::math::Vector3 p_
   
 }
 
+double Trajectory::AngleDistanceToGoal(double yaw_offset, gazebo::math::Vector3 p_initial_i, gazebo::math::Vector3 p_goal_i){
+  gazebo::math::Vector3 f_hat_i = End_Quaternion(yaw_offset).GetAsMatrix3() * gazebo::math::Vector3(1.0, 0.0, 0.0);
+  return acos(f_hat_i.Dot((p_goal_i - p_initial_i).Normalize()));
+}
+
+double Trajectory::AngleDistanceToGoal2(double yaw_offset, gazebo::math::Vector3 position_offset_i, gazebo::math::Vector3 p_initial_i, gazebo::math::Vector3 p_goal_i){
+  gazebo::math::Vector3 relative_end_position_i = End_Position(yaw_offset, position_offset_i) - p_initial_i;
+  double climb_angle = atan(-relative_end_position_i.z / sqrt(pow(relative_end_position_i.x,2.0) + pow(relative_end_position_i.y,2.0)));
+  gazebo::math::Vector3 g_hat_i = gazebo::math::Quaternion(0.0, climb_angle, End_Yaw(yaw_offset)).GetAsMatrix3() * gazebo::math::Vector3(1.0, 0.0, 0.0);
+  return acos(g_hat_i.Dot((p_goal_i - p_initial_i).Normalize()));
+}
+
+double Trajectory::DistanceToGoal(double yaw_offset, gazebo::math::Vector3 position_offset_i, gazebo::math::Vector3 p_initial_i, gazebo::math::Vector3 p_goal_i){
+  double yaw_distance = YawDistanceToGoal(yaw_offset, p_initial_i, p_goal_i);
+  double z_distance = fabs((p_goal_i - End_Position(yaw_offset, position_offset_i)).z);
+  return yaw_distance/3.14159265 + z_distance/4.0;
+
+}
+
 gazebo::math::Vector3 Trajectory::End_Position(double yaw_offset, gazebo::math::Vector3 position_offset_i){
   gazebo::math::Matrix3 C_yaw_offset(cos(yaw_offset),-sin(yaw_offset),0.0,sin(yaw_offset),cos(yaw_offset),0.0,0.0,0.0,1.0);//rotate by yaw offset
   Eigen::VectorXd final_state = GetStateAtIndex(number_of_lines-1);
+  gazebo::math::Vector3 p_yaw_offset(final_state(1),final_state(2),final_state(3));
+  return C_yaw_offset * p_yaw_offset + position_offset_i;
+}
+
+gazebo::math::Vector3 Trajectory::GetPosition(double yaw_offset, gazebo::math::Vector3 position_offset_i, double t){
+  gazebo::math::Matrix3 C_yaw_offset(cos(yaw_offset),-sin(yaw_offset),0.0,sin(yaw_offset),cos(yaw_offset),0.0,0.0,0.0,1.0);//rotate by yaw offset
+  Eigen::VectorXd final_state = GetStateAtTime(t);
   gazebo::math::Vector3 p_yaw_offset(final_state(1),final_state(2),final_state(3));
   return C_yaw_offset * p_yaw_offset + position_offset_i;
 }
@@ -210,6 +238,34 @@ double Trajectory::End_Yaw(double yaw_offset){
     end_yaw = end_yaw + 2.0 * 3.14159265;
   }
   return end_yaw;
+}
+
+gazebo::math::Quaternion Trajectory::End_Quaternion(double yaw_offset){
+  Eigen::VectorXd final_state = GetStateAtIndex(number_of_lines-1);
+  gazebo::math::Quaternion q_yaw_offset(0.0, 0.0, yaw_offset);
+  gazebo::math::Quaternion q_final_no_offset(final_state(4),final_state(5),final_state(6),final_state(7));
+  gazebo::math::Quaternion q_final = q_yaw_offset * q_final_no_offset;
+  /*gazebo::math::Quaternion q_final2(q_final_no_offset.GetRoll(), q_final_no_offset.GetPitch(), q_final_no_offset.GetYaw() + yaw_offset);
+  printf("%f\n", q_final.x - q_final2.x);
+  printf("%f\n", q_final.y - q_final2.y);
+  printf("%f\n", q_final.z - q_final2.z);
+  printf("%f\n", q_final.w - q_final2.w);*/
+
+  return q_final;
+}
+
+gazebo::math::Quaternion Trajectory::GetQuaternion(double yaw_offset, double t){
+  Eigen::VectorXd state = GetStateAtTime(t);
+  gazebo::math::Quaternion q_yaw_offset(0.0, 0.0, yaw_offset);
+  gazebo::math::Quaternion q_no_offset(state(4),state(5),state(6),state(7));
+  gazebo::math::Quaternion q = q_yaw_offset * q_no_offset;
+  /*gazebo::math::Quaternion q_final2(q_final_no_offset.GetRoll(), q_final_no_offset.GetPitch(), q_final_no_offset.GetYaw() + yaw_offset);
+  printf("%f\n", q_final.x - q_final2.x);
+  printf("%f\n", q_final.y - q_final2.y);
+  printf("%f\n", q_final.z - q_final2.z);
+  printf("%f\n", q_final.w - q_final2.w);*/
+
+  return q;
 }
 
 bool Trajectory::InFieldOfView(gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i){
@@ -553,7 +609,7 @@ void TrajectoryLibrary::SelectTrajectories3(pcl::octree::OctreePointCloudSearch<
 
   std::vector<double> distances_to_goal;
   for (int i = 0; i < number_of_trajectories; ++i){
-    distances_to_goal.push_back(GetTrajectoryAtIndex(i).YawDistanceToGoal(q_start.GetYaw(),p_initial_i, p_goal_i));
+    distances_to_goal.push_back(GetTrajectoryAtIndex(i).DistanceToGoal(q_start.GetYaw(),q_start.GetPosition(),p_initial_i, p_goal_i));
   } 
 
   std::vector<size_t> sorted_distances_to_goal_indices;
@@ -563,7 +619,6 @@ void TrajectoryLibrary::SelectTrajectories3(pcl::octree::OctreePointCloudSearch<
   nodes.push_back(q_start);
 
   std::vector<size_t> indices;
-  size_t deleted_maneuvers;
 
   node q_curr = q_start;
   double tolerance = 3.0;
@@ -573,44 +628,41 @@ void TrajectoryLibrary::SelectTrajectories3(pcl::octree::OctreePointCloudSearch<
 
   while (loop_on){
     indices.push_back(index);
-    deleted_maneuvers = 0;
     nobreak = true;
 
-
-    for (size_t i = 0; i < q_curr.GetSortedManeuvers().size(); ++i){     
-      if (GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).NoCollision(octree,q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i)){
-        if (GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).InFieldOfView(q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i)){
+    //while (q_curr.GetSortedManeuvers().size() > 0){ 
+    for (size_t i = 0; i < q_curr.GetSortedManeuvers().size(); ++i){  
+      if (GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[0]).NoCollision(octree,q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i)){
+        if (GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[0]).InFieldOfView(q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i)){
+          //make new node
+          q_new.SetParent(index);
+          q_new.SetIndex(number_of_nodes);
+          q_new.SetPosition(GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[0]).End_Position(q_curr.GetYaw(),q_curr.GetPosition()));
+          q_new.SetYaw(GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[0]).End_Yaw(q_curr.GetYaw()));
+          distances_to_goal.clear();
+          sorted_distances_to_goal.clear();
+          sorted_distances_to_goal_indices.clear();
+          for (int j = 0; j < number_of_trajectories; ++j){
+            distances_to_goal.push_back(GetTrajectoryAtIndex(j).DistanceToGoal(q_new.GetYaw(), q_new.GetPosition(), p_initial_i, p_goal_i));
+          }
+          sort(distances_to_goal,sorted_distances_to_goal,sorted_distances_to_goal_indices);
+          q_new.SetSortedManeuvers(sorted_distances_to_goal_indices);
+          nodes.push_back(q_new);
+          ++number_of_nodes;
+          index = q_new.GetIndex();
+          q_curr = q_new;
         }
         else{
           //this trajectory took us out of field of view so last new node
           loop_on = false;
         }
-        //make new node
-        q_new.SetParent(index);
-        q_new.SetIndex(number_of_nodes);
-        q_new.SetPosition(GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).End_Position(q_curr.GetYaw(),q_curr.GetPosition()));
-        distances_to_goal.clear();
-        sorted_distances_to_goal.clear();
-        sorted_distances_to_goal_indices.clear();
-        for (int j = 0; j < number_of_trajectories; ++j){
-          distances_to_goal.push_back(GetTrajectoryAtIndex(j).YawDistanceToGoal(q_new.GetYaw(), p_initial_i, p_goal_i));
-        }
-        sort(distances_to_goal,sorted_distances_to_goal,sorted_distances_to_goal_indices);
-        q_new.SetSortedManeuvers(sorted_distances_to_goal_indices);
-        q_new.SetYaw(GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[i-deleted_maneuvers]).End_Yaw(q_curr.GetYaw()));
-        nodes.push_back(q_new);
-        ++number_of_nodes;
-        index = q_new.GetIndex();
-        q_curr = q_new;
         nobreak = false;
         break; 
       }
       else{
-        //q_curr.SetSortedManeuvers(q_curr.GetSortedManeuvers().erase(q_curr.GetSortedManeuvers().begin() + i-deleted_maneuvers));
         std::vector<size_t> temp_sorted_maneuvers = q_curr.GetSortedManeuvers();
-        temp_sorted_maneuvers.erase(temp_sorted_maneuvers.begin() + i-deleted_maneuvers);
+        temp_sorted_maneuvers.erase(temp_sorted_maneuvers.begin());
         q_curr.SetSortedManeuvers(temp_sorted_maneuvers);
-        ++deleted_maneuvers;
         nodes[index] = q_curr;
       }
     }
@@ -620,7 +672,6 @@ void TrajectoryLibrary::SelectTrajectories3(pcl::octree::OctreePointCloudSearch<
         break;
       }
       q_curr = nodes[index];
-      //q_curr.SetSortedManeuvers(q_curr.GetSortedManeuvers().erase(q_curr.GetSortedManeuvers().begin()));
       std::vector<size_t> temp_sorted_maneuvers = q_curr.GetSortedManeuvers();
       temp_sorted_maneuvers.erase(temp_sorted_maneuvers.begin());
       q_curr.SetSortedManeuvers(temp_sorted_maneuvers);
@@ -631,7 +682,8 @@ void TrajectoryLibrary::SelectTrajectories3(pcl::octree::OctreePointCloudSearch<
 
   }
 
-  std::vector<node> final_nodes;
+
+  /*std::vector<node> final_nodes;
   std::vector<int> final_nodes_index;
   int i = nodes.size()-1;
   while (nodes[i].GetParent() > -1){
@@ -641,7 +693,15 @@ void TrajectoryLibrary::SelectTrajectories3(pcl::octree::OctreePointCloudSearch<
   final_nodes.push_back(nodes[0]);
   for (int i = final_nodes_index.size() - 1; i > -1; --i){
     final_nodes.push_back(nodes[final_nodes_index[i]]);
+  }*/
+
+  std::vector<node> final_nodes;
+  int i = index;
+  while (i > -1){
+    final_nodes.push_back(nodes[i]);
+    i = nodes[i].GetParent();
   }
+
 
   *nodes_out = nodes;
   *final_nodes_out = final_nodes;

@@ -37,7 +37,7 @@ private:
   ros::Subscriber twist_sub_;
   ros::Subscriber points_sub_;
   ros::ServiceServer start_service_; 
-  ros::Publisher vis_pub ;
+  //ros::Publisher vis_pub ;
   ros::Publisher vis_pub_ ;
 
 
