@@ -18,7 +18,7 @@ Trajectory::Trajectory(std::string filename_csv) {
     aircraft_geometry.push_back(gazebo::math::Vector3(-0.7,0.0,0.0));
 
   	d_min = 0.2;
-    d_max = 1.0*2.0;
+    d_max = 1.0*3.0;
     max_speed = 10.0;
 
     lambda = 0.0;
@@ -86,6 +86,10 @@ Eigen::VectorXd Trajectory::GetStateAtTime(double time){
   return GetStateAtIndex(GetIndexAtTime(time));
 }
 
+double Trajectory::GetFinalTime(){
+  return dt * (number_of_lines-1);
+}
+
 
 
 gazebo::math::Vector3 Trajectory::TransformPointToCameraFrame(gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i, int index){
@@ -110,6 +114,11 @@ double Trajectory::DistanceToObstacle(pcl::octree::OctreePointCloudSearch<pcl::P
   if (octree.getLeafCount() > 0){
     if (octree.nearestKSearch (searchPoint, 1, closest_point_index, closest_distance_squared) > 0){
       while(i < number_of_lines){
+
+        /*gazebo::math::Vector3 p_i = GetPositionFromIndex(yaw_offset, position_offset_i, i);
+        if (-p_i.z < distance){
+          distance = -p_i.z;
+        }*/
 
         p_c = TransformPointToCameraFrame(q,yaw_offset,position_offset_i,i); 
         searchPoint.x = p_c[0];
@@ -225,6 +234,13 @@ gazebo::math::Vector3 Trajectory::GetPosition(double yaw_offset, gazebo::math::V
   return C_yaw_offset * p_yaw_offset + position_offset_i;
 }
 
+gazebo::math::Vector3 Trajectory::GetPositionFromIndex(double yaw_offset, gazebo::math::Vector3 position_offset_i, int k){
+  gazebo::math::Matrix3 C_yaw_offset(cos(yaw_offset),-sin(yaw_offset),0.0,sin(yaw_offset),cos(yaw_offset),0.0,0.0,0.0,1.0);//rotate by yaw offset
+  Eigen::VectorXd final_state = GetStateAtIndex(k);
+  gazebo::math::Vector3 p_yaw_offset(final_state(1),final_state(2),final_state(3));
+  return C_yaw_offset * p_yaw_offset + position_offset_i;
+}
+
 double Trajectory::End_Yaw(double yaw_offset){
   Eigen::VectorXd final_state = GetStateAtIndex(number_of_lines-1);
   gazebo::math::Quaternion q_final(final_state(4),final_state(5),final_state(6),final_state(7));
@@ -273,7 +289,7 @@ bool Trajectory::InFieldOfView(gazebo::math::Quaternion q, double yaw_offset, ga
   bool out = true;
   double HFOV = 85.2*3.14/180.0;//for realsense d435
   double VFOV = 58.0*3.14/180.0;//for realsense d435
-  double range = 10.0; //for realsense d435
+  double range = 30.0; //for realsense d435
   if (fabs(atan2(p_c.x,p_c.z)) > HFOV/2.0){
     out = false;
   }
@@ -367,7 +383,7 @@ std::vector<node> TrajectoryLibrary::SelectTrajectories(pcl::octree::OctreePoint
   gazebo::math::Vector3 p_rel_goal_c = C_cb * q.GetAsMatrix3().Inverse() * (p_goal_i - p_initial_i);
   double HFOV = 85.2*3.14/180.0;//for realsense d435
   double VFOV = 58.0*3.14/180.0;//for realsense d435
-  double range = 10.0; //for realsense d435
+  double range = 30.0; //for realsense d435
 
   double gamma = atan2(p_rel_goal_c.x,p_rel_goal_c.z);
   if (gamma > HFOV/2.0){
@@ -486,7 +502,7 @@ void TrajectoryLibrary::SelectTrajectories2(pcl::octree::OctreePointCloudSearch<
   gazebo::math::Vector3 p_rel_goal_c = C_cb * q.GetAsMatrix3().Inverse() * (p_goal_i - p_initial_i);
   double HFOV = 85.2*3.14/180.0;//for realsense d435
   double VFOV = 58.0*3.14/180.0;//for realsense d435
-  double range = 10.0; //for realsense d435
+  double range = 30.0; //for realsense d435
   gazebo::math::Vector3 relative_intermediate_goal_c;
   double gamma = atan2(p_rel_goal_c.x,p_rel_goal_c.z);
   if (gamma > 0.9*(HFOV/2.0)){
@@ -625,7 +641,7 @@ void TrajectoryLibrary::SelectTrajectories3(pcl::octree::OctreePointCloudSearch<
   bool nobreak;
   node q_new;
   bool loop_on = true;
-
+  bool ata = false;
   while (loop_on){
     indices.push_back(index);
     nobreak = true;
@@ -635,6 +651,12 @@ void TrajectoryLibrary::SelectTrajectories3(pcl::octree::OctreePointCloudSearch<
       if (GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[0]).NoCollision(octree,q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i)){
         if (GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[0]).InFieldOfView(q,q_curr.GetYaw(),q_curr.GetPosition() - p_initial_i)){
           //make new node
+          if (q_curr.GetSortedManeuvers()[0] == 0){
+            //ata
+            ata = true;
+            loop_on = false;
+            break;
+          }
           q_new.SetParent(index);
           q_new.SetIndex(number_of_nodes);
           q_new.SetPosition(GetTrajectoryAtIndex(q_curr.GetSortedManeuvers()[0]).End_Position(q_curr.GetYaw(),q_curr.GetPosition()));

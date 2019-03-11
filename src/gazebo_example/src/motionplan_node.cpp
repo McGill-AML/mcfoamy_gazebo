@@ -21,6 +21,8 @@ bool MotionplanNode::init()
   init_pose_pub_ = node_handle.advertise<geometry_msgs::Pose>("init_pose", MAX_PUB_QUEUE);
   //reftwist_pub_ = node_handle.advertise<geometry_msgs::Twist>("reftwist", MAX_PUB_QUEUE);
   trajectory_pub_ = node_handle.advertise<std_msgs::Int16>("trajectory", MAX_PUB_QUEUE);
+  trajectories_pub_ = node_handle.advertise<std_msgs::Int16MultiArray>("trajectories", MAX_PUB_QUEUE);
+
 
   //traj_pcl_pub_ = node_handle.advertise<pcl::PointCloud<pcl::PointXYZ>> ("traj_pcl", 1);
 
@@ -54,6 +56,9 @@ void MotionplanNode::run()
     compute_refstate();
     init_pose_pub_.publish(init_pose_);
     trajectory_pub_.publish(trajectory_);
+    trajectories_pub_.publish(trajectories_);
+    trajectories_.data.clear();
+
 
     //pcl_conversions::toPCL(ros::Time::now(), traj_pcl_ptr_->header.stamp);
 
@@ -108,6 +113,8 @@ void MotionplanNode::compute_refstate()
   printf("%i\n", final_nodes[0].GetSortedManeuvers()[2]);
   printf("%i\n", final_nodes[0].GetSortedManeuvers()[3]);
   printf("%i\n", final_nodes[0].GetSortedManeuvers()[4]);*/
+
+  //int[] trajectory_array = {-2,-2,-2,-2,-2,-2,-2,-2,-2,-2};
   if (final_nodes.size() < 1){
     printf("%s\n", "no trajectory found without collision so assigning ATA");
     trajectory_.data = -1;
@@ -115,6 +122,11 @@ void MotionplanNode::compute_refstate()
   else{
     trajectory_.data = final_nodes[final_nodes.size() - 1].GetSortedManeuvers()[0];
   }
+  for (int i = final_nodes.size() - 1; i > -1; --i){
+    trajectories_.data.push_back(final_nodes[i].GetSortedManeuvers()[0]);
+  }
+
+
   //trajectory_.data = 1;//testing
   visualization_msgs::Marker marker;
   marker.header.frame_id = "world";
@@ -136,7 +148,7 @@ void MotionplanNode::compute_refstate()
 
 
 
-  visualization_msgs::MarkerArray planned_poses;/*
+  visualization_msgs::MarkerArray planned_poses;
   for (int i = 0; i < nodes.size(); ++i){
     marker.id += 1;    
     gazebo::math::Vector3 node_pos_i = nodes[i].GetPosition(); //This is NED, but 'world' frame is ENU
@@ -188,7 +200,7 @@ void MotionplanNode::compute_refstate()
     marker.color.g = 1.0;
 
     planned_poses.markers.push_back(marker);
-  }*/
+  }
   /*marker.id += 1;
   marker.pose.position.x = intermediate_goal_i.y;
   marker.pose.position.y = intermediate_goal_i.x;
@@ -352,7 +364,7 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
 
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_0.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_2.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-2.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_4.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_6.csv");
@@ -360,7 +372,7 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
 
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_0.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_2.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-2.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_4.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_6.csv");

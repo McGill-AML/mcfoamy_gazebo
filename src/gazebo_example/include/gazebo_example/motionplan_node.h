@@ -4,6 +4,7 @@
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Twist.h"
 #include "std_msgs/Int16.h"
+#include "std_msgs/Int16MultiArray.h"
 #include "std_srvs/Trigger.h"
 
 #include <gazebo/physics/physics.hh>
@@ -32,6 +33,8 @@ private:
   ros::Publisher init_pose_pub_;
   //ros::Publisher init_twist_pub_;
   ros::Publisher trajectory_pub_;
+  ros::Publisher trajectories_pub_;
+
   //ros::Publisher traj_pcl_pub_;
   ros::Subscriber pose_sub_;
   ros::Subscriber twist_sub_;
@@ -46,6 +49,8 @@ private:
 
   geometry_msgs::Pose init_pose_;
   std_msgs::Int16 trajectory_;
+  std_msgs::Int16MultiArray trajectories_;
+
   //pcl::PointCloud<pcl::PointXYZ> traj_pcl_;
   //pcl::PointCloud<pcl::PointXYZ>::Ptr traj_pcl_ptr_ = pcl::PointCloud<pcl::PointXYZ>::Ptr (&traj_pcl_);
 

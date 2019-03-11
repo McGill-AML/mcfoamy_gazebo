@@ -32,6 +32,7 @@ public:
   Eigen::VectorXd GetStateAtIndex(int index);
   int GetIndexAtTime(double time);
   Eigen::VectorXd GetStateAtTime(double time);
+  double GetFinalTime();
   double DistanceToObstacle(pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i);
   gazebo::math::Vector3 TransformPointToCameraFrame(gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i, int index);
   double DistanceToIntermediateGoal(double yaw_offset, gazebo::math::Vector3 position_offset_i, gazebo::math::Vector3 intermediate_goal_i);
@@ -47,6 +48,7 @@ public:
   gazebo::math::Quaternion End_Quaternion(double yaw_offset);
   bool InFieldOfView(gazebo::math::Quaternion q, double yaw_offset, gazebo::math::Vector3 position_offset_i);
   gazebo::math::Vector3 GetPosition(double yaw_offset, gazebo::math::Vector3 position_offset_i, double t);
+  gazebo::math::Vector3 GetPositionFromIndex(double yaw_offset, gazebo::math::Vector3 position_offset_i, int k);
   gazebo::math::Quaternion GetQuaternion(double yaw_offset, double t);
 
 private:

@@ -81,6 +81,9 @@ gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ro
 gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ros/kinetic/include/std_msgs/ColorRGBA.h
 gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ros/kinetic/include/std_msgs/Header.h
 gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ros/kinetic/include/std_msgs/Int16.h
+gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ros/kinetic/include/std_msgs/Int16MultiArray.h
+gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ros/kinetic/include/std_msgs/MultiArrayDimension.h
+gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ros/kinetic/include/std_msgs/MultiArrayLayout.h
 gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ros/kinetic/include/std_srvs/Trigger.h
 gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ros/kinetic/include/std_srvs/TriggerRequest.h
 gazebo_example/CMakeFiles/motionplan_node.dir/src/motionplan_node.cpp.o: /opt/ros/kinetic/include/std_srvs/TriggerResponse.h

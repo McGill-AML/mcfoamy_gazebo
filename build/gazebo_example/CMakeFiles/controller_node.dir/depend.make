@@ -81,14 +81,17 @@ gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ro
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/sensor_msgs/Image.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/sensor_msgs/PointCloud2.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/sensor_msgs/PointField.h
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_msgs/ColorRGBA.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_msgs/Float64MultiArray.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_msgs/Header.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_msgs/Int16.h
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_msgs/Int16MultiArray.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_msgs/MultiArrayDimension.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_msgs/MultiArrayLayout.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_srvs/Trigger.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_srvs/TriggerRequest.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/std_srvs/TriggerResponse.h
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/visualization_msgs/Marker.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/xmlrpcpp/XmlRpcDecl.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/xmlrpcpp/XmlRpcValue.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /usr/include/eigen3/Eigen/Cholesky

@@ -21,6 +21,7 @@ bool ControllerNode::init()
   actuator_pub_ = node_handle.advertise<std_msgs::Float64MultiArray>("actuator", MAX_PUB_QUEUE);
   ref_pose_pub_ = node_handle.advertise<geometry_msgs::Pose>("ref_pose", MAX_PUB_QUEUE);
   ref_twist_pub_ = node_handle.advertise<geometry_msgs::Twist>("ref_twist", MAX_PUB_QUEUE);
+  vis_pub = node_handle.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
 
   pose_sub_ = node_handle.subscribe("pose", MAX_SUB_QUEUE, 
                                     &ControllerNode::poseCallback, this);
@@ -30,12 +31,16 @@ bool ControllerNode::init()
                                     &ControllerNode::init_poseCallback, this);
   trajectory_sub_ = node_handle.subscribe("trajectory", MAX_SUB_QUEUE, 
                                      &ControllerNode::trajectoryCallback, this); 
+  trajectories_sub_ = node_handle.subscribe("trajectories", MAX_SUB_QUEUE, 
+                                     &ControllerNode::trajectoriesCallback, this); 
   start_service_ = node_handle.advertiseService("start_controller",
                                                 &ControllerNode::start_controller,
                                                 this);
   pid_ = controllers::PID(5.0, 5.0, 0.0);
   previous_trajectory = -2;
   trajectory = 0;
+  current_trajectory = 0;
+
   trajectory_old = 0;
   omega_t_old = 0.0;
   maneuver_switch = false;
@@ -106,24 +111,58 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   gazebo::math::Vector3 v_b(twist_.linear.x, twist_.linear.y, twist_.linear.z);
   gazebo::math::Vector3 omega_b(twist_.angular.x, twist_.angular.y, twist_.angular.z);
   gazebo::math::Matrix3 C_bi = q.GetAsMatrix3().Inverse();
+  
+  if (trajectories_.data.size() == 0){
+    trajectories_.data.push_back(0);
+  }
+  if (new_trajectories_recieved){
+    if  (ros::Time::now().toSec() - trajectory_starttime < Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetStateAtIndex(Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetNumberOfLines() - 1)(0)){
+      current_trajectory = trajectory_old;
+    }
+    
+    else{
+      trajectory_in_array = 0;
+      trajectory_array_starttime.clear();
+      trajectory_array_starttime.push_back(ros::Time::now().toSec());
+      for (int i = 0; i < trajectories_.data.size(); ++i){
+        trajectory_array_starttime.push_back(trajectory_array_starttime[i] + Traj_Lib.GetTrajectoryAtIndex(trajectories_.data[i]).GetFinalTime());
+      }
 
-  //gazebo::math::Vector3 initial_position(init_pose_.position.x, init_pose_.position.y, init_pose_.position.z);
-  //gazebo::math::Quaternion initial_quaternion(init_pose_.orientation.w, init_pose_.orientation.x, init_pose_.orientation.y, init_pose_.orientation.z);
+      new_trajectories_recieved = false;
+      maneuver_switch = true;
+      trajectory_starttime = ros::Time::now().toSec();
+      node_position.x = init_pose_.position.x;
+      node_position.y = init_pose_.position.y;
+      node_position.z = init_pose_.position.z;
+      node_quaternion.w = init_pose_.orientation.w;
+      node_quaternion.x = init_pose_.orientation.x;
+      node_quaternion.y = init_pose_.orientation.y;
+      node_quaternion.z = init_pose_.orientation.z;
+      current_trajectory = trajectories_.data[0];
+      trajectory_old = current_trajectory;
+    } 
 
 
+  }
 
-  /*if (trajectory_.data != previous_trajectory){
-    trajectory_starttime = ros::Time::now().toSec();
-    initial_position.x = init_pose_.position.x;
-    initial_position.y = init_pose_.position.y;
-    initial_position.z = init_pose_.position.z;
-    initial_quaternion.w = init_pose_.orientation.w;
-    initial_quaternion.x = init_pose_.orientation.x;
-    initial_quaternion.y = init_pose_.orientation.y;
-    initial_quaternion.z = init_pose_.orientation.z;
+  if (ros::Time::now().toSec() > trajectory_array_starttime[trajectory_in_array + 1] && ros::Time::now().toSec() < trajectory_array_starttime[trajectory_array_starttime.size()-1]){
+    trajectory_in_array += 1;
+    trajectory_starttime = trajectory_array_starttime[trajectory_in_array];
+    node_position = Traj_Lib.GetTrajectoryAtIndex(trajectories_.data[trajectory_in_array]).End_Position(node_quaternion.GetYaw(),node_position);
+    node_quaternion = Traj_Lib.GetTrajectoryAtIndex(trajectories_.data[trajectory_in_array]).End_Quaternion(node_quaternion.GetYaw());
+    maneuver_switch = true;
+    current_trajectory = trajectories_.data[trajectory_in_array];
+  }
 
-  }*/
-  if (new_trajectory_recieved){
+  trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
+  reference_state = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetStateAtTime(trajectory_time);
+  gazebo::math::Vector3 p_ref_i = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetPosition(node_quaternion.GetYaw(), node_position, trajectory_time);
+  gazebo::math::Quaternion q_ref = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetQuaternion(node_quaternion.GetYaw(), trajectory_time);
+  gazebo::math::Vector3 v_ref_r(reference_state[8],reference_state[9],reference_state[10]);
+  gazebo::math::Vector3 omega_ref_r(reference_state[11],reference_state[12],reference_state[13]);
+  gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();
+
+  /*if (new_trajectory_recieved){
     if (trajectory == -1){
       trajectory = 0;
     }
@@ -147,6 +186,57 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     trajectory_old = trajectory;
     trajectory_starttime_old = trajectory_starttime;
   }
+
+  trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
+  reference_state = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetStateAtTime(trajectory_time);
+  gazebo::math::Vector3 p_ref_i = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetPosition(initial_quaternion.GetYaw(), initial_position, trajectory_time);
+  gazebo::math::Quaternion q_ref = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetQuaternion(initial_quaternion.GetYaw(), trajectory_time);
+  gazebo::math::Vector3 v_ref_r(reference_state[8],reference_state[9],reference_state[10]);
+  gazebo::math::Vector3 omega_ref_r(reference_state[11],reference_state[12],reference_state[13]);
+  gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();*/
+
+
+  visualization_msgs::Marker marker;
+  marker.header.frame_id = "world";
+  marker.header.stamp = ros::Time();
+  marker.ns = "my_namespace";
+  marker.id = 0;
+  //marker.type = visualization_msgs::Marker::ARROW;
+  marker.type = visualization_msgs::Marker::MESH_RESOURCE;
+  marker.mesh_resource ="package://gazebo_example/meshes/plane.dae";
+  marker.action = visualization_msgs::Marker::ADD;
+
+  marker.scale.x = 1.0;
+  marker.scale.y = 1.0;
+  marker.scale.z = 1.0;
+  marker.color.a = 1.0; // Don't forget to set the alpha!
+  marker.color.r = 0.0;
+  marker.color.g = 0.0;
+  marker.color.b = 1.0;
+  marker.pose.position.x = p_ref_i.y;
+  marker.pose.position.y = p_ref_i.x;
+  marker.pose.position.z = -p_ref_i.z;
+  // frames
+  // g - gazebo (ENU), east, north, up
+  // r - rotors imu frame (FLU), forward, left, up
+  // b - px4 (FRD) forward, right down
+  // n - px4 (NED) north, east, down
+  gazebo::math::Quaternion q_br(0, 1, 0, 0);
+  gazebo::math::Quaternion q_ng(0, 0.70711, 0.70711, 0);
+  gazebo::math::Quaternion q_nb = q_ref;
+  gazebo::math::Quaternion q_gb = q_ng.GetInverse()*q_nb;
+  gazebo::math::Quaternion q_gr = q_gb*q_br;
+  marker.pose.orientation.x = q_gr.x;
+  marker.pose.orientation.y = q_gr.y;
+  marker.pose.orientation.z = q_gr.z;
+  marker.pose.orientation.w = q_gr.w; 
+  vis_pub.publish( marker );
+
+
+
+
+
+
   /*if (new_trajectory_recieved){
     if (ros::Time::now().toSec() - trajectory_starttime < Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetStateAtIndex(Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetNumberOfLines() - 1)(0)){
       if (trajectory == -1 && trajectory_old != 0){
@@ -184,27 +274,8 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     trajectory_starttime_old = trajectory_starttime;
   }*/
 
-  trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
-  //printf("%f\n", trajectory_time);
 
-  //trajectory =2;
-  //printf("%f\n", trajectory_time);
-  reference_state = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetStateAtTime(trajectory_time);
 
-  //gazebo::math::Vector3 p_ref_i = GetReferencePosition(reference_state, initial_position, initial_quaternion.GetYaw());
-  //gazebo::math::Quaternion q_ref = GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw());
-  gazebo::math::Vector3 p_ref_i = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetPosition(initial_quaternion.GetYaw(), initial_position, trajectory_time);
-  //p_ref_i.z = -10;//testing
-  gazebo::math::Quaternion q_ref = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetQuaternion(initial_quaternion.GetYaw(), trajectory_time);
-  gazebo::math::Vector3 v_ref_r(reference_state[8],reference_state[9],reference_state[10]);
-  gazebo::math::Vector3 omega_ref_r(reference_state[11],reference_state[12],reference_state[13]);
-  gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();
-
-  /*printf("%f\n", (p_ref_i - GetReferencePosition(reference_state, initial_position, initial_quaternion.GetYaw())).GetLength()  );
-  printf("%f\n", q_ref.w - GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw()).w);
-  printf("%f\n", q_ref.x - GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw()).x);
-  printf("%f\n", q_ref.y - GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw()).y);
-  printf("%f\n", q_ref.z - GetReferenceQuaternion(reference_state, initial_quaternion.GetYaw()).z);*/
 
   //Constants and Aircraft Properties
   double ro = 1.225f; //Air Density (kg/m^3)
@@ -231,7 +302,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   double Kad = 8.0;
   double Kpp = 0.08;
   double Kpd = 0.1;
-  double Khp = 5.0;
+  double Khp = 10.0;//was 5.0 in exp
   double Khi = 0.5;
   double Kv = 3.0;
   double Kaero = 2.0;
@@ -382,6 +453,14 @@ void ControllerNode::trajectoryCallback(const std_msgs::Int16::ConstPtr& msg)
   new_trajectory_recieved = true;
 }
 
+void ControllerNode::trajectoriesCallback(const std_msgs::Int16MultiArray::ConstPtr& msg)
+{
+  trajectories_ = *msg;
+  //trajectory = trajectory_.data;
+  
+  new_trajectories_recieved = true;
+}
+
 bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request& req,
                                                       std_srvs::Trigger::Response& res)
 {
@@ -415,7 +494,7 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
 
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_0.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_2.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-2.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_4.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_6.csv");
@@ -423,7 +502,7 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
 
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_0.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_2.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-2.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_4.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_6.csv");
