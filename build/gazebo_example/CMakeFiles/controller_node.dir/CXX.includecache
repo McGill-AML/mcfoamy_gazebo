@@ -14,11 +14,11 @@ cmath
 
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.hpp
 
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.cpp
-Trajectory2.hpp
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.cpp
+Trajectory3.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.hpp
 
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.hpp
 iostream
 -
 vector
@@ -83,8 +83,8 @@ gazebo_example/controller.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/controller.h
 gazebo/physics/physics.hh
 -
-gazebo_example/Trajectory2.cpp
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/Trajectory2.cpp
+gazebo_example/Trajectory3.cpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/Trajectory3.cpp
 gazebo_example/LowPassFilter2p.cpp
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/LowPassFilter2p.cpp
 visualization_msgs/Marker.h

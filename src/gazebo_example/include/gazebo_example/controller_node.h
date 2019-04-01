@@ -11,7 +11,7 @@
 #include "gazebo_example/controller.h"
 
 #include <gazebo/physics/physics.hh>
-#include "gazebo_example/Trajectory2.cpp"
+#include "gazebo_example/Trajectory3.cpp"
 #include "gazebo_example/LowPassFilter2p.cpp"
 #include "visualization_msgs/Marker.h"
 
@@ -38,7 +38,7 @@ private:
   ros::Publisher actuator_pub_;
   ros::Publisher ref_pose_pub_;
   ros::Publisher ref_twist_pub_;
-  ros::Publisher vis_pub ;
+  ros::Publisher ref_plane_vis_pub_ ;
   ros::Subscriber pose_sub_;
   ros::Subscriber twist_sub_;
   ros::Subscriber init_pose_sub_;

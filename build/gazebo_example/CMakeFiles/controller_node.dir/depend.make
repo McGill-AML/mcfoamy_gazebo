@@ -3,8 +3,8 @@
 
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.cpp
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.hpp
-gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.cpp
-gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.hpp
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.cpp
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.hpp
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller_node.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/csvparser.c

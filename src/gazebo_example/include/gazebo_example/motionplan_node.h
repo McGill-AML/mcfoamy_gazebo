@@ -9,7 +9,7 @@
 
 #include <gazebo/physics/physics.hh>
 #include "boost/foreach.hpp"
-#include "gazebo_example/Trajectory2.cpp"
+#include "gazebo_example/Trajectory3.cpp"
 #include "visualization_msgs/Marker.h"
 #include "visualization_msgs/MarkerArray.h"
 

@@ -35,7 +35,7 @@ bool MotionplanNode::init()
                                                 &MotionplanNode::start_motionplan,
                                                 this);
   //vis_pub = node_handle.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
-  vis_pub_ = node_handle.advertise<visualization_msgs::MarkerArray>( "visualization_marker_array", 0 );
+  vis_pub_ = node_handle.advertise<visualization_msgs::MarkerArray>( "visualization_marker_array", 100 );
 
   return true;
 }
@@ -98,23 +98,9 @@ void MotionplanNode::compute_refstate()
   //gazebo::math::Vector3 goal_position_i(15.0 * cos(ros::Time::now().toSec() / 5.0),15.0 * sin(ros::Time::now().toSec() / 5.0),-8.0);
   gazebo::math::Vector3 goal_position_i(60.0,0.0,-8.0);
 
-  std::vector<node> nodes;
+  /*std::vector<node> nodes;
   std::vector<node> final_nodes;
-  //gazebo::math::Vector3 intermediate_goal_i;
-  //Traj_Lib.SelectTrajectories2(octree,q,p_i,goal_position_i, &nodes, &final_nodes, &intermediate_goal_i);
   Traj_Lib.SelectTrajectories3(octree,q,p_i,goal_position_i, &nodes, &final_nodes);
-
-  //printf("%f\n", intermediate_goal_i.x); printf("%f\n", intermediate_goal_i.y);printf("%f\n", intermediate_goal_i.z);
-  /*if (final_nodes[0].GetSortedManeuvers().size() > 0){
-    trajectory_.data = final_nodes[0].GetSortedManeuvers()[0];
-}*/
-  /*printf("%i\n", final_nodes[0].GetSortedManeuvers()[0]);
-    printf("%i\n", final_nodes[0].GetSortedManeuvers()[1]);
-  printf("%i\n", final_nodes[0].GetSortedManeuvers()[2]);
-  printf("%i\n", final_nodes[0].GetSortedManeuvers()[3]);
-  printf("%i\n", final_nodes[0].GetSortedManeuvers()[4]);*/
-
-  //int[] trajectory_array = {-2,-2,-2,-2,-2,-2,-2,-2,-2,-2};
   if (final_nodes.size() < 1){
     printf("%s\n", "no trajectory found without collision so assigning ATA");
     trajectory_.data = -1;
@@ -124,17 +110,24 @@ void MotionplanNode::compute_refstate()
   }
   for (int i = final_nodes.size() - 1; i > -1; --i){
     trajectories_.data.push_back(final_nodes[i].GetSortedManeuvers()[0]);
+  }*/
+  std::vector<node> nodes;
+  std::vector<node> final_nodes;
+  std::vector<int> trajectories = Traj_Lib.Rollout(octree,q,p_i,goal_position_i, &nodes, &final_nodes);
+  for (int i = 0; i < trajectories.size(); i++){
+    trajectories_.data.push_back(trajectories[i]);
+    //printf("%i\n", trajectories[i]);
+    //printf("%i\n", final_nodes[trajectories.size()-i].GetTrajectoryToNode());;
   }
+  //printf("%i\n",trajectories.size() - final_nodes.size() );
 
 
-  //trajectory_.data = 1;//testing
   visualization_msgs::Marker marker;
   marker.header.frame_id = "world";
   marker.header.stamp = ros::Time();
   marker.ns = "my_namespace";
   marker.id = -1;
   marker.type = visualization_msgs::Marker::ARROW;
-  //marker.action = visualization_msgs::Marker::ADD;
 
   marker.scale.x = 0.5;
   marker.scale.y = 0.1;
@@ -143,10 +136,6 @@ void MotionplanNode::compute_refstate()
   marker.color.r = 0.0;
   marker.color.g = 1.0;
   marker.color.b = 0.0;
-
-  //vis_pub.publish( marker );
-
-
 
   visualization_msgs::MarkerArray planned_poses;
   for (int i = 0; i < nodes.size(); ++i){
@@ -186,7 +175,7 @@ void MotionplanNode::compute_refstate()
 
     planned_poses.markers.push_back(marker);
   }
-  if (final_nodes.size() > 0){
+  /*if (final_nodes.size() > 0){
     marker.id += 1;    
     gazebo::math::Vector3 final_node_pos_i = Traj_Lib.GetTrajectoryAtIndex(final_nodes[0].GetSortedManeuvers()[0]).End_Position(final_nodes[0].GetYaw(),final_nodes[0].GetPosition()); //This is NED, but 'world' frame is ENU
     marker.pose.position.x = final_node_pos_i.y;
@@ -200,24 +189,7 @@ void MotionplanNode::compute_refstate()
     marker.color.g = 1.0;
 
     planned_poses.markers.push_back(marker);
-  }
-  /*marker.id += 1;
-  marker.pose.position.x = intermediate_goal_i.y;
-  marker.pose.position.y = intermediate_goal_i.x;
-  marker.pose.position.z = -intermediate_goal_i.z;
-  marker.pose.orientation.x = 0.0;
-  marker.pose.orientation.y = 0.0;
-  marker.pose.orientation.z = 0.0;
-  marker.pose.orientation.w = 1.0;
-  marker.type = visualization_msgs::Marker::SPHERE;
-  marker.scale.x = 3.0;
-  marker.scale.y = 3.0;
-  marker.scale.z = 3.0;
-  marker.color.a = 1.0; // Don't forget to set the alpha!
-  marker.color.r = 0.0;
-  marker.color.g = 0.0;
-  marker.color.b = 1.0;
-  planned_poses.markers.push_back(marker);*/
+  }*/
 
   marker.id += 1;
   marker.pose.position.x = goal_position_i.y;
@@ -235,76 +207,10 @@ void MotionplanNode::compute_refstate()
   marker.color.g = 0.0;
   marker.color.b = 1.0;
   planned_poses.markers.push_back(marker);
-  //ros::Publisher vis_pub_ = node_handle.advertise<visualization_msgs::MarkerArray>( "visualization_marker_array", 0 );
-
   vis_pub_.publish(planned_poses);
   planned_poses.markers.clear();
 
-  //printf("%i\n", nodes[0].GetSortedManeuvers()[0]);
 
-
-  //trajectory_.data = Traj_Lib.SelectTrajectory(0.5,octree,q);
-//Traj_Lib.DistanceToObstacle(octree,q);
-//Traj_Lib.DistanceToGlobalLine(p_i);
-//Traj_Lib.Cost(octree,q,p_i);
-//Traj_Lib.printC();
-  /*Traj_Lib.DistanceToGlobalLine(p_i);
-  Traj_Lib.DistanceToObstacle(octree,q);
-  double C1 = 1000.0;
-  double C2 = 50.0;
-  double d_crash = 0.5;
-  double d_far = 3.0;
-  double cost;
-
-  for (int i = 0; i < Traj_Lib.GetNumberOfTrajectories(); ++i){
-    if (Traj_Lib.d_obstacle[i] < d_crash){
-      cost = C1 + Traj_Lib.d_global[i];
-    }
-    else if (Traj_Lib.d_obstacle[i] < d_far){
-      cost = C2 * (Traj_Lib.d_obstacle[i] - d_crash) + Traj_Lib.d_global[i];
-    }
-    else{
-      cost = Traj_Lib.d_global[i];
-    }
-
-    Traj_Lib.C.push_back(cost);
-  }
-
-  double lowest_cost = Traj_Lib.C[0];
-  int best_trajectory = 0;
-
-  for (int i = 0; i < Traj_Lib.GetNumberOfTrajectories(); ++i){
-    printf("%f\n",Traj_Lib.d_obstacle[i] );
-    printf("%f\n",Traj_Lib.C[i] );
-    if (Traj_Lib.C[i] < lowest_cost){
-      lowest_cost = Traj_Lib.C[i];
-      best_trajectory = i;
-    }
-  } 
-  trajectory_.data = best_trajectory;*/
-  /*traj_pcl_ptr_->header.frame_id = "plane_xacro_default/camera_link";
-  //traj_pcl_ptr_->height = traj_pcl_ptr_->width = 1;
-  traj_pcl_ptr_->points.clear();
-  for (int j = 0; j<Traj_Lib.GetNumberOfTrajectories();){
-
-  
-  for (int i = 0; i < Traj_Lib.GetTrajectoryAtIndex(j).number_of_lines; i++){
-    gazebo::math::Vector3 pos = Traj_Lib.GetTrajectoryAtIndex(j).TransformPointToCameraFrame(q, i);
-   
-
-  traj_pcl_ptr_->points.push_back (pcl::PointXYZ(pos[0], pos[1], pos[2]));
-  }
-  j= j + 1;
-  }*/
-
-  /*traj_pcl_ptr_->header.frame_id = "plane_xacro_default/camera_link";
-  //traj_pcl_ptr_->height = traj_pcl_ptr_->width = 1;
-  traj_pcl_ptr_->points.clear(); 
-  for (int i = 0; i < nodes.size(); i++){
-    gazebo::math::Vector3 pos = nodes[i].GetPosition();
-    traj_pcl_ptr_->points.push_back (pcl::PointXYZ(pos[0], pos[1], pos[2]));
-  }*/
-  
   init_pose_ = pose_;
   
 }
@@ -351,7 +257,7 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/Climbn4.csv");  
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/Climb6.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/Climbn6.csv");*/
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
 
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_extended4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_0.csv");
@@ -362,33 +268,33 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_6.csv");
     //ilenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_0_-6.csv");
 
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_0.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_2.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-2.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_4.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_6.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_15_-6.csv");
 
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_0.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_2.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-2.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_4.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_6.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-15_-6.csv");
 
 
-    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_0.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_2.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-2.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_4.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-4.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_6.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-6.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_6.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-6.csv");
 
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_0.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_2.csv");
+    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_2.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_-2.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_4.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_-4.csv");
@@ -412,21 +318,20 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45_6.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-45_-6.csv");*/
 
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_0.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_2.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_-2.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_4.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_6.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_60_-6.csv");
 
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_0.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_0.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_2.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_-2.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_4.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_-4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_4.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_6.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_-6.csv");
 
 
 

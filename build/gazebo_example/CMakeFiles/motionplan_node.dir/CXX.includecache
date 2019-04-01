@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.cpp
-Trajectory2.hpp
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.cpp
+Trajectory3.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.hpp
 
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory2.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.hpp
 iostream
 -
 vector
@@ -83,8 +83,8 @@ gazebo/physics/physics.hh
 -
 boost/foreach.hpp
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/boost/foreach.hpp
-gazebo_example/Trajectory2.cpp
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/Trajectory2.cpp
+gazebo_example/Trajectory3.cpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/Trajectory3.cpp
 visualization_msgs/Marker.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/visualization_msgs/Marker.h
 visualization_msgs/MarkerArray.h
