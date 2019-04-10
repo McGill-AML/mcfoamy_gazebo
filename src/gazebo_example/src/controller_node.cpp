@@ -4,8 +4,8 @@
 namespace gazebo_example
 {
   
-const unsigned int ControllerNode::MAX_PUB_QUEUE = 10;
-const unsigned int ControllerNode::MAX_SUB_QUEUE = 10;
+const unsigned int ControllerNode::MAX_PUB_QUEUE = 1;
+const unsigned int ControllerNode::MAX_SUB_QUEUE = 1;
   
   
 ControllerNode::ControllerNode():
@@ -21,7 +21,7 @@ bool ControllerNode::init()
   actuator_pub_ = node_handle.advertise<std_msgs::Float64MultiArray>("actuator", MAX_PUB_QUEUE);
   ref_pose_pub_ = node_handle.advertise<geometry_msgs::Pose>("ref_pose", MAX_PUB_QUEUE);
   ref_twist_pub_ = node_handle.advertise<geometry_msgs::Twist>("ref_twist", MAX_PUB_QUEUE);
-  ref_plane_vis_pub_ = node_handle.advertise<visualization_msgs::Marker>( "visualization_marker", 100 );
+  ref_plane_vis_pub_ = node_handle.advertise<visualization_msgs::Marker>( "visualization_marker", MAX_PUB_QUEUE );
 
   pose_sub_ = node_handle.subscribe("pose", MAX_SUB_QUEUE, 
                                     &ControllerNode::poseCallback, this);
@@ -114,7 +114,8 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   gazebo::math::Matrix3 C_bi = q.GetAsMatrix3().Inverse();
   
   if (trajectories_.data.size() == 0){
-    trajectories_.data.push_back(0);
+    trajectories_.data.push_back( Traj_Lib.GetNumberOfTrajectories()-1);
+    printf("%s\n","no trajectories found" );
   }
 
   if (new_trajectories_recieved){
@@ -147,14 +148,14 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
 
   }
 
-  if (ros::Time::now().toSec() > trajectory_array_starttime[trajectory_in_array + 1] && ros::Time::now().toSec() < trajectory_array_starttime[trajectory_array_starttime.size()-1]){
+  /*if (ros::Time::now().toSec() > trajectory_array_starttime[trajectory_in_array + 1] && ros::Time::now().toSec() < trajectory_array_starttime[trajectory_array_starttime.size()-1]){
     trajectory_in_array += 1;
     trajectory_starttime = trajectory_array_starttime[trajectory_in_array];
     node_position = Traj_Lib.GetTrajectoryAtIndex(trajectories_.data[trajectory_in_array]).End_Position(node_quaternion.GetYaw(),node_position);
     node_quaternion = Traj_Lib.GetTrajectoryAtIndex(trajectories_.data[trajectory_in_array]).End_Quaternion(node_quaternion.GetYaw());
     maneuver_switch = true;
     current_trajectory = trajectories_.data[trajectory_in_array];
-  }
+  }*/
 
   trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
   reference_state = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetStateAtTime(trajectory_time);
@@ -515,16 +516,16 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
 
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_0.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_2.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-2.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-2.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_6.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_30_-6.csv");
 
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_0.csv");
-    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_2.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_2.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_-2.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_4.csv");
+    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_4.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_-4.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_6.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-30_-6.csv");
@@ -560,6 +561,8 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_-4.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_-60_6.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
+
     Traj_Lib.LoadLibrary(filenames);
 
 

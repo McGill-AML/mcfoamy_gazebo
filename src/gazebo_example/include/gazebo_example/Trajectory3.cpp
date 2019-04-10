@@ -110,13 +110,17 @@ double Trajectory::DistanceToObstacle(pcl::octree::OctreePointCloudSearch<pcl::P
   searchPoint.x = 0.0;
   searchPoint.y = 0.0;
   searchPoint.z = 0.0;
+  
+  /*while(i < number_of_lines){
+    gazebo::math::Vector3 p_i = GetPositionFromIndex(psi_node, p_node_i, i);
+    if (-p_i.z < distance){
+      distance = -p_i.z;
+    }
+    i = i + 1;
+  }*/
   if (octree.getLeafCount() > 0){
     if (octree.nearestKSearch (searchPoint, 1, closest_point_index, closest_distance_squared) > 0){
       while(i < number_of_lines){
-        /*gazebo::math::Vector3 p_i = GetPositionFromIndex(psi_node, p_node_i, i);
-        if (-p_i.z < distance){
-          distance = -p_i.z;
-        }*/
         p_c = TransformPointToCameraFrame(q,psi_node,p_node_aircraft_i,i); 
         searchPoint.x = p_c[0];
         searchPoint.y = p_c[1];
@@ -124,11 +128,12 @@ double Trajectory::DistanceToObstacle(pcl::octree::OctreePointCloudSearch<pcl::P
         octree.nearestKSearch (searchPoint, 1, closest_point_index, closest_distance_squared);
         if (sqrt(closest_distance_squared[0]) < distance){
           distance = sqrt(closest_distance_squared[0]);
+          // Don't keep searching for min distance because this trajectory is crashing anyways
+          if (distance < d_max/2.0){
+            break;
+          }
         }
-        // Don't keep searching for min distance because this trajectory is crashing anyways
-        if (sqrt(closest_distance_squared[0]) < d_max/2.0){
-          break;
-        }else
+        else
         {
           //i = i + 1;
           double t_free = sqrt(closest_distance_squared[0])/max_speed;
@@ -245,7 +250,7 @@ bool Trajectory::InFieldOfView(gazebo::math::Quaternion q, double psi_node, gaze
   bool out = true;
   double HFOV = 85.2*3.14/180.0;//for realsense d435
   double VFOV = 58.0*3.14/180.0;//for realsense d435
-  double range = 20.0; //for realsense d435
+  double range = 10.0; //for realsense d435
   if (fabs(atan2(p_c.x,p_c.z)) > HFOV/2.0){
     out = false;
   }
@@ -394,8 +399,12 @@ std::vector<int> TrajectoryLibrary::Rollout(pcl::octree::OctreePointCloudSearch<
         nodes[index].SetMinDistToObst(10.0);// obstacles more than 10 meters are treated equal to 10 away
       }
       //double cost = 2.0*(yaw_distance + z_distance) - nodes[index].GetMinDistToObst();
-      double cost = 0.1*pow(pow(((p_goal_i - nodes[index].GetPosition() ).x),2.0) + pow(((p_goal_i - nodes[index].GetPosition() ).y),2.0),0.5) + fabs((p_goal_i - nodes[index].GetPosition() ).z) - nodes[index].GetMinDistToObst();
-
+      double h = -nodes[index].GetPosition().z;
+      if (h > 5.0){
+        h = 5.0;
+      }
+      double cost = 0.1*pow(pow(((p_goal_i - nodes[index].GetPosition() ).x),2.0) + pow(((p_goal_i - nodes[index].GetPosition() ).y),2.0),0.5) + 2.0*fabs((p_goal_i - nodes[index].GetPosition() ).z) - nodes[index].GetMinDistToObst() ;
+      //double cost = z_distance + ((nodes[index].GetPosition() - p_initial_i) - ((nodes[index].GetPosition() - p_initial_i).Dot((p_goal_i - p_initial_i).Normalize())) * (p_goal_i - p_initial_i).Normalize()).GetLength() - nodes[index].GetMinDistToObst();
       if (cost < lowest_cost){
         lowest_cost = cost;
         best_index = index;
