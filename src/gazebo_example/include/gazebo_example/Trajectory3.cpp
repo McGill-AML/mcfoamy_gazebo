@@ -135,9 +135,9 @@ double Trajectory::DistanceToObstacle(pcl::octree::OctreePointCloudSearch<pcl::P
         }
         else
         {
-          //i = i + 1;
-          double t_free = sqrt(closest_distance_squared[0])/max_speed;
-          i = i + int(t_free / dt); // assuming fixed time step in trajectory
+          i = i + 14;
+          //double t_free = sqrt(closest_distance_squared[0])/max_speed;
+          //i = i + int(t_free / dt); // assuming fixed time step in trajectory
         }
 
 
