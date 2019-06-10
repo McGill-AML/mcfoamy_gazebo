@@ -129,10 +129,11 @@ double Trajectory::DistanceToObstacle(pcl::octree::OctreePointCloudSearch<pcl::P
         if (sqrt(closest_distance_squared[0]) < distance){
           distance = sqrt(closest_distance_squared[0]);
           // Don't keep searching for min distance because this trajectory is crashing anyways
-          if (distance < d_max/2.0){
-            break;
-          }
         }
+        if (distance < d_max/2.0){
+          break;
+        }
+        
         else
         {
           i = i + 14;

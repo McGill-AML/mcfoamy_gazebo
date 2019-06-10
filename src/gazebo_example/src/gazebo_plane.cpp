@@ -6,8 +6,8 @@ namespace gazebo
 ////////////////////////////////////////////////////////////////////////////////
 // Constructor
 PlanePlugin::PlanePlugin() :
-  MAX_PUB_QUEUE_SIZE(20),
-  MAX_SUB_QUEUE_SIZE(20)
+  MAX_PUB_QUEUE_SIZE(1),
+  MAX_SUB_QUEUE_SIZE(1)
 {
 }
 

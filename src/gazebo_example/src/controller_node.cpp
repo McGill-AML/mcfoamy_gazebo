@@ -112,8 +112,41 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   gazebo::math::Vector3 v_b(twist_.linear.x, twist_.linear.y, twist_.linear.z);
   gazebo::math::Vector3 omega_b(twist_.angular.x, twist_.angular.y, twist_.angular.z);
   gazebo::math::Matrix3 C_bi = q.GetAsMatrix3().Inverse();
+
+  if (new_trajectory_recieved){
+    new_trajectory_recieved = false;
+    trajectory_starttime = ros::Time::now().toSec();
+    if (trajectory == -1){
+    trajectory = 0;
+    printf("%s\n","no trajectories found" );
+    }
+
+  initial_position.x = pose_.position.x;
+  initial_position.y = pose_.position.y;
+  initial_position.z = pose_.position.z;
+  initial_quaternion.w = pose_.orientation.w;
+  initial_quaternion.x = pose_.orientation.x;
+  initial_quaternion.y = pose_.orientation.y;
+  initial_quaternion.z = pose_.orientation.z;
+  }
+
+  /*initial_position.x = init_pose_.position.x;
+  initial_position.y = init_pose_.position.y;
+  initial_position.z = init_pose_.position.z;
+  initial_quaternion.w = init_pose_.orientation.w;
+  initial_quaternion.x = init_pose_.orientation.x;
+  initial_quaternion.y = init_pose_.orientation.y;
+  initial_quaternion.z = init_pose_.orientation.z;*/
+
+  trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
+  TrimTrajectory curr_traj(CA.trim_trajectories.row(trajectory),10.0,trajectory);
+  gazebo::math::Vector3 p_ref_i = curr_traj.GetPositionAtTime(trajectory_time, initial_position, initial_quaternion.GetYaw());// p_ref_i.z = -10.0;
+  gazebo::math::Quaternion q_ref = curr_traj.GetQuaternionAtTime(trajectory_time, initial_quaternion.GetYaw());
+  gazebo::math::Vector3 v_ref_r = curr_traj.GetVelocity();
+  gazebo::math::Vector3 omega_ref_r = curr_traj.GetAngularVelocity();
+  gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();
   
-  if (trajectories_.data.size() == 0){
+  /*if (trajectories_.data.size() == 0){
     trajectories_.data.push_back( Traj_Lib.GetNumberOfTrajectories()-1);
     printf("%s\n","no trajectories found" );
   }
@@ -146,7 +179,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     } 
 
 
-  }
+  }*/
 
   /*if (ros::Time::now().toSec() > trajectory_array_starttime[trajectory_in_array + 1] && ros::Time::now().toSec() < trajectory_array_starttime[trajectory_array_starttime.size()-1]){
     trajectory_in_array += 1;
@@ -157,13 +190,13 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     current_trajectory = trajectories_.data[trajectory_in_array];
   }*/
 
-  trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
+  /*trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
   reference_state = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetStateAtTime(trajectory_time);
   gazebo::math::Vector3 p_ref_i = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetPosition(node_quaternion.GetYaw(), node_position, trajectory_time);
   gazebo::math::Quaternion q_ref = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetQuaternion(node_quaternion.GetYaw(), trajectory_time);
   gazebo::math::Vector3 v_ref_r(reference_state[8],reference_state[9],reference_state[10]);
   gazebo::math::Vector3 omega_ref_r(reference_state[11],reference_state[12],reference_state[13]);
-  gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();
+  gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();*/
  // p_ref_i.z = -6.0;
 
   /*if (new_trajectory_recieved){
@@ -564,6 +597,7 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
 
     Traj_Lib.LoadLibrary(filenames);
+    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/trim_cond.csv");
 
 
   }

@@ -12,6 +12,7 @@
 
 #include <gazebo/physics/physics.hh>
 #include "gazebo_example/Trajectory3.cpp"
+#include "gazebo_example/Trajectory4.cpp"
 #include "gazebo_example/LowPassFilter2p.cpp"
 #include "visualization_msgs/Marker.h"
 
@@ -78,6 +79,8 @@ private:
   gazebo::math::Quaternion node_quaternion;
   std::vector<std::string> filenames;
   TrajectoryLibrary Traj_Lib;
+  CollisionAvoidance CA;
+
   Eigen::VectorXd reference_state;
   LowPassFilter2p lp_Vs;
   double omega_t_old;

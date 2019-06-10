@@ -87,39 +87,17 @@ void MotionplanNode::compute_refstate()
   pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree = pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> (.1);//resolution is 128,.1
   octree.setInputCloud (cloud);
   octree.addPointsFromInputCloud ();
+  init_pose_ = pose_;
 
-  //gazebo::math::Vector3 goal_position_i = p_i;
-  //goal_position_i.y = goal_position_i.y + 8.0; 
-  //trajectory_.data = Traj_Lib.SelectTrajectory2(octree,q,p_i);
-  //trajectory_.data = 1;
-  //std::vector<node> nodes = Traj_Lib.SelectTrajectories(octree,q,p_i,goal_position_i);
-  //printf("%i\n", nodes.size());
-  //gazebo::math::Vector3 goal_position_i(20.0,20.0,-15.0);
+
   //gazebo::math::Vector3 goal_position_i(15.0 * cos(ros::Time::now().toSec() / 5.0),15.0 * sin(ros::Time::now().toSec() / 5.0),-8.0);
   gazebo::math::Vector3 goal_position_i(60.0,0.0,-8.0);
+  std::vector<gazebo::math::Vector3> positions_sampled;
+  std::vector<TrimTrajectory> trajectories_sampled;
 
-  /*std::vector<node> nodes;
-  std::vector<node> final_nodes;
-  Traj_Lib.SelectTrajectories3(octree,q,p_i,goal_position_i, &nodes, &final_nodes);
-  if (final_nodes.size() < 1){
-    printf("%s\n", "no trajectory found without collision so assigning ATA");
-    trajectory_.data = -1;
-  }
-  else{
-    trajectory_.data = final_nodes[final_nodes.size() - 1].GetSortedManeuvers()[0];
-  }
-  for (int i = final_nodes.size() - 1; i > -1; --i){
-    trajectories_.data.push_back(final_nodes[i].GetSortedManeuvers()[0]);
-  }*/
-  std::vector<node> nodes;
-  std::vector<node> final_nodes;
-  std::vector<int> trajectories = Traj_Lib.Rollout(octree,q,p_i,goal_position_i, &nodes, &final_nodes);
-  for (int i = 0; i < trajectories.size(); i++){
-    trajectories_.data.push_back(trajectories[i]);
-    //printf("%i\n", trajectories[i]);
-    //printf("%i\n", final_nodes[trajectories.size()-i].GetTrajectoryToNode());;
-  }
-  //printf("%i\n",trajectories.size() - final_nodes.size() );
+  trajectory_.data = CA.SelectTrajectory(p_i, q, octree, goal_position_i, &trajectories_sampled, &positions_sampled);
+  //trajectories_.data.push_back(0);trajectories_.data.push_back(1);
+
 
 
   visualization_msgs::Marker marker;
@@ -127,69 +105,65 @@ void MotionplanNode::compute_refstate()
   marker.header.stamp = ros::Time();
   marker.ns = "my_namespace";
   marker.id = -1;
-  marker.type = visualization_msgs::Marker::ARROW;
+  marker.type = visualization_msgs::Marker::SPHERE;
 
-  marker.scale.x = 0.5;
-  marker.scale.y = 0.1;
-  marker.scale.z = 0.1;
+  marker.scale.x = 1;
+  marker.scale.y = 1;
+  marker.scale.z = 1;
   marker.color.a = 1.0; // Don't forget to set the alpha!
-  marker.color.r = 0.0;
-  marker.color.g = 1.0;
+  marker.color.r = 1.0;
+  marker.color.g = 0.0;
   marker.color.b = 0.0;
 
+  marker.pose.orientation.x = 0;
+  marker.pose.orientation.y = 0;
+  marker.pose.orientation.z = 0;
+  marker.pose.orientation.w = 1; 
+
   visualization_msgs::MarkerArray planned_poses;
-  for (int i = 0; i < nodes.size(); ++i){
+  for (int i = 0; i < positions_sampled.size(); ++i){
     marker.id += 1;    
-    gazebo::math::Vector3 node_pos_i = nodes[i].GetPosition(); //This is NED, but 'world' frame is ENU
-    marker.pose.position.x = node_pos_i.y;
-    marker.pose.position.y = node_pos_i.x;
-    marker.pose.position.z = -node_pos_i.z;
-    gazebo::math::Quaternion q_ENU(0.0,0.0,3.1415/2.0 - nodes[i].GetYaw());
-    marker.pose.orientation.x = q_ENU.x;
-    marker.pose.orientation.y = q_ENU.y;
-    marker.pose.orientation.z = q_ENU.z;
-    marker.pose.orientation.w = q_ENU.w; 
+    gazebo::math::Vector3 position_sample = positions_sampled[i]; //This is NED, but 'world' frame is ENU
+    marker.pose.position.x = position_sample.y;
+    marker.pose.position.y = position_sample.x;
+    marker.pose.position.z = -position_sample.z;
+
 
     planned_poses.markers.push_back(marker);
   }
-
+  
   marker.scale.x = 0.8;
   marker.scale.y = 0.2;
   marker.scale.z = 0.2;
   marker.color.a = 1.0; // Don't forget to set the alpha!
   marker.color.r = 1.0;
   marker.color.g = 0.0;
-  marker.color.b = 0.0;
+  marker.color.b = 1.0;
+  marker.type = visualization_msgs::Marker::ARROW;
 
-  for (int i = 0; i < final_nodes.size(); ++i){
-    marker.id += 1;    
-    gazebo::math::Vector3 final_node_pos_i = final_nodes[i].GetPosition(); //This is NED, but 'world' frame is ENU
-    marker.pose.position.x = final_node_pos_i.y;
-    marker.pose.position.y = final_node_pos_i.x;
-    marker.pose.position.z = -final_node_pos_i.z;
-    gazebo::math::Quaternion q_ENU(0.0,0.0,3.1415/2.0 - final_nodes[i].GetYaw());
-    marker.pose.orientation.x = q_ENU.x;
-    marker.pose.orientation.y = q_ENU.y;
-    marker.pose.orientation.z = q_ENU.z;
-    marker.pose.orientation.w = q_ENU.w; 
+  for (int i = 0; i < trajectories_sampled.size(); ++i){  
+    TrimTrajectory trajectory_sample = trajectories_sampled[i];
+    if (trajectory_sample.index == trajectory_.data){//selected trajectory
+      marker.color.r = 0.0;
+    } else{
+      marker.color.r = 1.0;
+    }
+    for (float j = 0.0; j < trajectory_sample.delta_t; j = j + 0.5){
+      gazebo::math::Vector3 position_sample = trajectory_sample.GetPositionAtTime(j, p_i, q.GetYaw());
+      marker.id += 1;    
+      marker.pose.position.x = position_sample.y;
+      marker.pose.position.y = position_sample.x;
+      marker.pose.position.z = -position_sample.z;
 
-    planned_poses.markers.push_back(marker);
-  }
-  /*if (final_nodes.size() > 0){
-    marker.id += 1;    
-    gazebo::math::Vector3 final_node_pos_i = Traj_Lib.GetTrajectoryAtIndex(final_nodes[0].GetSortedManeuvers()[0]).End_Position(final_nodes[0].GetYaw(),final_nodes[0].GetPosition()); //This is NED, but 'world' frame is ENU
-    marker.pose.position.x = final_node_pos_i.y;
-    marker.pose.position.y = final_node_pos_i.x;
-    marker.pose.position.z = -final_node_pos_i.z;
-    gazebo::math::Quaternion q_ENU(0.0,0.0,3.1415/2.0 - Traj_Lib.GetTrajectoryAtIndex(final_nodes[0].GetSortedManeuvers()[0]).End_Yaw(final_nodes[0].GetYaw()));
-    marker.pose.orientation.x = q_ENU.x;
-    marker.pose.orientation.y = q_ENU.y;
-    marker.pose.orientation.z = q_ENU.z;
-    marker.pose.orientation.w = q_ENU.w; 
-    marker.color.g = 1.0;
+      gazebo::math::Quaternion q_ENU(0.0,0.0,3.1415/2.0 - trajectory_sample.GetQuaternionAtTime(j, q.GetYaw()).GetYaw());
+      marker.pose.orientation.x = q_ENU.x;
+      marker.pose.orientation.y = q_ENU.y;
+      marker.pose.orientation.z = q_ENU.z;
+      marker.pose.orientation.w = q_ENU.w;
+      planned_poses.markers.push_back(marker);
+    }
+  } 
 
-    planned_poses.markers.push_back(marker);
-  }*/
 
   marker.id += 1;
   marker.pose.position.x = goal_position_i.y;
@@ -208,10 +182,9 @@ void MotionplanNode::compute_refstate()
   marker.color.b = 1.0;
   planned_poses.markers.push_back(marker);
   vis_pub_.publish(planned_poses);
-  planned_poses.markers.clear();
+  planned_poses.markers.clear(); 
 
 
-  init_pose_ = pose_;
   
 }
 
@@ -338,6 +311,7 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
 
 
     Traj_Lib.LoadLibrary(filenames);
+    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/trim_cond.csv");
 
   }
   start_ = true;

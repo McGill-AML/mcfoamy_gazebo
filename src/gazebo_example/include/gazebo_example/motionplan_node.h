@@ -77,6 +77,7 @@ private:
   std::vector<std::string> filenames;
 
   TrajectoryLibrary Traj_Lib;
+  CollisionAvoidance CA;
 
   void wait_for_trigger();
   void compute_refstate();
