@@ -175,20 +175,18 @@ TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_i
 
 	int z_dot_rounded = round(z_dot);
 	int psi_dot_deg_rounded = round((psi_dot * 180.0 / PI) / 10.0) * 10;
+	int trajectory_index = -1;
 
-	if (z_dot_rounded > 2){z_dot_rounded = 2;}
-	if (z_dot_rounded < -2){z_dot_rounded = -2;}
+	if (z_dot_rounded >= -2 && z_dot_rounded <= 2 && psi_dot_deg_rounded >= -110 && psi_dot_deg_rounded <= 110){
+		trajectory_index = (psi_dot_deg_rounded + 110) * 5 / 10 + (z_dot_rounded + 2) / 1;
+	}
 
-	if (psi_dot_deg_rounded > 110){psi_dot_deg_rounded = 110;}
-	if (psi_dot_deg_rounded < -110){psi_dot_deg_rounded = -110;}
+	int trajectory_index2 = 0;
+	if (trajectory_index != -1){
+		trajectory_index2 = trajectory_index;
+	}
 
-	//printf("zdot %f\n", z_dot); 	printf("zdot rounded %i\n", z_dot_rounded); printf("psi dot%f\n", psi_dot*180.0/PI); printf("psi dot round%i\n", psi_dot_deg_rounded);
-	
-
-
-
-	int trajectory_index = (psi_dot_deg_rounded + 110) * 5 / 10 + (z_dot_rounded + 2) / 1;
-	TrimTrajectory ret(trim_trajectories.row(trajectory_index), delta_t, trajectory_index);
+	TrimTrajectory ret(trim_trajectories.row(trajectory_index2), delta_t, trajectory_index);
 
 	return ret; 
 
@@ -224,16 +222,18 @@ int CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_initial, gazebo
 
 	for (int i = 0; i < final_positions_inertial.size(); ++i){ 
 		TrimTrajectory trajectory_evaluating = get_trim_trajectory(p_initial, q_initial.GetYaw(), final_positions_inertial[i]);//printf("index %i\n", i); printf("traj_index %i\n", trajectory_evaluating.index);
-		trajectories.push_back(trajectory_evaluating); 
-		distance_to_obstacle = trajectory_evaluating.DistanceToObstacle(octree, q_initial, p_initial, trajectory_evaluating.delta_t);
-		if (distance_to_obstacle >= d_max/2.0){
-			//uses final_positions_inertial which is wrong if primitive exceeds library bounds and is truncated
-			cost = 0.1 * sqrt(powf((p_goal - final_positions_inertial[i]).x, 2.0) + powf((p_goal - final_positions_inertial[i]).y, 2.0)) + fabs((p_goal - final_positions_inertial[i]).z) - 2.0 * distance_to_obstacle;
-			if (cost < lowest_trajectory_cost){
-				lowest_trajectory_cost = cost;
-				best_trajectory_index = trajectory_evaluating.index;
+		if (trajectory_evaluating.index != -1){
+			trajectories.push_back(trajectory_evaluating); 
+			distance_to_obstacle = trajectory_evaluating.DistanceToObstacle(octree, q_initial, p_initial, trajectory_evaluating.delta_t);
+			if (distance_to_obstacle >= d_max/2.0){
+				//uses final_positions_inertial which is wrong if primitive exceeds library bounds and is truncated
+				cost = 0.1 * sqrt(powf((p_goal - final_positions_inertial[i]).x, 2.0) + powf((p_goal - final_positions_inertial[i]).y, 2.0)) + fabs((p_goal - final_positions_inertial[i]).z) - 2.0 * distance_to_obstacle;
+				if (cost < lowest_trajectory_cost){
+					lowest_trajectory_cost = cost;
+					best_trajectory_index = trajectory_evaluating.index;
+				}
 			}
-		}
+		}	
 	}
 
 *trajectories_out = trajectories;	//printf("best trajectory index %i\n", best_trajectory_index);
