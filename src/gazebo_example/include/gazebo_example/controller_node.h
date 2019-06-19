@@ -11,7 +11,7 @@
 #include "gazebo_example/controller.h"
 
 #include <gazebo/physics/physics.hh>
-#include "gazebo_example/Trajectory3.cpp"
+//#include "gazebo_example/Trajectory3.cpp"
 #include "gazebo_example/Trajectory4.cpp"
 #include "gazebo_example/LowPassFilter2p.cpp"
 #include "visualization_msgs/Marker.h"
@@ -55,6 +55,7 @@ private:
   double trajectory_starttime_old;
   double trajectory_time;
   int trajectory;
+  int trajectory_type;
   int current_trajectory;
   int trajectory_old;
   bool new_trajectory_recieved;
@@ -78,7 +79,7 @@ private:
   gazebo::math::Vector3 node_position;
   gazebo::math::Quaternion node_quaternion;
   std::vector<std::string> filenames;
-  TrajectoryLibrary Traj_Lib;
+  //TrajectoryLibrary Traj_Lib;
   CollisionAvoidance CA;
 
   Eigen::VectorXd reference_state;

@@ -9,7 +9,7 @@
 
 #include <gazebo/physics/physics.hh>
 #include "boost/foreach.hpp"
-#include "gazebo_example/Trajectory3.cpp"
+//#include "gazebo_example/Trajectory3.cpp"
 #include "gazebo_example/Trajectory4.cpp"
 #include "visualization_msgs/Marker.h"
 #include "visualization_msgs/MarkerArray.h"
@@ -65,7 +65,7 @@ private:
   double u_global;
   double theta_global;
   double psi_global;
-
+  std::vector<int> trajectory_packet_prev;
 
 
   pcl::PointCloud<pcl::PointXYZ> points_;
@@ -76,7 +76,7 @@ private:
 
   std::vector<std::string> filenames;
 
-  TrajectoryLibrary Traj_Lib;
+  //TrajectoryLibrary Traj_Lib;
   CollisionAvoidance CA;
 
   void wait_for_trigger();
