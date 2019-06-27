@@ -43,10 +43,13 @@ bool ControllerNode::init()
   current_trajectory = 0;
 
   trajectory_old = 0;
-  trajectory_starttime = -100000000000000000.0;
+  trajectory_starttime = 0.0;
   omega_t_old = 0.0;
   maneuver_switch = false;
   delta_hi_i = 0.0;
+  delta_pi_i.x = 0.0;
+  delta_pi_i.y = 0.0;
+  delta_pi_i.z = 0.0;
   return true;
 }
 
@@ -120,30 +123,50 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
       //previous trajectory is agile
       if (ros::Time::now().toSec() - trajectory_starttime > CA.GetAgileTrajectoryAtIndex(trajectory).GetStateAtIndex(CA.GetAgileTrajectoryAtIndex(trajectory).GetNumberOfLines() - 1)(0)){
         //previous agile trajectory is finished
-        trajectory_starttime = ros::Time::now().toSec();
-        trajectory_type = trajectories_.data[0];
-        trajectory = trajectories_.data[1];
-        initial_position.x = pose_.position.x;
-        initial_position.y = pose_.position.y;
-        initial_position.z = pose_.position.z;
-        initial_quaternion.w = pose_.orientation.w;
-        initial_quaternion.x = pose_.orientation.x;
-        initial_quaternion.y = pose_.orientation.y;
-        initial_quaternion.z = pose_.orientation.z;
+        if (trajectories_.data[0] != 2){
+          trajectory_starttime = ros::Time::now().toSec() - 0.1;
+          trajectory_type = trajectories_.data[0];
+          trajectory = trajectories_.data[1];  
+          initial_position.x = init_pose_.position.x;
+          initial_position.y = init_pose_.position.y;
+          initial_position.z = init_pose_.position.z;
+          initial_quaternion.w = init_pose_.orientation.w;
+          initial_quaternion.x = init_pose_.orientation.x;
+          initial_quaternion.y = init_pose_.orientation.y;
+          initial_quaternion.z = init_pose_.orientation.z;
+          if (trajectory_type == 1 && trajectory == 1){
+            //new trajectory is hover to cruise, need to fix yaw singularity by pitching down by 
+            gazebo::math::Quaternion body_y_rotation(.7071,0.0,-.7071,0.0);
+            body_y_rotation.Normalize();
+            initial_quaternion = initial_quaternion * body_y_rotation;
+          }
+          maneuver_switch = true;
+        }
       }
     }
-    else{
-      trajectory_starttime = ros::Time::now().toSec();
-      trajectory_type = trajectories_.data[0];
-      trajectory = trajectories_.data[1];
-      initial_position.x = pose_.position.x;
-      initial_position.y = pose_.position.y;
-      initial_position.z = pose_.position.z;
-      initial_quaternion.w = pose_.orientation.w;
-      initial_quaternion.x = pose_.orientation.x;
-      initial_quaternion.y = pose_.orientation.y;
-      initial_quaternion.z = pose_.orientation.z;    
+    else if(trajectory_type == 0){
+      if (trajectories_.data[0] != 2){
+        trajectory_starttime = ros::Time::now().toSec() - 0.1;
+        trajectory_type = trajectories_.data[0];
+        trajectory = trajectories_.data[1];  
+        initial_position.x = init_pose_.position.x;
+        initial_position.y = init_pose_.position.y;
+        initial_position.z = init_pose_.position.z;
+        initial_quaternion.w = init_pose_.orientation.w;
+        initial_quaternion.x = init_pose_.orientation.x;
+        initial_quaternion.y = init_pose_.orientation.y;
+        initial_quaternion.z = init_pose_.orientation.z;
+        if (trajectory_type == 1 && trajectory == 1){
+          //new trajectory is hover to cruise, need to fix yaw singularity by pitching down by 
+          gazebo::math::Quaternion body_y_rotation(.7071,0.0,-.7071,0.0);
+          body_y_rotation.Normalize();
+          initial_quaternion = initial_quaternion * body_y_rotation;
+        }
+        maneuver_switch = true;
+      }
     }
+
+ 
   }
 
 
@@ -179,7 +202,6 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     v_ref_r = curr_traj.GetVelocity(trajectory_time);
     omega_ref_r = curr_traj.GetAngularVelocity(trajectory_time);
    }
-  
 
 
 
@@ -378,18 +400,30 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   double Kap = 160.0;
   double Kad = 8.0;
   double Kpp = 0.08;
-  double Kpd = 0.1;
-  double Khp = 10.0;//was 5.0 in exp
+  double Kpd = 0.2;//was .1, .15 has very small oscillation when hovering
+  double Kpi = 0.0;
+  double Khp = 5.0;//was 5.0 in exp
   double Khi = 0.5;
   double Kv = 3.0;
   double Kaero = 2.0;
+
+  if (trajectory_type == 0){
+    //Kpp = 0.0;
+    //Kpi = 0.0;
+    Khp = 0.0;
+    Khi = 0.0;
+    Kv = 6.0;
+  }
 
   double F_min = 0.0;
   double F_max = 10.0;
   gazebo::math::Vector3 F_hat_r(1.0,0.0,0.0); // direction of body-fixed thrust
   gazebo::math::Quaternion q_des;
 
-  double dt = 1.0 / frequency;
+  //double dt = 1.0 / frequency;
+  double dt = ros::Time::now().toSec() - last_time;
+  last_time = ros::Time::now().toSec();
+
 
   //Thrust Controller----------------------------------------------------------------------------------------------------------------------------------
   if (maneuver_switch == true){delta_hi_i = 0.0;}
@@ -407,7 +441,8 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   gazebo::math::Vector3 Theta(0.0,0.0,0.0);
 
   //Position Controller-----------------------------------------------------------------------------------------------------------------------------------
-  Theta = F_hat_r.Cross(C_ri * Kpp * (p_ref_i - p_i) + (v_ref_r - C_ri * C_bi.Inverse()*v_b) * Kpd); //determine rotation of q_ref
+  delta_pi_i += (p_ref_i - p_i) * dt;
+  Theta = F_hat_r.Cross(C_ri * (Kpp * (p_ref_i - p_i) + Kpi * delta_pi_i) + (v_ref_r - C_ri * C_bi.Inverse()*v_b) * Kpd); //determine rotation of q_ref
   /*Bound reference quaternion rotations to 45 degrees*/
   double Theta0 = saturate(Theta[0], -3.1415/4.0, 3.1415/4.0);
   double Theta1 = saturate(Theta[1], -3.1415/4.0, 3.1415/4.0);
@@ -499,6 +534,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   ref_twist_pub_.publish(ref_twist_);
 
   previous_trajectory = trajectory_.data;
+  maneuver_switch = false;
   
   return command_actuator;
 }
@@ -544,9 +580,12 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
 {
   if (start_ != true){
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_H2C.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_C2H.csv");
 
     CA.LoadAgileLibrary(filenames);
     CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/trim_cond.csv");
+    last_time = ros::Time::now().toSec();
 
 
   }

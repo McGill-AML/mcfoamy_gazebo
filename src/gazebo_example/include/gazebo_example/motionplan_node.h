@@ -29,6 +29,7 @@ public:
   
 private:
   bool start_;
+  bool restart_;
   
   ros::NodeHandle node_handle;
   ros::Publisher init_pose_pub_;

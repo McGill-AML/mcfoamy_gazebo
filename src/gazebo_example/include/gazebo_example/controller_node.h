@@ -61,6 +61,8 @@ private:
   bool new_trajectory_recieved;
   bool new_trajectories_recieved;
   int trajectory_in_array;
+  gazebo::math::Vector3 delta_pi_i;
+  double last_time;
 
 
   float delta_hi_i;

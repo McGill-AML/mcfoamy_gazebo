@@ -112,7 +112,7 @@ public:
   void LoadAgileLibrary(std::vector<std::string> filenames);
   AgileTrajectory GetAgileTrajectoryAtIndex(int index);
   int GetNumberOfAgileTrajectories();
-  std::vector<int> SelectTrajectory(gazebo::math::Vector3 p_initial, gazebo::math::Quaternion q_initial, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Vector3 p_goal, std::vector<TrimTrajectory> *trajectories_out, std::vector<gazebo::math::Vector3> *final_positions_inertial_out, std::vector<int> trajectory_packet_prev);
+  std::vector<int> SelectTrajectory(gazebo::math::Vector3 p_initial, gazebo::math::Quaternion q_initial, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Vector3 p_goal, std::vector<TrimTrajectory> *trajectories_out, std::vector<gazebo::math::Vector3> *final_positions_inertial_out, std::vector<int> trajectory_packet_prev, bool restart, double time);
 
 private:
   TrimTrajectory get_trim_trajectory(gazebo::math::Vector3 p_initial, float psi_initial, gazebo::math::Vector3 p_final);
@@ -131,9 +131,10 @@ private:
   int max_distance_index;
   std::vector<AgileTrajectory> agile_trajectory_library;
   int number_of_agile_trajectories;
-  int state; //for finite state machine. 0 = start_hover, 1 = H2C, 2 = avoidance, 4 = C2H, 5 = goal_hover
+  int mode; //for finite state machine. 0 = start_hover, 1 = H2C, 2 = avoidance, 4 = C2H, 5 = goal_hover
   //int maneuver_type; // 0 = trim, 1 = agile
   int ata_count;
+  double mission_start_time;
 };
 
 

@@ -377,7 +377,6 @@ CollisionAvoidance::CollisionAvoidance() {
   	VFOV = 58.0*PI/180.0;//for realsense d435
   	range = 10.0; //for realsense d435
   	d_max = 2.0;
-  	state = 2; //avoidance
   	ata_count = 0;
 }
 
@@ -498,11 +497,11 @@ int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, ga
 			trajectories.push_back(trajectory_evaluating); 
 			distance_to_obstacle = trajectory_evaluating.DistanceToObstacle(octree, q_initial, p_initial, trajectory_evaluating.delta_t);
 			if (distance_to_obstacle >= d_max/2.0){
-				cost = 0.1 * sqrt(powf((p_goal - final_positions_inertial[i]).x, 2.0) + powf((p_goal - final_positions_inertial[i]).y, 2.0)) + fabs((p_goal - final_positions_inertial[i]).z) - 2.0 * distance_to_obstacle;
+				cost = 0.1 * sqrt(powf((p_goal - final_positions_inertial[i]).x, 2.0) + powf((p_goal - final_positions_inertial[i]).y, 2.0)) + 2.0 * fabs((p_goal - final_positions_inertial[i]).z) - 2.0 * distance_to_obstacle;
 				if (trajectory_packet_prev[0] == 0){
 					float psi_dot_deg_prev = trim_trajectories.row(trajectory_packet_prev[1])(0);
 					float z_dot_prev = trim_trajectories.row(trajectory_packet_prev[1])(1);
-					cost += .02 * fabs(trajectory_evaluating.psi_dot_deg - psi_dot_deg_prev) + .00 * fabs(trajectory_evaluating.z_dot - z_dot_prev);
+					cost += .03 * fabs(trajectory_evaluating.psi_dot_deg - psi_dot_deg_prev) + .00 * fabs(trajectory_evaluating.z_dot - z_dot_prev);
 				}
 				if (cost < lowest_trajectory_cost){
 					lowest_trajectory_cost = cost;
@@ -531,16 +530,36 @@ int CollisionAvoidance::GetNumberOfAgileTrajectories(){
   return number_of_agile_trajectories;
 }
 
-std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_initial, gazebo::math::Quaternion q_initial, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Vector3 p_goal, std::vector<TrimTrajectory> *trajectories_out, std::vector<gazebo::math::Vector3> *final_positions_inertial_out, std::vector<int> trajectory_packet_prev){
+std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_initial, gazebo::math::Quaternion q_initial, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Vector3 p_goal, std::vector<TrimTrajectory> *trajectories_out, std::vector<gazebo::math::Vector3> *final_positions_inertial_out, std::vector<int> trajectory_packet_prev, bool restart, double time){
 	std::vector<int> ret; //first index is trim/agile, second is trajectory number
+	if (restart){
+		mode = 0;
+		mission_start_time = time;
+	}
 
-	if (state == 0){
-		//initial hover
+	if (mode == 0){
+		if (restart){
+			//get in to initial hover
+			ret.push_back(1); //agile maneuver
+			ret.push_back(2); //C2H
+		}else{
+			ret.push_back(2); //HOVER once already cruised to hover
+			ret.push_back(99); // does nothing
+		}
+		if (time - mission_start_time > 10){
+			mode = 1; //after 10 seconds of hovering, go to cruise
+		}
+
 	}
-	else if (state == 1){
+	else if (mode == 1){
 		//hover to cruise
+		ret.push_back(1); //agile maneuver
+		ret.push_back(1); //H2C
+		printf("%s\n", "Hover to Cruise");
+		//only send hover to cruise once, so now enter avoidance mode
+		mode = 2;
 	}
-	else if (state == 2){
+	else if (mode == 2){
 		//avoidance
 		int trim_trajectory = SelectTrimTrajectory(p_initial, q_initial, octree, p_goal, trajectories_out, final_positions_inertial_out, trajectory_packet_prev);
 		if (trim_trajectory == -1){
@@ -556,12 +575,23 @@ std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_in
 			ret.push_back(0); //trim maneuver
 			ret.push_back(trim_trajectory); //type of trim primitivea
 		}
+		if ((p_goal - p_initial).GetLength() < 5.0){
+			//if inside 5 meters to goal, enter hover
+			mode = 3;
+		}
 	}
-	else if (state == 3){
+	else if (mode == 3){
 		//cruise to hover
+		ret.push_back(1); //agile maneuver
+		ret.push_back(2); //C2H
+		printf("%s\n", "Found Goal, Cruise to Hover");
+		// only cruise to hover once
+		mode = 4;
 	}
-	else if (state == 4){
+	else if (mode == 4){
 		//end_hover
+		ret.push_back(2); //HOVER 
+		ret.push_back(99);
 	}
 
 	return ret;

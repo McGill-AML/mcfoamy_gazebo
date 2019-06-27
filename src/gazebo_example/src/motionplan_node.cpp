@@ -44,7 +44,7 @@ void MotionplanNode::run()
 {
   wait_for_trigger();
   
-  const double frequency = 50.0; 
+  const double frequency = 10.0; 
   ros::Rate loop_rate(frequency);
   
   while(ros::ok())
@@ -54,7 +54,6 @@ void MotionplanNode::run()
     
     // Compute and publish controller output
     compute_refstate();
-    init_pose_pub_.publish(init_pose_);
     trajectory_pub_.publish(trajectory_);
     trajectories_pub_.publish(trajectories_);
     trajectories_.data.clear();
@@ -88,18 +87,20 @@ void MotionplanNode::compute_refstate()
   octree.setInputCloud (cloud);
   octree.addPointsFromInputCloud ();
   init_pose_ = pose_;
+  init_pose_pub_.publish(init_pose_);
 
 
   //gazebo::math::Vector3 goal_position_i(15.0 * cos(ros::Time::now().toSec() / 5.0),15.0 * sin(ros::Time::now().toSec() / 5.0),-8.0);
-  gazebo::math::Vector3 goal_position_i(60.0,0.0,-8.0);
+  gazebo::math::Vector3 goal_position_i(30.0,0.0,-8.0);
   std::vector<gazebo::math::Vector3> positions_sampled;
   std::vector<TrimTrajectory> trajectories_sampled;
 
   //trajectory_.data = CA.SelectTrimTrajectory(p_i, q, octree, goal_position_i, &trajectories_sampled, &positions_sampled);
-  std::vector<int> trajectory_packet = CA.SelectTrajectory(p_i, q, octree, goal_position_i, &trajectories_sampled, &positions_sampled, trajectory_packet_prev);
+  std::vector<int> trajectory_packet = CA.SelectTrajectory(p_i, q, octree, goal_position_i, &trajectories_sampled, &positions_sampled, trajectory_packet_prev, restart_, ros::Time::now().toSec());
   trajectories_.data.push_back(trajectory_packet[0]);
   trajectories_.data.push_back(trajectory_packet[1]);
   trajectory_packet_prev = trajectory_packet;
+  restart_ = false;
   
 
 
@@ -222,6 +223,8 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
 
   if (start_ != true){
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_H2C.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_C2H.csv");
 
     CA.LoadAgileLibrary(filenames);
     CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/trim_cond.csv");
@@ -231,6 +234,7 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
   }
   start_ = true;
   res.success = true;
+  restart_ = true;
 
 }
 
