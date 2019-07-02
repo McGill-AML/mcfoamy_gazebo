@@ -172,13 +172,6 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
 
 
 
-  /*initial_position.x = init_pose_.position.x;
-  initial_position.y = init_pose_.position.y;
-  initial_position.z = init_pose_.position.z;
-  initial_quaternion.w = init_pose_.orientation.w;
-  initial_quaternion.x = init_pose_.orientation.x;
-  initial_quaternion.y = init_pose_.orientation.y;
-  initial_quaternion.z = init_pose_.orientation.z;*/
 
   trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
   gazebo::math::Vector3 p_ref_i;
@@ -207,92 +200,6 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
 
 
   gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();
-  
-  /*if (trajectories_.data.size() == 0){
-    trajectories_.data.push_back( Traj_Lib.GetNumberOfTrajectories()-1);
-    printf("%s\n","no trajectories found" );
-  }
-
-  if (new_trajectories_recieved){
-    if  (ros::Time::now().toSec() - trajectory_starttime < Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetStateAtIndex(Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetNumberOfLines() - 1)(0)){
-      current_trajectory = trajectory_old;
-    }
-    
-    else{
-      trajectory_in_array = 0;
-      trajectory_array_starttime.clear();
-      trajectory_array_starttime.push_back(ros::Time::now().toSec());
-      for (int i = 0; i < trajectories_.data.size(); ++i){
-        trajectory_array_starttime.push_back(trajectory_array_starttime[i] + Traj_Lib.GetTrajectoryAtIndex(trajectories_.data[i]).GetFinalTime());
-      }
-
-      new_trajectories_recieved = false;
-      maneuver_switch = true;
-      trajectory_starttime = ros::Time::now().toSec();
-      node_position.x = init_pose_.position.x;
-      node_position.y = init_pose_.position.y;
-      node_position.z = init_pose_.position.z;
-      node_quaternion.w = init_pose_.orientation.w;
-      node_quaternion.x = init_pose_.orientation.x;
-      node_quaternion.y = init_pose_.orientation.y;
-      node_quaternion.z = init_pose_.orientation.z;
-      current_trajectory = trajectories_.data[0];
-      trajectory_old = current_trajectory;
-    } 
-
-
-  }*/
-
-  /*if (ros::Time::now().toSec() > trajectory_array_starttime[trajectory_in_array + 1] && ros::Time::now().toSec() < trajectory_array_starttime[trajectory_array_starttime.size()-1]){
-    trajectory_in_array += 1;
-    trajectory_starttime = trajectory_array_starttime[trajectory_in_array];
-    node_position = Traj_Lib.GetTrajectoryAtIndex(trajectories_.data[trajectory_in_array]).End_Position(node_quaternion.GetYaw(),node_position);
-    node_quaternion = Traj_Lib.GetTrajectoryAtIndex(trajectories_.data[trajectory_in_array]).End_Quaternion(node_quaternion.GetYaw());
-    maneuver_switch = true;
-    current_trajectory = trajectories_.data[trajectory_in_array];
-  }*/
-
-  /*trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
-  reference_state = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetStateAtTime(trajectory_time);
-  gazebo::math::Vector3 p_ref_i = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetPosition(node_quaternion.GetYaw(), node_position, trajectory_time);
-  gazebo::math::Quaternion q_ref = Traj_Lib.GetTrajectoryAtIndex(current_trajectory).GetQuaternion(node_quaternion.GetYaw(), trajectory_time);
-  gazebo::math::Vector3 v_ref_r(reference_state[8],reference_state[9],reference_state[10]);
-  gazebo::math::Vector3 omega_ref_r(reference_state[11],reference_state[12],reference_state[13]);
-  gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();*/
- // p_ref_i.z = -6.0;
-
-  /*if (new_trajectory_recieved){
-    if (trajectory == -1){
-      trajectory = 0;
-    }
-    
-    if (trajectory_old != 1  && ros::Time::now().toSec() - trajectory_starttime < Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetStateAtIndex(Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetNumberOfLines() - 1)(0)){
-      trajectory = trajectory_old;      
-    }
-    else{
-      maneuver_switch = true;
-      trajectory_starttime = ros::Time::now().toSec();
-      initial_position.x = init_pose_.position.x;
-      initial_position.y = init_pose_.position.y;
-      initial_position.z = init_pose_.position.z;
-      initial_quaternion.w = init_pose_.orientation.w;
-      initial_quaternion.x = init_pose_.orientation.x;
-      initial_quaternion.y = init_pose_.orientation.y;
-      initial_quaternion.z = init_pose_.orientation.z;
-    }
-
-    new_trajectory_recieved = false;
-    trajectory_old = trajectory;
-    trajectory_starttime_old = trajectory_starttime;
-  }
-
-  trajectory_time = ros::Time::now().toSec() - trajectory_starttime;
-  reference_state = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetStateAtTime(trajectory_time);
-  gazebo::math::Vector3 p_ref_i = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetPosition(initial_quaternion.GetYaw(), initial_position, trajectory_time);
-  gazebo::math::Quaternion q_ref = Traj_Lib.GetTrajectoryAtIndex(trajectory).GetQuaternion(initial_quaternion.GetYaw(), trajectory_time);
-  gazebo::math::Vector3 v_ref_r(reference_state[8],reference_state[9],reference_state[10]);
-  gazebo::math::Vector3 omega_ref_r(reference_state[11],reference_state[12],reference_state[13]);
-  gazebo::math::Matrix3 C_ri = q_ref.GetAsMatrix3().Inverse();*/
 
 
   visualization_msgs::Marker marker;
@@ -330,48 +237,6 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   marker.pose.orientation.z = q_gr.z;
   marker.pose.orientation.w = q_gr.w; 
   ref_plane_vis_pub_.publish( marker );
-
-
-
-
-
-
-  /*if (new_trajectory_recieved){
-    if (ros::Time::now().toSec() - trajectory_starttime < Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetStateAtIndex(Traj_Lib.GetTrajectoryAtIndex(trajectory_old).GetNumberOfLines() - 1)(0)){
-      if (trajectory == -1 && trajectory_old != 0){
-        trajectory = 0;
-        trajectory_starttime = ros::Time::now().toSec();
-        initial_position.x = init_pose_.position.x;
-        initial_position.y = init_pose_.position.y;
-        initial_position.z = init_pose_.position.z;
-        initial_quaternion.w = init_pose_.orientation.w;
-        initial_quaternion.x = init_pose_.orientation.x;
-        initial_quaternion.y = init_pose_.orientation.y;
-        initial_quaternion.z = init_pose_.orientation.z;
-      }
-      else{
-        trajectory = trajectory_old;
-      }
-      
-    }
-    else{
-      if (trajectory == -1){
-        trajectory = 0;
-      }
-      trajectory_starttime = ros::Time::now().toSec();
-      initial_position.x = init_pose_.position.x;
-      initial_position.y = init_pose_.position.y;
-      initial_position.z = init_pose_.position.z;
-      initial_quaternion.w = init_pose_.orientation.w;
-      initial_quaternion.x = init_pose_.orientation.x;
-      initial_quaternion.y = init_pose_.orientation.y;
-      initial_quaternion.z = init_pose_.orientation.z;
-    }
-
-    new_trajectory_recieved = false;
-    trajectory_old = trajectory;
-    trajectory_starttime_old = trajectory_starttime;
-  }*/
 
 
 
