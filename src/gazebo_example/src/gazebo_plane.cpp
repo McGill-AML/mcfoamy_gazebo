@@ -205,7 +205,7 @@ void PlanePlugin::aerodynamics()
   double omega_t_min = 1716.0;
   double omega_t_max = 6710.0;
 
-  McFoamy_FM_v2(saturate(actuator_[0],-delta_a_max,delta_a_max)*.017453, saturate(actuator_[1],-delta_e_max,delta_e_max)*.017453, saturate(actuator_[2],-delta_r_max,delta_r_max)*.017453, saturate(actuator_[3],omega_t_min,omega_t_max), vel_b.x,vel_b.y,vel_b.z,omega_nb_b.x,omega_nb_b.y,omega_nb_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
+  McFoamy_FM_v2(saturate(-actuator_[0],-delta_a_max,delta_a_max)*.017453, saturate(actuator_[1],-delta_e_max,delta_e_max)*.017453, saturate(actuator_[2],-delta_r_max,delta_r_max)*.017453, saturate(actuator_[3],omega_t_min,omega_t_max), vel_b.x,vel_b.y,vel_b.z,omega_nb_b.x,omega_nb_b.y,omega_nb_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
   //math::Quaternion q_br(0, 1, 0, 0);
   //force_ = q_br.RotateVectorReverse(math::Vector3(Fx_b, Fy_b, Fz_b)); 
   //torque_ = q_br.RotateVectorReverse(math::Vector3(Mx_b, My_b, Mz_b));

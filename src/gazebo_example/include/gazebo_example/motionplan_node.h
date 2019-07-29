@@ -13,6 +13,7 @@
 #include "gazebo_example/Trajectory4.cpp"
 #include "visualization_msgs/Marker.h"
 #include "visualization_msgs/MarkerArray.h"
+#include <pcl/filters/passthrough.h>
 
 namespace gazebo_example
 {
@@ -53,11 +54,6 @@ private:
   std_msgs::Int16 trajectory_;
   std_msgs::Int16MultiArray trajectories_;
 
-  //pcl::PointCloud<pcl::PointXYZ> traj_pcl_;
-  //pcl::PointCloud<pcl::PointXYZ>::Ptr traj_pcl_ptr_ = pcl::PointCloud<pcl::PointXYZ>::Ptr (&traj_pcl_);
-
-  //pcl::PointCloud<pcl::PointXYZ>::Ptr traj_pcl_;
-
   gazebo::math::Vector3 p_0;
   gazebo::math::Vector3 p_final;
   gazebo::math::Vector3 p_global;
@@ -71,6 +67,7 @@ private:
 
   pcl::PointCloud<pcl::PointXYZ> points_;
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = pcl::PointCloud<pcl::PointXYZ>::Ptr (&points_);
+
   //pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree = pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> (.1);//resolution is 128
   std::vector<int> indices;
   //pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;

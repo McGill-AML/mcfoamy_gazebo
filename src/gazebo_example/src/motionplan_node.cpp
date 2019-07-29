@@ -84,7 +84,15 @@ void MotionplanNode::compute_refstate()
   gazebo::math::Vector3 p_i(pose_.position.x, pose_.position.y, pose_.position.z);
   gazebo::math::Quaternion q(pose_.orientation.w, pose_.orientation.x, pose_.orientation.y, pose_.orientation.z);
   pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> octree = pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> (.1);//resolution is 128,.1
-  octree.setInputCloud (cloud);
+  
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PassThrough<pcl::PointXYZ> pass;
+  pass.setInputCloud (cloud);
+  pass.setFilterFieldName ("z");
+  pass.setFilterLimits (1.0, 100.0);
+  pass.filter (*cloud_filtered);
+
+  octree.setInputCloud (cloud_filtered);
   octree.addPointsFromInputCloud ();
   init_pose_ = pose_;
   init_pose_pub_.publish(init_pose_);

@@ -371,7 +371,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   omega_t_old = omega_t;
 
   std::vector<double> u;
-  u.push_back(-delta_a); //aileron (Rad)
+  u.push_back(delta_a); //aileron (Rad)
   u.push_back(delta_e); //elevator (Rad)
   u.push_back(delta_r); //rudder (Rad)
   u.push_back(omega_t); //throttle (rpm)

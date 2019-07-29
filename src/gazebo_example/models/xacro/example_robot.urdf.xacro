@@ -24,7 +24,7 @@
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
-          <mesh filename="package://gazebo_example/meshes/plane.dae"/>
+          <mesh filename="package://gazebo_example/meshes/mcfoamy_mod.STL"/>
         </geometry>
       </visual>
       <collision>
@@ -37,8 +37,8 @@
 
 
   <joint name="camera_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz=".2 0 .2" rpy="0 0 0"/>
+    <axis xyz="1 0 0" />
+    <origin xyz="0 0 .15" rpy="0 0 0"/>
     <parent link="airframe"/>
     <child link="kinect"/>
   </joint>
@@ -73,13 +73,13 @@
       <camera>
         <horizontal_fov>1.50098</horizontal_fov>
         <image>
-          <width>1280</width>
-          <height>720</height>
+          <width>640</width>
+          <height>480</height>
           <format>R8G8B8</format>
         </image>
         <clip>
           <near>0.2</near>
-          <far>15</far>
+          <far>25</far>
         </clip>
       </camera>
         <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
@@ -94,7 +94,7 @@
           <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
           <frameName>kinect_camera_frame</frameName>
           <pointCloudCutoff>0.2</pointCloudCutoff>
-          <pointCloudCutoffMax>15.0</pointCloudCutoffMax>
+          <pointCloudCutoffMax>25.0</pointCloudCutoffMax>
           <distortionK1>0</distortionK1>
           <distortionK2>0</distortionK2>
           <distortionK3>0</distortionK3>

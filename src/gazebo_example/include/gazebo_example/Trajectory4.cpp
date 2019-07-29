@@ -24,7 +24,7 @@ TrimTrajectory::TrimTrajectory(Eigen::VectorXd trim_states, float duration, int 
 	V_xy = sqrt(powf(V,2.0) - powf(z_dot, 2.0));
 	delta_t = duration;
 	index = ind;
-	lambda = 0.0;
+	lambda = 0.0 * 3.14/180.0;
     //C_cb = gazebo::math::Matrix3(0.0,-sin(lambda),cos(lambda),1.0,0.0,0.0,0.0,cos(lambda),sin(lambda));
     C_cb = gazebo::math::Matrix3(0.0, 1.0, 0.0, -sin(lambda), 0.0, cos(lambda), cos(lambda), 0.0, sin(lambda));
     d_max = 2.0;
@@ -112,7 +112,7 @@ AgileTrajectory::AgileTrajectory(std::string filename_csv) {
     d_max = 2.0;
     max_speed = 10.0;
 
-    lambda = 0.0;
+    lambda = 0.0 * 3.14/180.0;
     //C_cb = gazebo::math::Matrix3(0.0,-sin(lambda),cos(lambda),1.0,0.0,0.0,0.0,cos(lambda),sin(lambda));
     C_cb = gazebo::math::Matrix3(0.0, 1.0, 0.0, -sin(lambda), 0.0, cos(lambda), cos(lambda), 0.0, sin(lambda));
 
@@ -353,7 +353,7 @@ bool AgileTrajectory::InFieldOfView(gazebo::math::Quaternion q, double psi_node,
   bool out = true;
   double HFOV = 85.2*3.14/180.0;//for realsense d435
   double VFOV = 58.0*3.14/180.0;//for realsense d435
-  double range = 10.0; //for realsense d435
+  double range = 20.0; //for realsense d435
   if (fabs(atan2(p_c.x,p_c.z)) > HFOV/2.0){
     out = false;
   }
@@ -369,13 +369,13 @@ bool AgileTrajectory::InFieldOfView(gazebo::math::Quaternion q, double psi_node,
 
 
 CollisionAvoidance::CollisionAvoidance() {
-	V = 7.0;
-	lambda = 0.0;
+	//V = 7.0;
+	lambda = 0.0 * 3.14/180.0;
     //C_cb = gazebo::math::Matrix3(0.0,-sin(lambda),cos(lambda),1.0,0.0,0.0,0.0,cos(lambda),sin(lambda));
     C_cb = gazebo::math::Matrix3(0.0, 1.0, 0.0, -sin(lambda), 0.0, cos(lambda), cos(lambda), 0.0, sin(lambda));
     HFOV = 85.2*PI/180.0;//for realsense d435
   	VFOV = 58.0*PI/180.0;//for realsense d435
-  	range = 10.0; //for realsense d435
+  	range = 20.0; //for realsense d435
   	d_max = 2.0;
   	ata_count = 0;
 }
@@ -410,6 +410,7 @@ void CollisionAvoidance::LoadTrimTrajectories(const std::string& filename) {
         row_num ++;
     }
     CsvParser_destroy(csvparser);
+    V = powf(powf(trim_trajectories.row(0)(4),2.0) + powf(trim_trajectories.row(0)(5),2.0) + powf(trim_trajectories.row(0)(6),2.0),0.5);
 
 }
 
@@ -476,7 +477,27 @@ std::vector<gazebo::math::Vector3> CollisionAvoidance::get_final_positions_inert
 			p_final = p_initial + q_initial.GetAsMatrix3() * C_cb.Inverse() * p_c; 
 			final_positions_inertial.push_back(p_final); 
 		}
-	} 
+	}
+
+  for (int h = -N/2; h <= N/2; h += 4){
+    for (int v = -N/2; v <= N/2; ++v){
+      p_c.x = (range / 2.0) * cosf(v * VFOV/float(N)) * sinf(h * HFOV/float(N));
+      p_c.y = (range / 2.0) * sinf(v * VFOV/float(N));
+      p_c.z = (range / 2.0) * cosf(v * VFOV/float(N)) * cosf(h * HFOV/float(N));
+      p_final = p_initial + q_initial.GetAsMatrix3() * C_cb.Inverse() * p_c; 
+      final_positions_inertial.push_back(p_final); 
+    }
+  }  
+
+  for (int h = -1; h <= 1; ++h){
+    for (int v = -N/2; v <= N/2; v += 4){
+      p_c.x = (range / 2.0) * cosf(v * VFOV/float(N)) * sinf(h * HFOV/float(N));
+      p_c.y = (range / 2.0) * sinf(v * VFOV/float(N));
+      p_c.z = (range / 2.0) * cosf(v * VFOV/float(N)) * cosf(h * HFOV/float(N));
+      p_final = p_initial + q_initial.GetAsMatrix3() * C_cb.Inverse() * p_c; 
+      final_positions_inertial.push_back(p_final); 
+    }
+  }  
 	return final_positions_inertial;
 }
 
@@ -497,8 +518,24 @@ int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, ga
 			trajectories.push_back(trajectory_evaluating); 
 			distance_to_obstacle = trajectory_evaluating.DistanceToObstacle(octree, q_initial, p_initial, trajectory_evaluating.delta_t);
 			if (distance_to_obstacle >= d_max/2.0){
-				cost = 0.1 * sqrt(powf((p_goal - final_positions_inertial[i]).x, 2.0) + powf((p_goal - final_positions_inertial[i]).y, 2.0)) + 2.0 * fabs((p_goal - final_positions_inertial[i]).z) - 2.0 * distance_to_obstacle;
-				if (trajectory_packet_prev[0] == 0){
+          double yaw_distance = atan2((p_goal - p_initial).y , (p_goal - p_initial).x) - trajectory_evaluating.GetQuaternionAtTime(trajectory_evaluating.delta_t, q_initial.GetYaw()).GetYaw();
+          if (yaw_distance > 3.14159265){
+            yaw_distance = yaw_distance - 2.0 * 3.14159265;
+          }
+          if (yaw_distance < -3.14159265){
+            yaw_distance = yaw_distance + 2.0 * 3.14159265;
+          }
+
+          yaw_distance = fabs(yaw_distance);
+  
+				cost = 2.0 * fabs((p_goal - final_positions_inertial[i]).z) - 2.0 * distance_to_obstacle;
+				if ((p_goal - p_initial).GetLength() > range){
+          cost += 0.1 * sqrt(powf((p_goal - final_positions_inertial[i]).x, 2.0) + powf((p_goal - final_positions_inertial[i]).y, 2.0));
+        }
+        else{
+          cost += 10 * yaw_distance;
+        }
+        if (trajectory_packet_prev[0] == 0){
 					float psi_dot_deg_prev = trim_trajectories.row(trajectory_packet_prev[1])(0);
 					float z_dot_prev = trim_trajectories.row(trajectory_packet_prev[1])(1);
 					cost += .03 * fabs(trajectory_evaluating.psi_dot_deg - psi_dot_deg_prev) + .00 * fabs(trajectory_evaluating.z_dot - z_dot_prev);
