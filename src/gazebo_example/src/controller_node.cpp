@@ -121,7 +121,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     new_trajectories_recieved = false;
     if (trajectory_type == 1){
       //previous trajectory is agile
-      if (ros::Time::now().toSec() - trajectory_starttime > CA.GetAgileTrajectoryAtIndex(trajectory).GetStateAtIndex(CA.GetAgileTrajectoryAtIndex(trajectory).GetNumberOfLines() - 1)(0)){
+      if (ros::Time::now().toSec() - trajectory_starttime > CA.GetAgileTrajectoryAtIndex(trajectory).GetStateAtIndex(CA.GetAgileTrajectoryAtIndex(trajectory).GetNumberOfLines() - 1)(0) || trajectories_.data[2]){
         //previous agile trajectory is finished
         if (trajectories_.data[0] != 2){
           trajectory_starttime = ros::Time::now().toSec() - 0.1;

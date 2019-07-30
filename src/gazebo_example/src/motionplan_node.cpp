@@ -108,6 +108,12 @@ void MotionplanNode::compute_refstate()
   trajectories_.data.push_back(trajectory_packet[0]);
   trajectories_.data.push_back(trajectory_packet[1]);
   trajectory_packet_prev = trajectory_packet;
+  if (restart_){
+    trajectories_.data.push_back(1);//let controller no just restarted motion plan
+  }
+  else{
+    trajectories_.data.push_back(0);
+  }
   restart_ = false;
   
 
