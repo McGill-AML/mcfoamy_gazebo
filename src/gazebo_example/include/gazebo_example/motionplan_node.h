@@ -3,6 +3,7 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Twist.h"
+#include "geometry_msgs/PoseStamped.h"
 #include "std_msgs/Int16.h"
 #include "std_msgs/Int16MultiArray.h"
 #include "std_srvs/Trigger.h"
@@ -50,7 +51,7 @@ private:
   geometry_msgs::Pose pose_;
   geometry_msgs::Twist twist_;
 
-  geometry_msgs::Pose init_pose_;
+  geometry_msgs::PoseStamped init_pose_;
   std_msgs::Int16 trajectory_;
   std_msgs::Int16MultiArray trajectories_;
 

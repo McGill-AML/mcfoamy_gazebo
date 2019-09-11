@@ -18,7 +18,7 @@ MotionplanNode::MotionplanNode():
 
 bool MotionplanNode::init()
 {
-  init_pose_pub_ = node_handle.advertise<geometry_msgs::Pose>("init_pose", MAX_PUB_QUEUE);
+  init_pose_pub_ = node_handle.advertise<geometry_msgs::PoseStamped>("init_pose", MAX_PUB_QUEUE);
   //reftwist_pub_ = node_handle.advertise<geometry_msgs::Twist>("reftwist", MAX_PUB_QUEUE);
   trajectory_pub_ = node_handle.advertise<std_msgs::Int16>("trajectory", MAX_PUB_QUEUE);
   trajectories_pub_ = node_handle.advertise<std_msgs::Int16MultiArray>("trajectories", MAX_PUB_QUEUE);
@@ -94,7 +94,8 @@ void MotionplanNode::compute_refstate()
 
   octree.setInputCloud (cloud_filtered);
   octree.addPointsFromInputCloud ();
-  init_pose_ = pose_;
+  init_pose_.header.stamp = ros::Time::now();
+  init_pose_.pose = pose_;
   init_pose_pub_.publish(init_pose_);
 
 

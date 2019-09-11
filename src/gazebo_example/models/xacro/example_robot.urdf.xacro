@@ -17,9 +17,9 @@
 
     <link name="airframe">
       <inertial>
-        <mass value=".45"/>
+        <mass value=".6"/>
         <origin xyz="0 0 0"/>
-        <inertia ixx="0.003922" ixy="0.0" ixz="0.000303" iyy="0.01594" iyz="0.0" izz="0.01934"/>
+        <inertia ixx="0.005" ixy="0.0" ixz="0.0" iyy="0.021" iyz="0.0" izz="0.023"/>
       </inertial>
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0"/>

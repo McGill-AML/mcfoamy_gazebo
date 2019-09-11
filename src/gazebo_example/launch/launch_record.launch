@@ -1,0 +1,4 @@
+  
+<launch>
+	<node pkg="rosbag" type="record" name="rosbag_record" args="/trajectories /ref_pose /ref_twist /pose /twist /actuator"/>
+</launch>

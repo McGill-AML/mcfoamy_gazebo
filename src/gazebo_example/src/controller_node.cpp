@@ -107,7 +107,6 @@ gazebo::math::Quaternion ControllerNode::GetReferenceQuaternion(Eigen::VectorXd 
 
 
 
-
 std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const double frequency)
 {
 
@@ -124,16 +123,17 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
       if (ros::Time::now().toSec() - trajectory_starttime > CA.GetAgileTrajectoryAtIndex(trajectory).GetStateAtIndex(CA.GetAgileTrajectoryAtIndex(trajectory).GetNumberOfLines() - 1)(0) || trajectories_.data[2]){
         //previous agile trajectory is finished
         if (trajectories_.data[0] != 2){
-          trajectory_starttime = ros::Time::now().toSec() - 0.1;
+          //trajectory_starttime = ros::Time::now().toSec() - 0.1;
+          trajectory_starttime = init_pose_.header.stamp.toSec(); 
           trajectory_type = trajectories_.data[0];
           trajectory = trajectories_.data[1];  
-          initial_position.x = init_pose_.position.x;
-          initial_position.y = init_pose_.position.y;
-          initial_position.z = init_pose_.position.z;
-          initial_quaternion.w = init_pose_.orientation.w;
-          initial_quaternion.x = init_pose_.orientation.x;
-          initial_quaternion.y = init_pose_.orientation.y;
-          initial_quaternion.z = init_pose_.orientation.z;
+          initial_position.x = init_pose_.pose.position.x;
+          initial_position.y = init_pose_.pose.position.y;
+          initial_position.z = init_pose_.pose.position.z;
+          initial_quaternion.w = init_pose_.pose.orientation.w;
+          initial_quaternion.x = init_pose_.pose.orientation.x;
+          initial_quaternion.y = init_pose_.pose.orientation.y;
+          initial_quaternion.z = init_pose_.pose.orientation.z;
           if (trajectory_type == 1 && trajectory == 1){
             //new trajectory is hover to cruise, need to fix yaw singularity by pitching down by 
             gazebo::math::Quaternion body_y_rotation(.7071,0.0,-.7071,0.0);
@@ -146,16 +146,18 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     }
     else if(trajectory_type == 0){
       if (trajectories_.data[0] != 2){
-        trajectory_starttime = ros::Time::now().toSec() - 0.1;
+        //trajectory_starttime = ros::Time::now().toSec() - 0.1; printf("%f\n", ros::Time::now().toSec() - init_pose_.header.stamp.toSec());
+        trajectory_starttime = init_pose_.header.stamp.toSec(); 
+
         trajectory_type = trajectories_.data[0];
         trajectory = trajectories_.data[1];  
-        initial_position.x = init_pose_.position.x;
-        initial_position.y = init_pose_.position.y;
-        initial_position.z = init_pose_.position.z;
-        initial_quaternion.w = init_pose_.orientation.w;
-        initial_quaternion.x = init_pose_.orientation.x;
-        initial_quaternion.y = init_pose_.orientation.y;
-        initial_quaternion.z = init_pose_.orientation.z;
+        initial_position.x = init_pose_.pose.position.x;
+        initial_position.y = init_pose_.pose.position.y;
+        initial_position.z = init_pose_.pose.position.z;
+        initial_quaternion.w = init_pose_.pose.orientation.w;
+        initial_quaternion.x = init_pose_.pose.orientation.x;
+        initial_quaternion.y = init_pose_.pose.orientation.y;
+        initial_quaternion.z = init_pose_.pose.orientation.z;
         if (trajectory_type == 1 && trajectory == 1){
           //new trajectory is hover to cruise, need to fix yaw singularity by pitching down by 
           gazebo::math::Quaternion body_y_rotation(.7071,0.0,-.7071,0.0);
@@ -244,7 +246,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   //Constants and Aircraft Properties
   double ro = 1.225f; //Air Density (kg/m^3)
   double A_prop = 0.0507f; //Propeller Area (m^2)
-  double m = .45f; //Mass (kg)
+  double m = .60f; //Mass (kg)
   double S = 0.14274f; //Wing Area (m^2), yak54 = 0.14865
   double b = 0.864f; //Wing Span (m), yak54 = .82
   double cbar = 0.21f; //Mean Aerodynamic Chord (m), yak54 =.2107
@@ -259,7 +261,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   double F_aero2 = -0.0157;
   double F_aero1 = 0.0524;
   double F_aero0 = -0.5583;
-  gazebo::math::Matrix3 I_b(0.003922, 0.0, 0.000441, 0.0, 0.015940, 0.0, 0.000441, 0.0, .01934);
+  gazebo::math::Matrix3 I_b(0.0051, 0.0, 0.0005, 0.0, 0.0205, 0.0001, 0.0005, 0.0001, .0232);
 
 
   double Kap = 160.0;
@@ -415,7 +417,7 @@ void ControllerNode::twistCallback(const geometry_msgs::Twist::ConstPtr& msg)
   twist_ = *msg;
 }
 
-void ControllerNode::init_poseCallback(const geometry_msgs::Pose::ConstPtr& msg)
+void ControllerNode::init_poseCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
   init_pose_ = *msg;
 }
