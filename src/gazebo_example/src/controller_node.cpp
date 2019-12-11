@@ -117,6 +117,9 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   gazebo::math::Matrix3 C_bi = q.GetAsMatrix3().Inverse();
 
   if (new_trajectories_recieved){
+    if (trajectories_.data[2]){
+      maneuver_switch = true; //reset integrator because just went from manual to auto
+    }
     new_trajectories_recieved = false;
     if (trajectory_type == 1){
       //previous trajectory is agile
@@ -124,7 +127,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
         //previous agile trajectory is finished
         if (trajectories_.data[0] != 2){
           //trajectory_starttime = ros::Time::now().toSec() - 0.1;
-          trajectory_starttime = init_pose_.header.stamp.toSec(); 
+          trajectory_starttime = init_pose_.header.stamp.toSec() - 0.1; 
           trajectory_type = trajectories_.data[0];
           trajectory = trajectories_.data[1];  
           initial_position.x = init_pose_.pose.position.x;
@@ -147,7 +150,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     else if(trajectory_type == 0){
       if (trajectories_.data[0] != 2){
         //trajectory_starttime = ros::Time::now().toSec() - 0.1; printf("%f\n", ros::Time::now().toSec() - init_pose_.header.stamp.toSec());
-        trajectory_starttime = init_pose_.header.stamp.toSec(); 
+        trajectory_starttime = init_pose_.header.stamp.toSec()- 0.1; 
 
         trajectory_type = trajectories_.data[0];
         trajectory = trajectories_.data[1];  
@@ -164,7 +167,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
           body_y_rotation.Normalize();
           initial_quaternion = initial_quaternion * body_y_rotation;
         }
-        maneuver_switch = true;
+        //maneuver_switch = true;
       }
     }
 
@@ -187,6 +190,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     q_ref = curr_traj.GetQuaternionAtTime(trajectory_time, initial_quaternion.GetYaw());
     v_ref_r = curr_traj.GetVelocity();
     omega_ref_r = curr_traj.GetAngularVelocity();
+
   }
 
   if (trajectory_type == 1){
@@ -197,6 +201,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     v_ref_r = curr_traj.GetVelocity(trajectory_time);
     omega_ref_r = curr_traj.GetAngularVelocity(trajectory_time);
    }
+
 
 
 
@@ -275,8 +280,8 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   double Kaero = 2.0;
 
   if (trajectory_type == 0){
-    //Kpp = 0.0;
-    //Kpi = 0.0;
+    //Kpd = 0.0;
+    //Kpi = 0.05;
     Khp = 0.0;
     Khi = 0.0;
     Kv = 6.0;
@@ -293,7 +298,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
 
 
   //Thrust Controller----------------------------------------------------------------------------------------------------------------------------------
-  if (maneuver_switch == true){delta_hi_i = 0.0;}
+  if (maneuver_switch == true){delta_hi_i = 0.0; delta_pi_i.x = 0.0; delta_pi_i.y = 0.0; delta_pi_i.z = 0.0;}
   double delta_hp_i = -p_ref_i[2]-(-p_i[2]); //Height error (m)
   delta_hi_i += delta_hp_i * dt; //Height error integral (ms)
   gazebo::math::Vector3 vdelta_hp_i(0.0 , 0.0 , - delta_hp_i);
@@ -310,6 +315,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   //Position Controller-----------------------------------------------------------------------------------------------------------------------------------
   delta_pi_i += (p_ref_i - p_i) * dt;
   Theta = F_hat_r.Cross(C_ri * (Kpp * (p_ref_i - p_i) + Kpi * delta_pi_i) + (v_ref_r - C_ri * C_bi.Inverse()*v_b) * Kpd); //determine rotation of q_ref
+  //Theta = F_hat_r.Cross(C_ri * (Kpp * (p_ref_i - p_i) + Kpi * delta_pi_i) + gazebo::math::Matrix3(1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0) * (v_ref_r - C_ri * C_bi.Inverse()*v_b) * Kpd); //determine rotation of q_ref
   /*Bound reference quaternion rotations to 45 degrees*/
   double Theta0 = saturate(Theta[0], -3.1415/4.0, 3.1415/4.0);
   double Theta1 = saturate(Theta[1], -3.1415/4.0, 3.1415/4.0);
@@ -377,6 +383,11 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   u.push_back(delta_e); //elevator (Rad)
   u.push_back(delta_r); //rudder (Rad)
   u.push_back(omega_t); //throttle (rpm)
+
+  u.push_back(q_des.w);
+  u.push_back(q_des.x);
+  u.push_back(q_des.y);
+  u.push_back(q_des.z);
 
   command_actuator.data = u;
 
@@ -446,12 +457,16 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
                                                       std_srvs::Trigger::Response& res)
 {
   if (start_ != true){
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_ATA.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/7_C2H.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_H2C.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");
+    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_H2C.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_C2H.csv");*/
 
     CA.LoadAgileLibrary(filenames);
-    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/trim_cond.csv");
+    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
+    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_trim.csv");
     last_time = ros::Time::now().toSec();
 
 

@@ -20,6 +20,6 @@
         
   
      <node pkg="rosbag" type="record" name="rosbag_record_diag"
-       args="/trajectories"/>  
+       args="/trajectories /ref_pose /ref_twist /pose /twist /camera/depth/image_raw /actuator"/>  
 
 </launch>

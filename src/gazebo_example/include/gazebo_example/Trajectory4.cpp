@@ -110,7 +110,7 @@ AgileTrajectory::AgileTrajectory(std::string filename_csv) {
 
     d_min = 0.2;
     d_max = 2.0;
-    max_speed = 10.0;
+    max_speed = 15.0;
 
     lambda = 0.0 * 3.14/180.0;
     //C_cb = gazebo::math::Matrix3(0.0,-sin(lambda),cos(lambda),1.0,0.0,0.0,0.0,cos(lambda),sin(lambda));
@@ -570,7 +570,7 @@ int CollisionAvoidance::GetNumberOfAgileTrajectories(){
 std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_initial, gazebo::math::Quaternion q_initial, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Vector3 p_goal, std::vector<TrimTrajectory> *trajectories_out, std::vector<gazebo::math::Vector3> *final_positions_inertial_out, std::vector<int> trajectory_packet_prev, bool restart, double time){
 	std::vector<int> ret; //first index is trim/agile, second is trajectory number
 	if (restart){
-		mode = 0;
+		mode = 2;
 		mission_start_time = time;
 	}
 
