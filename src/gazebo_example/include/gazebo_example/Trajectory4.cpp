@@ -449,6 +449,12 @@ TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_i
 	int psi_dot_deg_rounded = round((psi_dot * 180.0 / PI) / 10.0) * 10;
 	int trajectory_index = -1;
 
+  if (z_dot_rounded > 2){z_dot_rounded = 2;}
+  if (z_dot_rounded < -2){z_dot_rounded = -2;}
+  if (psi_dot_deg_rounded > 110){psi_dot_deg_rounded = 110;}
+  if (psi_dot_deg_rounded < -110){psi_dot_deg_rounded = -110;}
+
+
 	if (z_dot_rounded >= -2 && z_dot_rounded <= 2 && psi_dot_deg_rounded >= -110 && psi_dot_deg_rounded <= 110){
 		trajectory_index = (psi_dot_deg_rounded + 110) * 5 / 10 + (z_dot_rounded + 2) / 1;
 	}
@@ -528,13 +534,13 @@ int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, ga
 
           yaw_distance = fabs(yaw_distance);
   
-				cost = 2.0 * fabs((p_goal - final_positions_inertial[i]).z) - 2.0 * distance_to_obstacle;
-				if ((p_goal - p_initial).GetLength() > range){
+				cost = 15.0 * yaw_distance + 2.0 * fabs((p_goal - final_positions_inertial[i]).z) - 2.0 * distance_to_obstacle;
+				/*if ((p_goal - p_initial).GetLength() > range){
           cost += 0.1 * sqrt(powf((p_goal - final_positions_inertial[i]).x, 2.0) + powf((p_goal - final_positions_inertial[i]).y, 2.0));
         }
         else{
           cost += 10 * yaw_distance;
-        }
+        }*/
         if (trajectory_packet_prev[0] == 0){
 					float psi_dot_deg_prev = trim_trajectories.row(trajectory_packet_prev[1])(0);
 					float z_dot_prev = trim_trajectories.row(trajectory_packet_prev[1])(1);
@@ -612,7 +618,7 @@ std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_in
 			ret.push_back(0); //trim maneuver
 			ret.push_back(trim_trajectory); //type of trim primitivea
 		}
-		if ((p_goal - p_initial).GetLength() < 5.0){
+		if ((p_goal - p_initial).GetLength() < -5.0){
 			//if inside 5 meters to goal, enter hover
 			mode = 3;
 		}

@@ -271,6 +271,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
 
   double Kap = 160.0;
   double Kad = 8.0;
+  double Kai = 10.0;
   double Kpp = 0.08;
   double Kpd = 0.2;//was .1, .15 has very small oscillation when hovering
   double Kpi = 0.0;
@@ -298,7 +299,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
 
 
   //Thrust Controller----------------------------------------------------------------------------------------------------------------------------------
-  if (maneuver_switch == true){delta_hi_i = 0.0; delta_pi_i.x = 0.0; delta_pi_i.y = 0.0; delta_pi_i.z = 0.0;}
+  if (maneuver_switch == true){delta_hi_i = 0.0; delta_pi_i.x = 0.0; delta_pi_i.y = 0.0; delta_pi_i.z = 0.0; E_b_i.x = 0.0; E_b_i.y = 0.0; E_b_i.z = 0.0;}
   double delta_hp_i = -p_ref_i[2]-(-p_i[2]); //Height error (m)
   delta_hi_i += delta_hp_i * dt; //Height error integral (ms)
   gazebo::math::Vector3 vdelta_hp_i(0.0 , 0.0 , - delta_hp_i);
@@ -340,7 +341,9 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     E_b.z = 2.0*acos(delta_q.w)*delta_q.z/imaglength;
   }
 
-  gazebo::math::Vector3 M_b = I_b * (Kap * E_b + Kad * (C_bi * C_ri.Inverse() * omega_ref_r - omega_b));
+  E_b_i += E_b * dt;
+
+  gazebo::math::Vector3 M_b = I_b * (Kap * E_b + Kai * E_b_i + Kad * (C_bi * C_ri.Inverse() * omega_ref_r - omega_b));
 
   //Mixer-----------------------------------------------------------------------------------------------------------------------------------------------------
   
