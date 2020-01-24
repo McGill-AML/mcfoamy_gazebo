@@ -44,7 +44,7 @@ void MotionplanNode::run()
 {
   wait_for_trigger();
   
-  const double frequency = 10.0; 
+  const double frequency = 5.0; 
   ros::Rate loop_rate(frequency);
   
   while(ros::ok())

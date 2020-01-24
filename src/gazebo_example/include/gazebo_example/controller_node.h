@@ -48,7 +48,6 @@ private:
   ros::Subscriber trajectories_sub_;
   ros::ServiceServer start_service_;
   
-  controllers::PID pid_;
   double maneuver_switch;
   int previous_trajectory;
   std::vector<double> trajectory_array_starttime;

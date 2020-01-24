@@ -11,7 +11,6 @@ const unsigned int ControllerNode::MAX_SUB_QUEUE = 1;
 ControllerNode::ControllerNode():
   start_(false)
   , node_handle("")
-  , pid_(0.0, 0.0, 0.0)
   , lp_Vs(200.0, 2.0)
 {}
 
@@ -36,20 +35,41 @@ bool ControllerNode::init()
   start_service_ = node_handle.advertiseService("start_controller",
                                                 &ControllerNode::start_controller,
                                                 this);
-  pid_ = controllers::PID(5.0, 5.0, 0.0);
-  previous_trajectory = -2;
+  previous_trajectory = 0;
   trajectory = 0;
   trajectory_type = 0;
   current_trajectory = 0;
+  new_trajectories_recieved = false;
+  /*trajectories_.data[0] = 0;
+  trajectories_.data[1] = 0;
+  trajectories_.data[2] = 1;
+  init_pose_.pose.position.x = 0.0;
+  init_pose_.pose.position.y = 0.0;
+  init_pose_.pose.position.z = 0.0;
+  init_pose_.pose.orientation.w = 1.0;
+  init_pose_.pose.orientation.x = 0.0;
+  init_pose_.pose.orientation.y = 0.0;
+  init_pose_.pose.orientation.z = 0.0;*/
+  ///init_pose_.header.stamp = ros::Time::now(); 
+  initial_position.x = 0.0;
+  initial_position.y = 0.0;
+  initial_position.z = 0.0;
+  initial_quaternion.w = 1.0;
+  initial_quaternion.x = 0.0;
+  initial_quaternion.y = 0.0;
+  initial_quaternion.z = 0.0;
 
   trajectory_old = 0;
-  trajectory_starttime = 0.0;
-  omega_t_old = 0.0;
-  maneuver_switch = false;
+  //trajectory_starttime = init_pose_.header.stamp.toSec();
+  omega_t_old = 4000.0;
+  maneuver_switch = true;
   delta_hi_i = 0.0;
   delta_pi_i.x = 0.0;
   delta_pi_i.y = 0.0;
   delta_pi_i.z = 0.0;
+  E_b_i.x = 0.0;
+  E_b_i.y = 0.0;
+  E_b_i.z = 0.0;
   return true;
 }
 
@@ -127,7 +147,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
         //previous agile trajectory is finished
         if (trajectories_.data[0] != 2){
           //trajectory_starttime = ros::Time::now().toSec() - 0.1;
-          trajectory_starttime = init_pose_.header.stamp.toSec() - 0.1; 
+          trajectory_starttime = init_pose_.header.stamp.toSec() - 0.2; 
           trajectory_type = trajectories_.data[0];
           trajectory = trajectories_.data[1];  
           initial_position.x = init_pose_.pose.position.x;
@@ -150,7 +170,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
     else if(trajectory_type == 0){
       if (trajectories_.data[0] != 2){
         //trajectory_starttime = ros::Time::now().toSec() - 0.1; printf("%f\n", ros::Time::now().toSec() - init_pose_.header.stamp.toSec());
-        trajectory_starttime = init_pose_.header.stamp.toSec()- 0.1; 
+        trajectory_starttime = init_pose_.header.stamp.toSec()- 0.2; 
 
         trajectory_type = trajectories_.data[0];
         trajectory = trajectories_.data[1];  
