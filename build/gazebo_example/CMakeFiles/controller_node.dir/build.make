@@ -141,7 +141,6 @@ controller_node_EXTERNAL_OBJECTS =
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libgazebo_math.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libgazebo_ccd.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libboost_thread.so
-/home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libboost_signals.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libboost_system.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libboost_program_options.so

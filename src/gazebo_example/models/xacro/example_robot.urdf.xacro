@@ -1,7 +1,9 @@
 <?xml version="1.0" ?>
 <robot name="mcfoamy" xmlns:xacro="http://www.ros.org/wiki/xacro">
   
-  
+    <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
 
   
     <gazebo>
@@ -26,6 +28,8 @@
         <geometry>
           <mesh filename="package://gazebo_example/meshes/mcfoamy_mod.STL"/>
         </geometry>
+      <material name="white"/>
+
       </visual>
       <collision>
         <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -57,7 +61,7 @@
       <geometry>
     <box size="0.073000 0.276000 0.072000"/>
       </geometry>
-      <material name="red"/>
+      <material name="white"/>
     </visual>
 
     <inertial>
@@ -94,7 +98,7 @@
           <pointCloudTopicName>/camera/depth/points</pointCloudTopicName>
           <frameName>kinect_camera_frame</frameName>
           <pointCloudCutoff>0.2</pointCloudCutoff>
-          <pointCloudCutoffMax>25.0</pointCloudCutoffMax>
+          <pointCloudCutoffMax>20.0</pointCloudCutoffMax>
           <distortionK1>0</distortionK1>
           <distortionK2>0</distortionK2>
           <distortionK3>0</distortionK3>

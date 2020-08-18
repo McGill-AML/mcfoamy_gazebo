@@ -140,7 +140,7 @@ void MotionplanNode::compute_refstate()
   marker.pose.orientation.w = 1; 
 
   visualization_msgs::MarkerArray planned_poses;
-  if (1){
+  if (0){
 
 
   for (int i = 0; i < positions_sampled.size(); ++i){
@@ -237,16 +237,16 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
 {
 
   if (start_ != true){
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
+    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");
-    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");*/
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_ATA.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_C2H.csv");*/
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_C2H.csv");
 
     CA.LoadAgileLibrary(filenames);
-    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
-    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_trim.csv");
+    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
+    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_trim.csv");
     trajectory_packet_prev.push_back(1);
     trajectory_packet_prev.push_back(0);
     trajectory_packet_prev.push_back(1);

@@ -449,10 +449,10 @@ TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_i
 	int psi_dot_deg_rounded = round((psi_dot * 180.0 / PI) / 10.0) * 10;
 	int trajectory_index = -1;
 
-  if (z_dot_rounded > 2){z_dot_rounded = 2;}
+  /*if (z_dot_rounded > 2){z_dot_rounded = 2;}
   if (z_dot_rounded < -2){z_dot_rounded = -2;}
   if (psi_dot_deg_rounded > 110){psi_dot_deg_rounded = 110;}
-  if (psi_dot_deg_rounded < -110){psi_dot_deg_rounded = -110;}
+  if (psi_dot_deg_rounded < -110){psi_dot_deg_rounded = -110;}*/
 
 
 	if (z_dot_rounded >= -2 && z_dot_rounded <= 2 && psi_dot_deg_rounded >= -110 && psi_dot_deg_rounded <= 110){
@@ -487,9 +487,9 @@ std::vector<gazebo::math::Vector3> CollisionAvoidance::get_final_positions_inert
 
   for (int h = -N/2; h <= N/2; h += 4){
     for (int v = -N/2; v <= N/2; ++v){
-      p_c.x = (range / 2.0) * cosf(v * VFOV/float(N)) * sinf(h * HFOV/float(N));
-      p_c.y = (range / 2.0) * sinf(v * VFOV/float(N));
-      p_c.z = (range / 2.0) * cosf(v * VFOV/float(N)) * cosf(h * HFOV/float(N));
+      p_c.x = (12.0) * cosf(v * VFOV/float(N)) * sinf(h * HFOV/float(N));
+      p_c.y = (12.0) * sinf(v * VFOV/float(N));
+      p_c.z = (12.0) * cosf(v * VFOV/float(N)) * cosf(h * HFOV/float(N));
       p_final = p_initial + q_initial.GetAsMatrix3() * C_cb.Inverse() * p_c; 
       final_positions_inertial.push_back(p_final); 
     }
@@ -497,9 +497,9 @@ std::vector<gazebo::math::Vector3> CollisionAvoidance::get_final_positions_inert
 
   for (int h = -1; h <= 1; ++h){
     for (int v = -N/2; v <= N/2; v += 4){
-      p_c.x = (range / 2.0) * cosf(v * VFOV/float(N)) * sinf(h * HFOV/float(N));
-      p_c.y = (range / 2.0) * sinf(v * VFOV/float(N));
-      p_c.z = (range / 2.0) * cosf(v * VFOV/float(N)) * cosf(h * HFOV/float(N));
+      p_c.x = (12.0) * cosf(v * VFOV/float(N)) * sinf(h * HFOV/float(N));
+      p_c.y = (12.0) * sinf(v * VFOV/float(N));
+      p_c.z = (12.0) * cosf(v * VFOV/float(N)) * cosf(h * HFOV/float(N));
       p_final = p_initial + q_initial.GetAsMatrix3() * C_cb.Inverse() * p_c; 
       final_positions_inertial.push_back(p_final); 
     }
@@ -608,10 +608,14 @@ std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_in
 		if (trim_trajectory == -1){
 			//no trajectories found enter ATA
 			ret.push_back(1); //agile maneuver
-			ret.push_back(0); //ATA
-			ata_count += 1;
-			printf("%i", ata_count);
-			printf("%s\n", "Fucked: Crash unless ATA");
+			//ret.push_back(0); //ATA
+			//ata_count += 1;
+			//printf("%i", ata_count);
+			//printf("%s\n", "Fucked: Crash unless ATA");
+
+      ret.push_back(2); //Hover
+      printf("%s\n", "Fucked: Hover");
+      mode = 4;
 
 		}
 		else{

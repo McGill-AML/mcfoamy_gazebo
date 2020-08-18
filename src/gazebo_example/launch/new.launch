@@ -3,7 +3,7 @@
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find gazebo_example)/worlds/world3.world"/>
     <arg name="verbose" value="true"/>
-    <!-- more default parameters can be changed here -->
+    <arg name="paused" value="true"/>
   </include>
   
 
@@ -13,7 +13,7 @@
     <param name="robot_description" command="$(find xacro)/xacro $(find gazebo_example)/models/xacro/example_robot.urdf.xacro --inorder" />
 
     <!-- Spawn a robot into Gazebo -->
-    <node name="spawn_xacro" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y -20 -z 10 -model plane_xacro" />
+    <node name="spawn_xacro" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y -35 -z 10 -model plane_xacro" />
     
     <node name="motionplan_node" pkg="gazebo_example" type="motionplan_node" output="screen" />
   
@@ -21,6 +21,9 @@
       <node name="controller_node" pkg="gazebo_example" type="controller_node" output="screen" />      
 
   <node pkg="rosservice" type="rosservice" name="start_controller" args="call --wait /start_controller" />
+
+  <node pkg="rosbag" type="record" name="rosbag_record" args="/trajectories /ref_pose /ref_twist /pose /twist /actuator"/>
+
 
 
 </launch>

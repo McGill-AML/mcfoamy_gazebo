@@ -272,7 +272,11 @@
 
 
 
-
+    <gui>
+        <camera name="user_camera">
+            <pose>-20 -10 100 0 1.4 0</pose>
+        </camera>
+    </gui>
 
     <!-- Physics settings -->
     <physics name='default_physics' default='0' type='ode'>

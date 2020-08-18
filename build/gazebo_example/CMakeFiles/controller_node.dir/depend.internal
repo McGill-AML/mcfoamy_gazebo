@@ -4,8 +4,8 @@
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.cpp
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.hpp
- /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.cpp
- /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.hpp
+ /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory4.cpp
+ /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory4.hpp
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller.h
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller_node.h
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/csvparser.c
@@ -14,6 +14,7 @@ gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o
  /home/eitan/mcfoamy_gazebo/src/gazebo_example/src/controller_node.cpp
  /opt/ros/kinetic/include/geometry_msgs/Point.h
  /opt/ros/kinetic/include/geometry_msgs/Pose.h
+ /opt/ros/kinetic/include/geometry_msgs/PoseStamped.h
  /opt/ros/kinetic/include/geometry_msgs/Quaternion.h
  /opt/ros/kinetic/include/geometry_msgs/Twist.h
  /opt/ros/kinetic/include/geometry_msgs/Vector3.h

@@ -1,22 +1,22 @@
 Determining if the pthread_create exist failed with the following output:
 Change Dir: /home/eitan/mcfoamy_gazebo/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_2c0f2/fast"
-/usr/bin/make -f CMakeFiles/cmTC_2c0f2.dir/build.make CMakeFiles/cmTC_2c0f2.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_6f0eb/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6f0eb.dir/build.make CMakeFiles/cmTC_6f0eb.dir/build
 make[1]: Entering directory '/home/eitan/mcfoamy_gazebo/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_2c0f2.dir/CheckSymbolExists.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_2c0f2.dir/CheckSymbolExists.c.o   -c /home/eitan/mcfoamy_gazebo/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTC_2c0f2
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2c0f2.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_2c0f2.dir/CheckSymbolExists.c.o  -o cmTC_2c0f2 -rdynamic 
-CMakeFiles/cmTC_2c0f2.dir/CheckSymbolExists.c.o: In function `main':
+Building C object CMakeFiles/cmTC_6f0eb.dir/CheckSymbolExists.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_6f0eb.dir/CheckSymbolExists.c.o   -c /home/eitan/mcfoamy_gazebo/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_6f0eb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6f0eb.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_6f0eb.dir/CheckSymbolExists.c.o  -o cmTC_6f0eb -rdynamic 
+CMakeFiles/cmTC_6f0eb.dir/CheckSymbolExists.c.o: In function `main':
 CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_2c0f2.dir/build.make:97: recipe for target 'cmTC_2c0f2' failed
-make[1]: *** [cmTC_2c0f2] Error 1
+CMakeFiles/cmTC_6f0eb.dir/build.make:97: recipe for target 'cmTC_6f0eb' failed
+make[1]: *** [cmTC_6f0eb] Error 1
 make[1]: Leaving directory '/home/eitan/mcfoamy_gazebo/build/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_2c0f2/fast' failed
-make: *** [cmTC_2c0f2/fast] Error 2
+Makefile:126: recipe for target 'cmTC_6f0eb/fast' failed
+make: *** [cmTC_6f0eb/fast] Error 2
 
 File /home/eitan/mcfoamy_gazebo/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
@@ -36,20 +36,20 @@ int main(int argc, char** argv)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /home/eitan/mcfoamy_gazebo/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_54b73/fast"
-/usr/bin/make -f CMakeFiles/cmTC_54b73.dir/build.make CMakeFiles/cmTC_54b73.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_45f1e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_45f1e.dir/build.make CMakeFiles/cmTC_45f1e.dir/build
 make[1]: Entering directory '/home/eitan/mcfoamy_gazebo/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_54b73.dir/CheckFunctionExists.c.o
-/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_54b73.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
-Linking C executable cmTC_54b73
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_54b73.dir/link.txt --verbose=1
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_54b73.dir/CheckFunctionExists.c.o  -o cmTC_54b73 -rdynamic -lpthreads 
+Building C object CMakeFiles/cmTC_45f1e.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_45f1e.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
+Linking C executable cmTC_45f1e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_45f1e.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_45f1e.dir/CheckFunctionExists.c.o  -o cmTC_45f1e -rdynamic -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-CMakeFiles/cmTC_54b73.dir/build.make:97: recipe for target 'cmTC_54b73' failed
-make[1]: *** [cmTC_54b73] Error 1
+CMakeFiles/cmTC_45f1e.dir/build.make:97: recipe for target 'cmTC_45f1e' failed
+make[1]: *** [cmTC_45f1e] Error 1
 make[1]: Leaving directory '/home/eitan/mcfoamy_gazebo/build/CMakeFiles/CMakeTmp'
-Makefile:126: recipe for target 'cmTC_54b73/fast' failed
-make: *** [cmTC_54b73/fast] Error 2
+Makefile:126: recipe for target 'cmTC_45f1e/fast' failed
+make: *** [cmTC_45f1e/fast] Error 2
 
 

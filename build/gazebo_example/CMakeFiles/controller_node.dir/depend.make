@@ -3,8 +3,8 @@
 
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.cpp
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.hpp
-gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.cpp
-gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.hpp
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory4.cpp
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory4.hpp
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/controller_node.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/csvparser.c
@@ -13,6 +13,7 @@ gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/e
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /home/eitan/mcfoamy_gazebo/src/gazebo_example/src/controller_node.cpp
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Point.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Pose.h
+gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/geometry_msgs/PoseStamped.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Quaternion.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Twist.h
 gazebo_example/CMakeFiles/controller_node.dir/src/controller_node.cpp.o: /opt/ros/kinetic/include/geometry_msgs/Vector3.h

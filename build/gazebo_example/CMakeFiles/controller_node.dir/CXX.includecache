@@ -14,11 +14,11 @@ cmath
 
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/LowPassFilter2p.hpp
 
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.cpp
-Trajectory3.hpp
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory4.cpp
+Trajectory4.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory4.hpp
 
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory3.hpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/Trajectory4.hpp
 iostream
 -
 vector
@@ -71,6 +71,8 @@ geometry_msgs/Pose.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/geometry_msgs/Pose.h
 geometry_msgs/Twist.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/geometry_msgs/Twist.h
+geometry_msgs/PoseStamped.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/geometry_msgs/PoseStamped.h
 std_msgs/Int16.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/std_msgs/Int16.h
 std_msgs/Int16MultiArray.h
@@ -83,8 +85,8 @@ gazebo_example/controller.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/controller.h
 gazebo/physics/physics.hh
 -
-gazebo_example/Trajectory3.cpp
-/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/Trajectory3.cpp
+gazebo_example/Trajectory4.cpp
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/Trajectory4.cpp
 gazebo_example/LowPassFilter2p.cpp
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/gazebo_example/LowPassFilter2p.cpp
 visualization_msgs/Marker.h
@@ -152,6 +154,26 @@ ros/message_operations.h
 geometry_msgs/Point.h
 -
 geometry_msgs/Quaternion.h
+-
+
+/opt/ros/kinetic/include/geometry_msgs/PoseStamped.h
+string
+-
+vector
+-
+map
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+std_msgs/Header.h
+-
+geometry_msgs/Pose.h
 -
 
 /opt/ros/kinetic/include/geometry_msgs/Quaternion.h

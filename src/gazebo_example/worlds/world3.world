@@ -135,5 +135,11 @@
       <real_time_factor>.25</real_time_factor>
       <real_time_update_rate>250</real_time_update_rate>
     </physics>
+
+    <gui>
+        <camera name="user_camera">
+            <pose>-20 -10 100 0 1.4 0</pose>
+        </camera>
+    </gui>
   </world>
 </sdf>
