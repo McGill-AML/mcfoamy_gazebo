@@ -200,10 +200,10 @@ void PlanePlugin::aerodynamics()
   math::Vector3 angular_velocity_b(angular_velocity_bg[0],-angular_velocity_bg[1],-angular_velocity_bg[2]);*/
   //saturate actuators and add rate limiters!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   double delta_a_max = 52.0;
-  double delta_e_max = 59.0;
-  double delta_r_max = 49.0;
+  double delta_e_max = 55.0;
+  double delta_r_max = 40.0;
   double omega_t_min = 1716.0;
-  double omega_t_max = 6710.0;
+  double omega_t_max = 6473.0;
 
   McFoamy_FM_v2(saturate(-actuator_[0],-delta_a_max,delta_a_max)*.017453, saturate(actuator_[1],-delta_e_max,delta_e_max)*.017453, saturate(actuator_[2],-delta_r_max,delta_r_max)*.017453, saturate(actuator_[3],omega_t_min,omega_t_max), vel_b.x,vel_b.y,vel_b.z,omega_nb_b.x,omega_nb_b.y,omega_nb_b.z,&Fx_b,&Fy_b,&Fz_b,&Mx_b,&My_b,&Mz_b);
   //math::Quaternion q_br(0, 1, 0, 0);

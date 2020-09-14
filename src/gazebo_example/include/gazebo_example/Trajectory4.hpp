@@ -34,13 +34,14 @@ public:
   int index;
   float psi_dot_deg;
   float z_dot;
+  float psi_dot;
+
 
   gazebo::math::Vector3 GetPositionAtTime(float t, gazebo::math::Vector3 p, float psi);
   gazebo::math::Quaternion GetQuaternionAtTime(float t, float psi);
   gazebo::math::Vector3 GetVelocity();
   gazebo::math::Vector3 GetAngularVelocity();
 private:
-  float psi_dot;
   float phi;
   float theta;
   float u;
@@ -117,6 +118,7 @@ public:
 private:
   TrimTrajectory get_trim_trajectory(gazebo::math::Vector3 p_initial, float psi_initial, gazebo::math::Vector3 p_final);
   float V;
+  //int max_turn_rate;
 
   float lambda;
   gazebo::math::Matrix3 C_cb; 

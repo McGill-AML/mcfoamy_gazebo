@@ -271,7 +271,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   //Constants and Aircraft Properties
   double ro = 1.225f; //Air Density (kg/m^3)
   double A_prop = 0.0507f; //Propeller Area (m^2)
-  double m = .60f; //Mass (kg)
+  double m = .660f; //Mass (kg)
   double S = 0.14274f; //Wing Area (m^2), yak54 = 0.14865
   double b = 0.864f; //Wing Span (m), yak54 = .82
   double cbar = 0.21f; //Mean Aerodynamic Chord (m), yak54 =.2107
@@ -279,10 +279,10 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   double Cm_delta_e = -0.0117747f; //Elevator Control Derivative Coefficient (/deg)
   double Cn_delta_r = -0.0035663f; //Rudder Control Derivative Coefficient (/deg)
   double delta_a_max = 52.0f; //52.0fMaximum Aileron Deflection (deg)
-  double delta_e_max = 59.0f; //35.0fMaximum Elevator Deflection (deg)
-  double delta_r_max = 49.0f; //56.0fMaximum Rudder Deflection (deg)
+  double delta_e_max = 55.0f; //35.0fMaximum Elevator Deflection (deg)
+  double delta_r_max = 40.0f; //56.0fMaximum Rudder Deflection (deg)
   double omega_t_min = 1716.0f; //Minimum Thrust (RPM)
-  double omega_t_max = 6710.0f; //Maximimum Thrust (RPM)
+  double omega_t_max = 6473.0f; //Maximimum Thrust (RPM)
   double F_aero2 = -0.0157;
   double F_aero1 = 0.0524;
   double F_aero0 = -0.5583;
@@ -483,16 +483,27 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
                                                       std_srvs::Trigger::Response& res)
 {
   if (start_ != true){
-    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");*/
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");
+
+    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_C2H.csv");
+
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_C2H.csv");
+
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_ATA.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_C2H.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_C2H.csv");*/
 
     CA.LoadAgileLibrary(filenames);
-    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
-    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_trim.csv");
+    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
+    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_trim.csv");
+    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_trim.csv");
+    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_trim.csv");
     last_time = ros::Time::now().toSec();
 
 

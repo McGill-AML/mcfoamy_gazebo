@@ -373,7 +373,7 @@ CollisionAvoidance::CollisionAvoidance() {
 	lambda = 0.0 * 3.14/180.0;
     //C_cb = gazebo::math::Matrix3(0.0,-sin(lambda),cos(lambda),1.0,0.0,0.0,0.0,cos(lambda),sin(lambda));
     C_cb = gazebo::math::Matrix3(0.0, 1.0, 0.0, -sin(lambda), 0.0, cos(lambda), cos(lambda), 0.0, sin(lambda));
-    HFOV = 85.2*PI/180.0;//for realsense d435
+    HFOV = 65.0*PI/180.0;//for realsense d435
   	VFOV = 58.0*PI/180.0;//for realsense d435
   	range = 20.0; //for realsense d435
   	d_max = 2.0;
@@ -411,7 +411,23 @@ void CollisionAvoidance::LoadTrimTrajectories(const std::string& filename) {
     }
     CsvParser_destroy(csvparser);
     V = powf(powf(trim_trajectories.row(0)(4),2.0) + powf(trim_trajectories.row(0)(5),2.0) + powf(trim_trajectories.row(0)(6),2.0),0.5);
-
+    /*max_turn_rate = 110;
+    if (V < 14.0)
+    {
+      max_turn_rate = 30;//V =13
+    }
+    if (V < 12.0)
+    {
+      max_turn_rate = 70;//V =11
+    }
+    if (V < 10.0)
+    {
+      max_turn_rate = 90;//V =9
+    }
+    if (V < 8.0)
+    {
+      max_turn_rate = 110;//V =7
+    }*/
 }
 
 TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_initial, float psi_initial, gazebo::math::Vector3 p_final){
@@ -449,14 +465,19 @@ TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_i
 	int psi_dot_deg_rounded = round((psi_dot * 180.0 / PI) / 10.0) * 10;
 	int trajectory_index = -1;
 
-  /*if (z_dot_rounded > 2){z_dot_rounded = 2;}
-  if (z_dot_rounded < -2){z_dot_rounded = -2;}
-  if (psi_dot_deg_rounded > 110){psi_dot_deg_rounded = 110;}
-  if (psi_dot_deg_rounded < -110){psi_dot_deg_rounded = -110;}*/
+  //if (z_dot_rounded > 2){z_dot_rounded = 2;}
+  //if (z_dot_rounded < -2){z_dot_rounded = -2;}
+  //if (psi_dot_deg_rounded > 50){psi_dot_deg_rounded = 50;}
+  //if (psi_dot_deg_rounded < -50){psi_dot_deg_rounded = -50;}
 
 
 	if (z_dot_rounded >= -2 && z_dot_rounded <= 2 && psi_dot_deg_rounded >= -110 && psi_dot_deg_rounded <= 110){
 		trajectory_index = (psi_dot_deg_rounded + 110) * 5 / 10 + (z_dot_rounded + 2) / 1;
+    TrimTrajectory checking_psi_dot(trim_trajectories.row(trajectory_index), delta_t, trajectory_index);
+    if (abs(checking_psi_dot.psi_dot - psi_dot)*180.0/3.14 > 10){
+      trajectory_index = -1;
+    }
+
 	}
 
 	int trajectory_index2 = 0;
