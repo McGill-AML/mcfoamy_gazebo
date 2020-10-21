@@ -88,40 +88,49 @@
       </link>
     </model>
 
-    <model name='Wall_Obstacles'>
+
+
+
+
+
+    <model name='Row_of_Poles2'>
       <static>true</static>
-      <link name="wall1">
-        <pose>5 -2 0 0 0 1.57 </pose>
+      <link name="pole1">
+        <pose>-15 15 0 0 0 0 </pose>
         <visual name="visual">
           <geometry>
-            <box>
-              <size>1 50 40</size>
-            </box>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
           </geometry>
         </visual>
         <collision name="collision">
           <geometry>
-            <box>
-              <size>1 50 40</size>
-            </box>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
           </geometry>
           <max_contacts>10</max_contacts>
         </collision>
       </link>
-      <link name="wall2">
-        <pose>-5 12 0 0 0 1.57 </pose>
+      <link name="pole2">
+        <pose>15 15 0 0 0 0 </pose>
         <visual name="visual">
           <geometry>
-            <box>
-              <size>1 50 40</size>
-            </box>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
           </geometry>
         </visual>
         <collision name="collision">
           <geometry>
-            <box>
-              <size>1 50 40</size>
-            </box>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
           </geometry>
           <max_contacts>10</max_contacts>
         </collision>
@@ -129,17 +138,87 @@
     </model>
 
 
+
+
+
+    <model name='Row_of_Poles3'>
+      <static>true</static>
+      <link name="pole1">
+        <pose>0 0 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+    </model>
+
+    <model name='Row_of_Poles4'>
+      <static>true</static>
+      <link name="pole1">
+        <pose>-15 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole2">
+        <pose>15 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+    </model>
+    <gui>
+        <camera name="user_camera">
+            <pose>-20 -10 100 0 1.4 0</pose>
+        </camera>
+    </gui>
+
     <!-- Physics settings -->
     <physics name='default_physics' default='0' type='ode'>
       <max_step_size>0.001</max_step_size>
       <real_time_factor>.25</real_time_factor>
       <real_time_update_rate>250</real_time_update_rate>
     </physics>
-
-    <gui>
-        <camera name="user_camera">
-            <pose>-20 -10 100 0 1.4 0</pose>
-        </camera>
-    </gui>
   </world>
 </sdf>

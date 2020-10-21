@@ -15,6 +15,7 @@
 #include "visualization_msgs/Marker.h"
 #include "visualization_msgs/MarkerArray.h"
 #include <pcl/filters/passthrough.h>
+#include "std_msgs/Float64MultiArray.h"
 
 namespace gazebo_example
 {
@@ -46,6 +47,7 @@ private:
   ros::ServiceServer start_service_; 
   //ros::Publisher vis_pub ;
   ros::Publisher vis_pub_ ;
+  ros::Publisher goal_ned_pub_;
 
 
   geometry_msgs::Pose pose_;
@@ -54,6 +56,7 @@ private:
   geometry_msgs::PoseStamped init_pose_;
   std_msgs::Int16 trajectory_;
   std_msgs::Int16MultiArray trajectories_;
+  std_msgs::Float64MultiArray command_goal_ned;
 
   gazebo::math::Vector3 p_0;
   gazebo::math::Vector3 p_final;

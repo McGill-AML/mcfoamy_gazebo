@@ -36,6 +36,8 @@ bool MotionplanNode::init()
                                                 this);
   //vis_pub = node_handle.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
   vis_pub_ = node_handle.advertise<visualization_msgs::MarkerArray>( "visualization_marker_array", MAX_PUB_QUEUE );
+    goal_ned_pub_ = node_handle.advertise<std_msgs::Float64MultiArray>("goal", MAX_PUB_QUEUE);
+
 
   return true;
 }
@@ -100,7 +102,13 @@ void MotionplanNode::compute_refstate()
 
 
   //gazebo::math::Vector3 goal_position_i(15.0 * cos(ros::Time::now().toSec() / 5.0),15.0 * sin(ros::Time::now().toSec() / 5.0),-8.0);
-  gazebo::math::Vector3 goal_position_i(30.0,0.0,-8.0);
+  gazebo::math::Vector3 goal_position_i(30.0,0.0,-10.0);
+  std::vector<double> goal_ned;
+  goal_ned.push_back(goal_position_i.x);
+  goal_ned.push_back(goal_position_i.y);
+  goal_ned.push_back(goal_position_i.z);
+  command_goal_ned.data = goal_ned;
+  goal_ned_pub_.publish(command_goal_ned);
   std::vector<gazebo::math::Vector3> positions_sampled;
   std::vector<TrimTrajectory> trajectories_sampled;
 
@@ -237,25 +245,25 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
 {
 
   if (start_ != true){
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_H2C.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");
 
-    /*filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_ATA.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
     filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_C2H.csv");
 
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_ATA.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_C2H.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_ATA.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_C2H.csv");
 
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_ATA.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_C2H.csv");*/
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_ATA.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_C2H.csv");
 
     CA.LoadAgileLibrary(filenames);
-    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
-    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_trim.csv");
+    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
+    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_trim.csv");
     //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_trim.csv");
     //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_trim.csv");
     

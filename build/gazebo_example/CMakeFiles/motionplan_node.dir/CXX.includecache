@@ -93,6 +93,8 @@ visualization_msgs/MarkerArray.h
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/visualization_msgs/MarkerArray.h
 pcl/filters/passthrough.h
 -
+std_msgs/Float64MultiArray.h
+/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/std_msgs/Float64MultiArray.h
 
 /home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/sort.h
 vector
@@ -1066,6 +1068,24 @@ ros/serialization.h
 ros/builtin_message_traits.h
 -
 ros/message_operations.h
+-
+
+/opt/ros/kinetic/include/std_msgs/Float64MultiArray.h
+string
+-
+vector
+-
+map
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+std_msgs/MultiArrayLayout.h
 -
 
 /opt/ros/kinetic/include/std_msgs/Header.h

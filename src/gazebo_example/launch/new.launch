@@ -4,6 +4,8 @@
     <arg name="world_name" value="$(find gazebo_example)/worlds/world3.world"/>
     <arg name="verbose" value="true"/>
     <arg name="paused" value="true"/>
+        <arg name="gui" value="true"/>
+
   </include>
   
 
@@ -13,8 +15,9 @@
     <param name="robot_description" command="$(find xacro)/xacro $(find gazebo_example)/models/xacro/example_robot.urdf.xacro --inorder" />
 
     <!-- Spawn a robot into Gazebo -->
-    <node name="spawn_xacro" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y -35 -z 10 -model plane_xacro" />
-    
+    <node name="spawn_xacro" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 20 -y -20 -z 11 -model plane_xacro" />
+
+
     <node name="motionplan_node" pkg="gazebo_example" type="motionplan_node" output="screen" />
   
   <node pkg="rosservice" type="rosservice" name="start_motionplan" args="call --wait /start_motionplan" />
@@ -22,8 +25,7 @@
 
   <node pkg="rosservice" type="rosservice" name="start_controller" args="call --wait /start_controller" />
 
-  <node pkg="rosbag" type="record" name="rosbag_record" args="/trajectories /ref_pose /ref_twist /pose /twist /actuator"/>
-
+  <node pkg="rosbag" type="record" name="rosbag_record" args="/trajectories /ref_pose /ref_twist /pose /twist /actuator /camera/depth/image_raw /camera/color/image_raw/compressed /goal"/>
 
 
 </launch>

@@ -17,7 +17,8 @@
     * roslaunch gazebo_example LAUNCH_FILE_NAME
 
 ## Example launch files:
-* launch_example.launch
+* new_norecord.launch starts the gazebo simulation with all nodes running
+* launch_rv.launch starts RVIZ and shows pointcloud and planning steps
 
 ## ROS node
 ### controller_node

@@ -1,0 +1,1087 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <scene>
+      <shadows>0</shadows>
+    </scene>
+
+
+    <model name='Wall'>
+      <static>true</static>
+      <link name="wall1">
+        <pose>30 0 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 80 40</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 80 40</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="wall2">
+        <pose>-30 0 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 80 40</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 80 40</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="wall3">
+        <pose>0 -40 0 0 0 1.57 </pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 60 40</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 60 40</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="wall4">
+        <pose>0 40 0 0 0 1.57 </pose>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1 60 40</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>1 60 40</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+    </model>
+
+
+
+
+
+
+    <model name='Row_of_Poles2'>
+      <static>true</static>
+            <link name="pole1">
+        <pose>-27.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole2">
+        <pose>-17.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole3">
+        <pose>-7.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole4">
+        <pose>2.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole5">
+        <pose>12.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole6">
+        <pose>22.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole7">
+        <pose>27.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole8">
+        <pose>-22.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole9">
+        <pose>-12.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole10">
+        <pose>-2.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole11">
+        <pose>7.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole12">
+        <pose>17.5 15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+    </model>
+
+    <model name='Row_of_Poles3'>
+      <static>true</static>
+      <link name="pole1">
+        <pose>-25 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole2">
+        <pose>-15 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole3">
+        <pose>-5 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole4">
+        <pose>5 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole5">
+        <pose>15 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole6">
+        <pose>25 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole7">
+        <pose>-30 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole8">
+        <pose>-20 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole9">
+        <pose>-10 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole10">
+        <pose>0 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole11">
+        <pose>10 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole12">
+        <pose>20 5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+    </model>
+
+    <model name='Row_of_Poles4'>
+      <static>true</static>
+            <link name="pole1">
+        <pose>-27.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole2">
+        <pose>-17.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole3">
+        <pose>-7.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole4">
+        <pose>2.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole5">
+        <pose>12.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole6">
+        <pose>22.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole7">
+        <pose>27.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole8">
+        <pose>-22.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole9">
+        <pose>-12.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole10">
+        <pose>-2.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole11">
+        <pose>7.5 -5 0 0 0 0</pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole12">
+        <pose>17.5 -5 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+    </model>
+
+    <model name='Row_of_Poles5'>
+      <static>true</static>
+      <link name="pole1">
+        <pose>-25 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole2">
+        <pose>-15 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole3">
+        <pose>-5 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole4">
+        <pose>5 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole5">
+        <pose>15 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole6">
+        <pose>25 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole7">
+        <pose>-30 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole8">
+        <pose>-20 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole9">
+        <pose>-10 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole10">
+        <pose>0 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole11">
+        <pose>10 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+      <link name="pole12">
+        <pose>20 -15 0 0 0 0 </pose>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>40</length>
+            </cylinder>
+          </geometry>
+          <max_contacts>10</max_contacts>
+        </collision>
+      </link>
+    </model>
+
+
+
+    <!-- Physics settings -->
+    <physics name='default_physics' default='0' type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>.25</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+
+    <gui>
+      <camera name="user_camera">
+          <pose>-20 -10 100 0 1.4 0</pose>
+      </camera>
+    </gui>
+  </world>
+</sdf>
