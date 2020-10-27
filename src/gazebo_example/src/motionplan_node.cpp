@@ -56,8 +56,11 @@ void MotionplanNode::run()
     
     // Compute and publish controller output
     compute_refstate();
-    trajectory_pub_.publish(trajectory_);
-    trajectories_pub_.publish(trajectories_);
+    if (trajectories_.data[0] != 2){
+      //only publish trajectory if a trajectory was evaluated within FOV
+      trajectory_pub_.publish(trajectory_);
+      trajectories_pub_.publish(trajectories_);
+    }
     trajectories_.data.clear();
 
 
