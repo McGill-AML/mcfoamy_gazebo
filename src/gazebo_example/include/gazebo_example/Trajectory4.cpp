@@ -463,8 +463,8 @@ TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_i
 
 	int z_dot_rounded = round(z_dot);
 	int psi_dot_deg_rounded = round((psi_dot * 180.0 / PI) / 10.0) * 10;
-	//int trajectory_index = -1;
-  int trajectory_index = 57;
+	int trajectory_index = -1;
+  //int trajectory_index = 57;
 
   //if (z_dot_rounded > 2){z_dot_rounded = 2;}
   //if (z_dot_rounded < -2){z_dot_rounded = -2;}
@@ -476,7 +476,7 @@ TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_i
 		trajectory_index = (psi_dot_deg_rounded + 110) * 5 / 10 + (z_dot_rounded + 2) / 1;
     TrimTrajectory checking_psi_dot(trim_trajectories.row(trajectory_index), delta_t, trajectory_index);
     if (abs(checking_psi_dot.psi_dot - psi_dot)*180.0/3.14 > 10){
-      //trajectory_index = -1;
+      trajectory_index = -1;
     }
 
 	}
