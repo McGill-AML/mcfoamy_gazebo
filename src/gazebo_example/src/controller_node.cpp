@@ -308,7 +308,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   double Khp = 5.0;//was 5.0 in exp
   double Khi = 0.5;
   double Kv = 3.0;
-  double Kaero = 2.0;
+  double Kaero = 1.0;
 
   if (trajectory_type == 0){
     //Kpp = 0.0;
@@ -338,7 +338,7 @@ std_msgs::Float64MultiArray ControllerNode::compute_control_actuation(const doub
   gazebo::math::Vector3 a_des_b = (C_bi * C_ri.Inverse() * v_ref_r - v_b) * Kv  + C_bi * (vdelta_hp_i * Khp + vdelta_hi_i * Khi);
   //gazebo::math::Vector3 a_des_b = (C_bi * C_ri.Inverse() * v_ref_r - v_b) * Kv  + C_bi * ((p_ref_i - p_i) * Khp + vdelta_hi_i * Khi);
   double F_aero = Kaero*(F_aero2*powf(v_b.GetLength(),2.0) + F_aero1*v_b.GetLength() + F_aero0);
-  gazebo::math::Vector3 vF_aero(-F_aero, 0.0 , 0.0);
+  gazebo::math::Vector3 vF_aero(F_aero, 0.0 , 0.0);
   gazebo::math::Vector3 g_i(0.0, 0.0, 9.81); //Acceleration due to Gravity (m/s^2)
   double F_b = (a_des_b * m -C_bi * g_i * m - vF_aero).Dot(F_hat_r);
 
@@ -493,13 +493,13 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
                                                       std_srvs::Trigger::Response& res)
 {
   if (start_ != true){
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_H2C.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_H2C.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");
 
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_ATA.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_C2H.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_ATA.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_C2H.csv");
 
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_ATA.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
@@ -510,8 +510,8 @@ bool gazebo_example::ControllerNode::start_controller(std_srvs::Trigger::Request
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_C2H.csv");
 
     CA.LoadAgileLibrary(filenames);
-    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
-    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_trim.csv");
+    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
+    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_trim.csv");
     //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_trim.csv");
     //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_trim.csv");
     last_time = ros::Time::now().toSec();

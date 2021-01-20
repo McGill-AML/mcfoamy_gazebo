@@ -132,14 +132,13 @@ add_definitions(${PCL_DEFINITIONS})
 
 ## Declare a C++ library
 add_library(McFoamy_FM_v2 include/McFoamy_FM_v2/McFoamy_FM_v2.c)
-add_library(controller_eb include/controller_eb/controller_eb.c)
-add_library(maneuver_generator include/maneuver_generator/maneuver_generator.c)
+
 
 
 add_library(gazebo_plane src/gazebo_plane.cpp)
 target_link_libraries(gazebo_plane ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES} McFoamy_FM_v2)
 
-add_library(controller src/controller.cpp)
+
 
 
 ## Declare a C++ executable
@@ -154,8 +153,6 @@ add_dependencies(motionplan_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 ## Specify libraries to link a library or executable target against
 target_link_libraries(controller_node
    ${catkin_LIBRARIES}
-   controller
-   controller_eb
    ${GAZEBO_LIBRARIES}
    ${PCL_LIBRARIES}
 )
@@ -163,7 +160,6 @@ target_link_libraries(controller_node
 ## Specify libraries to link a library or executable target against
 target_link_libraries(motionplan_node
    ${catkin_LIBRARIES}
-   maneuver_generator
    ${GAZEBO_LIBRARIES}
    ${PCL_LIBRARIES}
 )

@@ -31,7 +31,6 @@
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/edit_cache.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/install/strip.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/gazebo_plane.dir
-/home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/maneuver_generator.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/gazebo_example_generate_messages_py.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/gazebo_example_gennodejs.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/gazebo_example_generate_messages_nodejs.dir
@@ -92,11 +91,9 @@
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/std_srvs_generate_messages_eus.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/tf_generate_messages_cpp.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/actionlib_generate_messages_eus.dir
-/home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/controller_eb.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/gazebo_ros_gencfg.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/motionplan_node.dir
-/home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/controller.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/std_msgs_generate_messages_py.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/std_srvs_generate_messages_nodejs.dir
 /home/eitan/mcfoamy_gazebo/build/gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_py.dir
