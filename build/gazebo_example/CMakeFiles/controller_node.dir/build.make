@@ -122,8 +122,6 @@ controller_node_EXTERNAL_OBJECTS =
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libboost_atomic.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libpthread.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
-/home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /home/eitan/mcfoamy_gazebo/devel/lib/libcontroller.so
-/home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /home/eitan/mcfoamy_gazebo/devel/lib/libcontroller_eb.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libgazebo.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libgazebo_client.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/controller_node: /usr/lib/x86_64-linux-gnu/libgazebo_gui.so

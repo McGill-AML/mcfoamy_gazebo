@@ -122,7 +122,6 @@ motionplan_node_EXTERNAL_OBJECTS =
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/motionplan_node: /usr/lib/x86_64-linux-gnu/libboost_atomic.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/motionplan_node: /usr/lib/x86_64-linux-gnu/libpthread.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/motionplan_node: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
-/home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/motionplan_node: /home/eitan/mcfoamy_gazebo/devel/lib/libmaneuver_generator.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/motionplan_node: /usr/lib/x86_64-linux-gnu/libgazebo.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/motionplan_node: /usr/lib/x86_64-linux-gnu/libgazebo_client.so
 /home/eitan/mcfoamy_gazebo/devel/lib/gazebo_example/motionplan_node: /usr/lib/x86_64-linux-gnu/libgazebo_gui.so

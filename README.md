@@ -1,33 +1,8 @@
-# Gazebo Example
+## mcfoamy_gazebo
 
-## Requirements
-* ROS Kinetic full desktop version [installation](http://wiki.ros.org/kinetic/Installation/Ubuntu)
-* Gazebo for ROS:
-    * `sudo apt-get install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-ros-control`
+This repository contains the simulation of an agile fixed-wing aircraft avoiding obstacles. The control and obstacle avoidance algorithms are presented in Eitan Bulka's PhD thesis titled "Control and Obstacle Avoidance for Agile Fixed-Wing Aircraft".
 
-## Getting Started
-* Create a ROS workspace:
-    * `mkdir ~/WORKSPACE_NAME
-* Git clone this repository in it
-* Build the workspace:
-    * catkin_make (optional -j4 or -j8 to make it faster; the number corresponds to the number of cores on your processor)
-* Finish setting your environment by typing (update your environment variables with the right paths):
-    * source setup.bash
-* Run the launch files examples by typing:
-    * roslaunch gazebo_example LAUNCH_FILE_NAME
+The package uses 3 ROS nodes. The gazebo-plane.cpp node executes the aircraft dynamics, the motionplan-node.cpp node executes the obstacle avoidance algorithm, and the controller-node.cpp node executes the control algorithm.
 
-## Example launch files:
-* new_norecord.launch starts the gazebo simulation with all nodes running
-* launch_rv.launch starts RVIZ and shows pointcloud and planning steps
-
-## ROS node
-### controller_node
-#### Subscribers
-* ~pose (geometry_msgs::Pose) : pose of the robot
-* ~twist (geometry_msgs::Twist) : twist of the robot 
-#### Publishers
-* ~external_wrench (geometry_msgs::Wrench) : 
-#### Services
-* ~start_controller (std_srvs::Trigger)
-
-
+To start simulation, new_norecord.launch starts the gazebo simulation with all nodes running, and starts control and obstacle avoidance service calls. This will not log any data. To log data, use new.launch. For extra visualization, launch-rv.launch starts RVIZ and shows the pointcloud and planning steps.
+	

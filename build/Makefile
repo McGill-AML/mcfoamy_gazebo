@@ -296,19 +296,6 @@ gazebo_plane/fast:
 .PHONY : gazebo_plane/fast
 
 #=============================================================================
-# Target rules for targets named maneuver_generator
-
-# Build rule for target.
-maneuver_generator: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 maneuver_generator
-.PHONY : maneuver_generator
-
-# fast build rule for target.
-maneuver_generator/fast:
-	$(MAKE) -f gazebo_example/CMakeFiles/maneuver_generator.dir/build.make gazebo_example/CMakeFiles/maneuver_generator.dir/build
-.PHONY : maneuver_generator/fast
-
-#=============================================================================
 # Target rules for targets named gazebo_example_generate_messages_py
 
 # Build rule for target.
@@ -1024,19 +1011,6 @@ actionlib_generate_messages_eus/fast:
 .PHONY : actionlib_generate_messages_eus/fast
 
 #=============================================================================
-# Target rules for targets named controller_eb
-
-# Build rule for target.
-controller_eb: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 controller_eb
-.PHONY : controller_eb
-
-# fast build rule for target.
-controller_eb/fast:
-	$(MAKE) -f gazebo_example/CMakeFiles/controller_eb.dir/build.make gazebo_example/CMakeFiles/controller_eb.dir/build
-.PHONY : controller_eb/fast
-
-#=============================================================================
 # Target rules for targets named rosgraph_msgs_generate_messages_lisp
 
 # Build rule for target.
@@ -1074,19 +1048,6 @@ motionplan_node: cmake_check_build_system
 motionplan_node/fast:
 	$(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/build
 .PHONY : motionplan_node/fast
-
-#=============================================================================
-# Target rules for targets named controller
-
-# Build rule for target.
-controller: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 controller
-.PHONY : controller
-
-# fast build rule for target.
-controller/fast:
-	$(MAKE) -f gazebo_example/CMakeFiles/controller.dir/build.make gazebo_example/CMakeFiles/controller.dir/build
-.PHONY : controller/fast
 
 #=============================================================================
 # Target rules for targets named std_msgs_generate_messages_py
@@ -1423,7 +1384,6 @@ help:
 	@echo "... gtest"
 	@echo "... gtest_main"
 	@echo "... gazebo_plane"
-	@echo "... maneuver_generator"
 	@echo "... gazebo_example_generate_messages_py"
 	@echo "... gazebo_example_gennodejs"
 	@echo "... gazebo_example_generate_messages_nodejs"
@@ -1479,11 +1439,9 @@ help:
 	@echo "... std_srvs_generate_messages_eus"
 	@echo "... tf_generate_messages_cpp"
 	@echo "... actionlib_generate_messages_eus"
-	@echo "... controller_eb"
 	@echo "... rosgraph_msgs_generate_messages_lisp"
 	@echo "... gazebo_ros_gencfg"
 	@echo "... motionplan_node"
-	@echo "... controller"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... std_srvs_generate_messages_nodejs"
 	@echo "... rosgraph_msgs_generate_messages_py"

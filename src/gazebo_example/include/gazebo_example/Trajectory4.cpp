@@ -463,8 +463,8 @@ TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_i
 
 	int z_dot_rounded = round(z_dot);
 	int psi_dot_deg_rounded = round((psi_dot * 180.0 / PI) / 10.0) * 10;
-	//int trajectory_index = -1;
-  int trajectory_index = 57;
+	int trajectory_index = -1;
+  //int trajectory_index = 57;
 
   //if (z_dot_rounded > 2){z_dot_rounded = 2;}
   //if (z_dot_rounded < -2){z_dot_rounded = -2;}
@@ -476,7 +476,7 @@ TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_i
 		trajectory_index = (psi_dot_deg_rounded + 110) * 5 / 10 + (z_dot_rounded + 2) / 1;
     TrimTrajectory checking_psi_dot(trim_trajectories.row(trajectory_index), delta_t, trajectory_index);
     if (abs(checking_psi_dot.psi_dot - psi_dot)*180.0/3.14 > 10){
-      //trajectory_index = -1;
+      trajectory_index = -1;
     }
 
 	}
@@ -534,6 +534,7 @@ int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, ga
 	float lowest_trajectory_cost = 9999999999;
 	float cost;
 	float distance_to_obstacle;
+  int evaluated_atleast_one_traj = 0;
 
 	std::vector<gazebo::math::Vector3> final_positions_inertial = get_final_positions_inertial(p_initial, q_initial);
 	*final_positions_inertial_out = final_positions_inertial;
@@ -543,6 +544,7 @@ int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, ga
 	for (int i = 0; i < final_positions_inertial.size(); ++i){ 
 		TrimTrajectory trajectory_evaluating = get_trim_trajectory(p_initial, q_initial.GetYaw(), final_positions_inertial[i]);//printf("index %i\n", i); printf("traj_index %i\n", trajectory_evaluating.index);
 		if (trajectory_evaluating.index != -1){
+      evaluated_atleast_one_traj = 1;
 			trajectories.push_back(trajectory_evaluating); 
 			distance_to_obstacle = trajectory_evaluating.DistanceToObstacle(octree, q_initial, p_initial, trajectory_evaluating.delta_t);
 			if (distance_to_obstacle >= d_max/2.0){
@@ -577,6 +579,10 @@ int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, ga
 	}
 
 *trajectories_out = trajectories;	//printf("best trajectory index %i\n", best_trajectory_index);
+if (evaluated_atleast_one_traj == 0){
+  //didn't evauluate a single trajectory because all are outside FOV, so contrinue on previous traj.
+  best_trajectory_index = -2;
+}
 return best_trajectory_index; 
 }
 
@@ -640,6 +646,12 @@ std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_in
       mode = 4;
 
 		}
+    else if (trim_trajectory == -2){
+      //no trajectories were evaluated, continue on previous
+      ret.push_back(2); //continue on previous
+      ret.push_back(0); 
+      printf("%s\n", "No traj evauluated in FOV, continuing on previous");  
+    }
 		else{
 			ret.push_back(0); //trim maneuver
 			ret.push_back(trim_trajectory); //type of trim primitivea

@@ -181,21 +181,6 @@ gazebo_plane/fast:
 .PHONY : gazebo_plane/fast
 
 # Convenience name for target.
-gazebo_example/CMakeFiles/maneuver_generator.dir/rule:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f CMakeFiles/Makefile2 gazebo_example/CMakeFiles/maneuver_generator.dir/rule
-.PHONY : gazebo_example/CMakeFiles/maneuver_generator.dir/rule
-
-# Convenience name for target.
-maneuver_generator: gazebo_example/CMakeFiles/maneuver_generator.dir/rule
-
-.PHONY : maneuver_generator
-
-# fast build rule for target.
-maneuver_generator/fast:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/maneuver_generator.dir/build.make gazebo_example/CMakeFiles/maneuver_generator.dir/build
-.PHONY : maneuver_generator/fast
-
-# Convenience name for target.
 gazebo_example/CMakeFiles/gazebo_example_generate_messages_py.dir/rule:
 	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f CMakeFiles/Makefile2 gazebo_example/CMakeFiles/gazebo_example_generate_messages_py.dir/rule
 .PHONY : gazebo_example/CMakeFiles/gazebo_example_generate_messages_py.dir/rule
@@ -1021,21 +1006,6 @@ actionlib_generate_messages_eus/fast:
 .PHONY : actionlib_generate_messages_eus/fast
 
 # Convenience name for target.
-gazebo_example/CMakeFiles/controller_eb.dir/rule:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f CMakeFiles/Makefile2 gazebo_example/CMakeFiles/controller_eb.dir/rule
-.PHONY : gazebo_example/CMakeFiles/controller_eb.dir/rule
-
-# Convenience name for target.
-controller_eb: gazebo_example/CMakeFiles/controller_eb.dir/rule
-
-.PHONY : controller_eb
-
-# fast build rule for target.
-controller_eb/fast:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/controller_eb.dir/build.make gazebo_example/CMakeFiles/controller_eb.dir/build
-.PHONY : controller_eb/fast
-
-# Convenience name for target.
 gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule:
 	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f CMakeFiles/Makefile2 gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
 .PHONY : gazebo_example/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
@@ -1079,21 +1049,6 @@ motionplan_node: gazebo_example/CMakeFiles/motionplan_node.dir/rule
 motionplan_node/fast:
 	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/motionplan_node.dir/build.make gazebo_example/CMakeFiles/motionplan_node.dir/build
 .PHONY : motionplan_node/fast
-
-# Convenience name for target.
-gazebo_example/CMakeFiles/controller.dir/rule:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f CMakeFiles/Makefile2 gazebo_example/CMakeFiles/controller.dir/rule
-.PHONY : gazebo_example/CMakeFiles/controller.dir/rule
-
-# Convenience name for target.
-controller: gazebo_example/CMakeFiles/controller.dir/rule
-
-.PHONY : controller
-
-# fast build rule for target.
-controller/fast:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/controller.dir/build.make gazebo_example/CMakeFiles/controller.dir/build
-.PHONY : controller/fast
 
 # Convenience name for target.
 gazebo_example/CMakeFiles/std_msgs_generate_messages_py.dir/rule:
@@ -1482,87 +1437,6 @@ include/McFoamy_FM_v2/McFoamy_FM_v2.c.s:
 	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/McFoamy_FM_v2.dir/build.make gazebo_example/CMakeFiles/McFoamy_FM_v2.dir/include/McFoamy_FM_v2/McFoamy_FM_v2.c.s
 .PHONY : include/McFoamy_FM_v2/McFoamy_FM_v2.c.s
 
-include/controller_eb/controller_eb.o: include/controller_eb/controller_eb.c.o
-
-.PHONY : include/controller_eb/controller_eb.o
-
-# target to build an object file
-include/controller_eb/controller_eb.c.o:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/controller_eb.dir/build.make gazebo_example/CMakeFiles/controller_eb.dir/include/controller_eb/controller_eb.c.o
-.PHONY : include/controller_eb/controller_eb.c.o
-
-include/controller_eb/controller_eb.i: include/controller_eb/controller_eb.c.i
-
-.PHONY : include/controller_eb/controller_eb.i
-
-# target to preprocess a source file
-include/controller_eb/controller_eb.c.i:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/controller_eb.dir/build.make gazebo_example/CMakeFiles/controller_eb.dir/include/controller_eb/controller_eb.c.i
-.PHONY : include/controller_eb/controller_eb.c.i
-
-include/controller_eb/controller_eb.s: include/controller_eb/controller_eb.c.s
-
-.PHONY : include/controller_eb/controller_eb.s
-
-# target to generate assembly for a file
-include/controller_eb/controller_eb.c.s:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/controller_eb.dir/build.make gazebo_example/CMakeFiles/controller_eb.dir/include/controller_eb/controller_eb.c.s
-.PHONY : include/controller_eb/controller_eb.c.s
-
-include/maneuver_generator/maneuver_generator.o: include/maneuver_generator/maneuver_generator.c.o
-
-.PHONY : include/maneuver_generator/maneuver_generator.o
-
-# target to build an object file
-include/maneuver_generator/maneuver_generator.c.o:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/maneuver_generator.dir/build.make gazebo_example/CMakeFiles/maneuver_generator.dir/include/maneuver_generator/maneuver_generator.c.o
-.PHONY : include/maneuver_generator/maneuver_generator.c.o
-
-include/maneuver_generator/maneuver_generator.i: include/maneuver_generator/maneuver_generator.c.i
-
-.PHONY : include/maneuver_generator/maneuver_generator.i
-
-# target to preprocess a source file
-include/maneuver_generator/maneuver_generator.c.i:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/maneuver_generator.dir/build.make gazebo_example/CMakeFiles/maneuver_generator.dir/include/maneuver_generator/maneuver_generator.c.i
-.PHONY : include/maneuver_generator/maneuver_generator.c.i
-
-include/maneuver_generator/maneuver_generator.s: include/maneuver_generator/maneuver_generator.c.s
-
-.PHONY : include/maneuver_generator/maneuver_generator.s
-
-# target to generate assembly for a file
-include/maneuver_generator/maneuver_generator.c.s:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/maneuver_generator.dir/build.make gazebo_example/CMakeFiles/maneuver_generator.dir/include/maneuver_generator/maneuver_generator.c.s
-.PHONY : include/maneuver_generator/maneuver_generator.c.s
-
-src/controller.o: src/controller.cpp.o
-
-.PHONY : src/controller.o
-
-# target to build an object file
-src/controller.cpp.o:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/controller.dir/build.make gazebo_example/CMakeFiles/controller.dir/src/controller.cpp.o
-.PHONY : src/controller.cpp.o
-
-src/controller.i: src/controller.cpp.i
-
-.PHONY : src/controller.i
-
-# target to preprocess a source file
-src/controller.cpp.i:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/controller.dir/build.make gazebo_example/CMakeFiles/controller.dir/src/controller.cpp.i
-.PHONY : src/controller.cpp.i
-
-src/controller.s: src/controller.cpp.s
-
-.PHONY : src/controller.s
-
-# target to generate assembly for a file
-src/controller.cpp.s:
-	cd /home/eitan/mcfoamy_gazebo/build && $(MAKE) -f gazebo_example/CMakeFiles/controller.dir/build.make gazebo_example/CMakeFiles/controller.dir/src/controller.cpp.s
-.PHONY : src/controller.cpp.s
-
 src/controller_node.o: src/controller_node.cpp.o
 
 .PHONY : src/controller_node.o
@@ -1653,7 +1527,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... install/strip"
 	@echo "... gazebo_plane"
-	@echo "... maneuver_generator"
 	@echo "... gazebo_example_generate_messages_py"
 	@echo "... gazebo_example_gennodejs"
 	@echo "... gazebo_example_generate_messages_nodejs"
@@ -1714,11 +1587,9 @@ help:
 	@echo "... std_srvs_generate_messages_eus"
 	@echo "... tf_generate_messages_cpp"
 	@echo "... actionlib_generate_messages_eus"
-	@echo "... controller_eb"
 	@echo "... rosgraph_msgs_generate_messages_lisp"
 	@echo "... gazebo_ros_gencfg"
 	@echo "... motionplan_node"
-	@echo "... controller"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... std_srvs_generate_messages_nodejs"
 	@echo "... rosgraph_msgs_generate_messages_py"
@@ -1746,15 +1617,6 @@ help:
 	@echo "... include/McFoamy_FM_v2/McFoamy_FM_v2.o"
 	@echo "... include/McFoamy_FM_v2/McFoamy_FM_v2.i"
 	@echo "... include/McFoamy_FM_v2/McFoamy_FM_v2.s"
-	@echo "... include/controller_eb/controller_eb.o"
-	@echo "... include/controller_eb/controller_eb.i"
-	@echo "... include/controller_eb/controller_eb.s"
-	@echo "... include/maneuver_generator/maneuver_generator.o"
-	@echo "... include/maneuver_generator/maneuver_generator.i"
-	@echo "... include/maneuver_generator/maneuver_generator.s"
-	@echo "... src/controller.o"
-	@echo "... src/controller.i"
-	@echo "... src/controller.s"
 	@echo "... src/controller_node.o"
 	@echo "... src/controller_node.i"
 	@echo "... src/controller_node.s"
