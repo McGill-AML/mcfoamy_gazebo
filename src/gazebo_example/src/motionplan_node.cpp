@@ -22,6 +22,7 @@ bool MotionplanNode::init()
   //reftwist_pub_ = node_handle.advertise<geometry_msgs::Twist>("reftwist", MAX_PUB_QUEUE);
   trajectory_pub_ = node_handle.advertise<std_msgs::Int16>("trajectory", MAX_PUB_QUEUE);
   trajectories_pub_ = node_handle.advertise<std_msgs::Int16MultiArray>("trajectories", MAX_PUB_QUEUE);
+  timing_pub_ = node_handle.advertise<std_msgs::Float64MultiArray>("timings", MAX_PUB_QUEUE);
 
 
   //traj_pcl_pub_ = node_handle.advertise<pcl::PointCloud<pcl::PointXYZ>> ("traj_pcl", 1);
@@ -46,7 +47,7 @@ void MotionplanNode::run()
 {
   wait_for_trigger();
   
-  const double frequency = 5.0; 
+  const double frequency = 5.0; //5.0
   ros::Rate loop_rate(frequency);
   
   while(ros::ok())
@@ -64,9 +65,7 @@ void MotionplanNode::run()
     trajectories_.data.clear();
 
 
-    //pcl_conversions::toPCL(ros::Time::now(), traj_pcl_ptr_->header.stamp);
 
-    //traj_pcl_pub_.publish(traj_pcl_ptr_);
 
     
     // Wait to maintain constant frequency
@@ -114,14 +113,83 @@ void MotionplanNode::compute_refstate()
   goal_ned_pub_.publish(command_goal_ned);
   std::vector<gazebo::math::Vector3> positions_sampled;
   std::vector<TrimTrajectory> trajectories_sampled;
+  std::vector<double> timing;
 
   //trajectory_.data = CA.SelectTrimTrajectory(p_i, q, octree, goal_position_i, &trajectories_sampled, &positions_sampled);
-  std::vector<int> trajectory_packet = CA.SelectTrajectory(p_i, q, octree, goal_position_i, &trajectories_sampled, &positions_sampled, trajectory_packet_prev, restart_, ros::Time::now().toSec());
+  std::vector<int> trajectory_packet = CA.SelectTrajectory(p_i, q, octree, goal_position_i, &trajectories_sampled, &positions_sampled, trajectory_packet_prev, restart_, ros::Time::now().toSec(), &timing);
+  command_timing.data = timing;
+  timing_pub_.publish(command_timing);
+  //for comment on transients testing large switches:
+  //std::vector<int> trajectory_packet;
+ // trajectory_packet.push_back(0);
+
+
+  //std::vector<int> ref_index;
+  /*ref_index.push_back(57);//2
+  ref_index.push_back(57);//112
+  ref_index.push_back(107);//7
+  ref_index.push_back(107);
+  ref_index.push_back(12);
+  ref_index.push_back(102);
+  ref_index.push_back(17);
+  ref_index.push_back(97);
+  ref_index.push_back(22);
+  ref_index.push_back(92);
+  ref_index.push_back(27);
+  ref_index.push_back(87);
+  ref_index.push_back(32);
+  ref_index.push_back(82);
+  ref_index.push_back(37);
+  ref_index.push_back(77);
+  ref_index.push_back(42);
+  ref_index.push_back(72);
+  ref_index.push_back(47);
+  ref_index.push_back(67);
+  ref_index.push_back(52);
+  ref_index.push_back(62);
+  ref_index.push_back(57);
+  ref_index.push_back(57);
+  ref_index.push_back(57);*/
+
+  /*ref_index.push_back(57);
+  ref_index.push_back(57);
+  ref_index.push_back(57);//27
+  ref_index.push_back(57);//27
+  ref_index.push_back(2);
+  ref_index.push_back(99);
+
+  std::vector<int> ref_type;
+  ref_type.push_back(0);
+  ref_type.push_back(0);
+  ref_type.push_back(0);
+  ref_type.push_back(0);
+  ref_type.push_back(1);
+  ref_type.push_back(2);
+
+  trajectory_packet.push_back(ref_type[k]);
+  trajectory_packet.push_back(ref_index[k]);
+  if (k < ref_index.size()){
+    k = k + 1;
+  }
+  */
+
+  /*for (int i = 0; i < ref_index.size(); ++i){
+    if (ros::Time().toSec() - t_start < 5.0 * (i+1)){
+      trajectory_packet.push_back(i);
+      printf("%d\n",  i);
+      break;
+    }
+  }
+  printf("%f\n",  t_start);
+  printf("%f\n", ros::Time().toSec());*/
+
+
+  
   trajectories_.data.push_back(trajectory_packet[0]);
   trajectories_.data.push_back(trajectory_packet[1]);
   trajectory_packet_prev = trajectory_packet;
   if (restart_){
-    trajectories_.data.push_back(1);//let controller no just restarted motion plan
+    trajectories_.data.push_back(1);//let controller know just restarted motion plan
   }
   else{
     trajectories_.data.push_back(0);
@@ -177,9 +245,13 @@ void MotionplanNode::compute_refstate()
   for (int i = 0; i < trajectories_sampled.size(); ++i){  
     TrimTrajectory trajectory_sample = trajectories_sampled[i];
     if (trajectory_sample.index == trajectory_packet[1] && trajectory_packet[0] == 0){//selected trajectory
-      marker.color.r = 0.0;
-    } else{
       marker.color.r = 1.0;
+      marker.color.g = 1.0;
+      marker.color.b = 0.0;
+    } else{
+        marker.color.r = 1.0;
+        marker.color.g = 0.0;
+        marker.color.b = 1.0;
     }
     for (float j = 0.0; j < trajectory_sample.delta_t; j = j + 0.5){
       gazebo::math::Vector3 position_sample = trajectory_sample.GetPositionAtTime(j, p_i, q.GetYaw());
@@ -212,8 +284,8 @@ void MotionplanNode::compute_refstate()
   marker.scale.y = 1.0;
   marker.scale.z = 1.0;
   marker.color.r = 0.0;
-  marker.color.g = 0.0;
-  marker.color.b = 1.0;
+  marker.color.g = 1.0;
+  marker.color.b = 0.0;
   planned_poses.markers.push_back(marker);
   vis_pub_.publish(planned_poses);
   planned_poses.markers.clear(); 
@@ -248,13 +320,13 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
 {
 
   if (start_ != true){
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_H2C.csv");
-    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_ATA.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_H2C.csv");
+    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_C2H.csv");
 
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_ATA.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
-    //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_C2H.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_ATA.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
+    filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_C2H.csv");
 
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_ATA.csv");
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_H2C.csv");
@@ -265,14 +337,18 @@ bool gazebo_example::MotionplanNode::start_motionplan(std_srvs::Trigger::Request
     //filenames.push_back("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_C2H.csv");
 
     CA.LoadAgileLibrary(filenames);
-    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
-    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_trim.csv");
+    //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V7_trim.csv");
+    CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V9_trim.csv");
     //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V11_trim.csv");
     //CA.LoadTrimTrajectories("/home/eitan/mcfoamy_gazebo/src/gazebo_example/include/gazebo_example/trajectory_csvs/V13_trim.csv");
     
     trajectory_packet_prev.push_back(1);
     trajectory_packet_prev.push_back(0);
     trajectory_packet_prev.push_back(1);
+    
+    t_start = ros::Time().toSec();
+    printf("%f\n", t_start);
+    k = 0;
 
   }
   start_ = true;

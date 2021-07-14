@@ -1,7 +1,7 @@
 <launch>
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find gazebo_example)/worlds/world2.world"/>
+    <arg name="world_name" value="$(find gazebo_example)/worlds/world5.world"/>
     <arg name="verbose" value="true"/>
     <arg name="paused" value="true"/>
     <arg name="gui" value="true"/>
@@ -14,7 +14,7 @@
     <param name="robot_description" command="$(find xacro)/xacro $(find gazebo_example)/models/xacro/example_robot.urdf.xacro --inorder" />
 
     <!-- Spawn a robot into Gazebo -->
-    <node name="spawn_xacro" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x -20 -y -35 -z 11 -model plane_xacro" />
+    <node name="spawn_xacro" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y -35 -z 15 -model plane_xacro" />
 
 
     

@@ -39,6 +39,8 @@ private:
   //ros::Publisher init_twist_pub_;
   ros::Publisher trajectory_pub_;
   ros::Publisher trajectories_pub_;
+  ros::Publisher timing_pub_;
+
 
   //ros::Publisher traj_pcl_pub_;
   ros::Subscriber pose_sub_;
@@ -57,6 +59,7 @@ private:
   std_msgs::Int16 trajectory_;
   std_msgs::Int16MultiArray trajectories_;
   std_msgs::Float64MultiArray command_goal_ned;
+  std_msgs::Float64MultiArray command_timing;
 
   gazebo::math::Vector3 p_0;
   gazebo::math::Vector3 p_final;
@@ -67,6 +70,8 @@ private:
   double theta_global;
   double psi_global;
   std::vector<int> trajectory_packet_prev;
+  double t_start;
+  int k;
 
 
   pcl::PointCloud<pcl::PointXYZ> points_;

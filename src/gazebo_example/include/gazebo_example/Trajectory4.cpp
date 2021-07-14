@@ -431,7 +431,7 @@ void CollisionAvoidance::LoadTrimTrajectories(const std::string& filename) {
 }
 
 TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_initial, float psi_initial, gazebo::math::Vector3 p_final){
-	float d = (p_final - p_initial).GetLength();
+	/*float d = (p_final - p_initial).GetLength();
 	float theta_l = atan2f(p_final.y - p_initial.y, p_final.x - p_initial.x) - psi_initial;
 	theta_l = fmod(theta_l, 2.0 * PI);
 	if (theta_l > PI){theta_l = -2.0 * PI + theta_l;}
@@ -455,11 +455,41 @@ TrimTrajectory CollisionAvoidance::get_trim_trajectory(gazebo::math::Vector3 p_i
 		delta_t = L / V;
 		z_dot = (p_final.z - p_initial.z) / delta_t;
 		psi_dot = sqrt(powf(V, 2.0) - powf(z_dot, 2.0)) / r_xy;
-	}
-	if (delta_t > 10){printf("%f\n", delta_t);printf("%f\n", L);}
+	}*/
+
+  float d_xy = sqrt(powf(p_final.x - p_initial.x, 2.0) + powf(p_final.y - p_initial.y, 2.0));
+  float d_z = p_final.z - p_initial.z;
+  float theta_l = atan2f(p_final.y - p_initial.y, p_final.x - p_initial.x) - psi_initial;
+  theta_l = fmod(theta_l, 2.0 * PI);
+  if (theta_l > PI){theta_l = -2.0 * PI + theta_l;}
+  else if (theta_l < -PI) {theta_l = 2.0 * PI + theta_l;}
+
+  float r_xy;
+  float L_xy;
+  float psi_dot;
+  float delta_t;
+  float z_dot;
+  float V_xy;
+
+  if (fabs(theta_l) < 0.001){// next position is directly in front of current, i.e. curve has infinite curvature (r_xy tends to inf)
+    L_xy = d_xy;
+    V_xy = V / sqrt(1.0 + powf(d_z/L_xy, 2.0));
+    delta_t = L_xy / V_xy;
+    z_dot = d_z / delta_t;
+    psi_dot = 0.0;
+  }
+  else {
+    r_xy = d_xy / (2.0*sinf(theta_l));
+    L_xy = d_xy * theta_l / sinf(theta_l); if (L_xy > 2.0 * range){L_xy = 2.0 * range;}
+    V_xy = V / sqrt(1.0 + powf(d_z/L_xy, 2.0));
+    delta_t = L_xy / V_xy;
+    z_dot = d_z / delta_t;
+    psi_dot = V_xy / r_xy;
+  }
 
 
 
+	//if (delta_t > 10){printf("%f\n", delta_t);printf("%f\n", L_xy);}
 
 	int z_dot_rounded = round(z_dot);
 	int psi_dot_deg_rounded = round((psi_dot * 180.0 / PI) / 10.0) * 10;
@@ -529,25 +559,34 @@ std::vector<gazebo::math::Vector3> CollisionAvoidance::get_final_positions_inert
 	return final_positions_inertial;
 }
 
-int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, gazebo::math::Quaternion q_initial, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Vector3 p_goal, std::vector<TrimTrajectory> *trajectories_out, std::vector<gazebo::math::Vector3> *final_positions_inertial_out, std::vector<int> trajectory_packet_prev){
+int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, gazebo::math::Quaternion q_initial, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Vector3 p_goal, std::vector<TrimTrajectory> *trajectories_out, std::vector<gazebo::math::Vector3> *final_positions_inertial_out, std::vector<int> trajectory_packet_prev, std::vector<double> *timing_out){
 	int best_trajectory_index = -1;
 	float lowest_trajectory_cost = 9999999999;
 	float cost;
 	float distance_to_obstacle;
   int evaluated_atleast_one_traj = 0;
-
+  double t_0 = ros::Time::now().toSec();
+  double t_get_trim_trajectory = 0.0;
+  double t_distance_to_obs = 0.0;
+  double t_trj_cost = 0.0;
+  double t_before;
 	std::vector<gazebo::math::Vector3> final_positions_inertial = get_final_positions_inertial(p_initial, q_initial);
 	*final_positions_inertial_out = final_positions_inertial;
 
 	std::vector<TrimTrajectory> trajectories;
 
 	for (int i = 0; i < final_positions_inertial.size(); ++i){ 
+    t_before = ros::Time::now().toSec();
 		TrimTrajectory trajectory_evaluating = get_trim_trajectory(p_initial, q_initial.GetYaw(), final_positions_inertial[i]);//printf("index %i\n", i); printf("traj_index %i\n", trajectory_evaluating.index);
+    t_get_trim_trajectory += ros::Time::now().toSec() - t_before;
 		if (trajectory_evaluating.index != -1){
       evaluated_atleast_one_traj = 1;
-			trajectories.push_back(trajectory_evaluating); 
+			trajectories.push_back(trajectory_evaluating);
+      t_before = ros::Time::now().toSec();
 			distance_to_obstacle = trajectory_evaluating.DistanceToObstacle(octree, q_initial, p_initial, trajectory_evaluating.delta_t);
+      t_distance_to_obs += ros::Time::now().toSec() - t_before;
 			if (distance_to_obstacle >= d_max/2.0){
+          t_before = ros::Time::now().toSec();
           double yaw_distance = atan2((p_goal - p_initial).y , (p_goal - p_initial).x) - trajectory_evaluating.GetQuaternionAtTime(trajectory_evaluating.delta_t, q_initial.GetYaw()).GetYaw();
           if (yaw_distance > 3.14159265){
             yaw_distance = yaw_distance - 2.0 * 3.14159265;
@@ -559,6 +598,7 @@ int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, ga
           yaw_distance = fabs(yaw_distance);
   
 				cost = 15.0 * yaw_distance + 2.0 * fabs((p_goal - final_positions_inertial[i]).z) - 2.0 * distance_to_obstacle;
+      
 				/*if ((p_goal - p_initial).GetLength() > range){
           cost += 0.1 * sqrt(powf((p_goal - final_positions_inertial[i]).x, 2.0) + powf((p_goal - final_positions_inertial[i]).y, 2.0));
         }
@@ -570,6 +610,8 @@ int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, ga
 					float z_dot_prev = trim_trajectories.row(trajectory_packet_prev[1])(1);
 					cost += .03 * fabs(trajectory_evaluating.psi_dot_deg - psi_dot_deg_prev) + .00 * fabs(trajectory_evaluating.z_dot - z_dot_prev);
 				}
+        t_trj_cost += ros::Time::now().toSec() - t_before;
+
 				if (cost < lowest_trajectory_cost){
 					lowest_trajectory_cost = cost;
 					best_trajectory_index = trajectory_evaluating.index;
@@ -577,6 +619,17 @@ int CollisionAvoidance::SelectTrimTrajectory(gazebo::math::Vector3 p_initial, ga
 			}
 		}	
 	}
+  double t_total = ros::Time::now().toSec() - t_0;
+  /*printf("%f\n", t_get_trim_trajectory);
+  printf("%f\n", t_distance_to_obs);
+  printf("%f\n", t_trj_cost);
+  printf("%f\n", t_total);*/
+  std::vector<double> timing;
+  timing.push_back(t_get_trim_trajectory);
+  timing.push_back(t_distance_to_obs);
+  timing.push_back(t_trj_cost);
+  timing.push_back(t_total);
+  *timing_out = timing;  
 
 *trajectories_out = trajectories;	//printf("best trajectory index %i\n", best_trajectory_index);
 if (evaluated_atleast_one_traj == 0){
@@ -601,7 +654,7 @@ int CollisionAvoidance::GetNumberOfAgileTrajectories(){
   return number_of_agile_trajectories;
 }
 
-std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_initial, gazebo::math::Quaternion q_initial, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Vector3 p_goal, std::vector<TrimTrajectory> *trajectories_out, std::vector<gazebo::math::Vector3> *final_positions_inertial_out, std::vector<int> trajectory_packet_prev, bool restart, double time){
+std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_initial, gazebo::math::Quaternion q_initial, pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> &octree, gazebo::math::Vector3 p_goal, std::vector<TrimTrajectory> *trajectories_out, std::vector<gazebo::math::Vector3> *final_positions_inertial_out, std::vector<int> trajectory_packet_prev, bool restart, double time, std::vector<double> *timing_out){
 	std::vector<int> ret; //first index is trim/agile, second is trajectory number
 	if (restart){
 		mode = 2;
@@ -632,7 +685,7 @@ std::vector<int> CollisionAvoidance::SelectTrajectory(gazebo::math::Vector3 p_in
 	}
 	else if (mode == 2){
 		//avoidance
-		int trim_trajectory = SelectTrimTrajectory(p_initial, q_initial, octree, p_goal, trajectories_out, final_positions_inertial_out, trajectory_packet_prev);
+		int trim_trajectory = SelectTrimTrajectory(p_initial, q_initial, octree, p_goal, trajectories_out, final_positions_inertial_out, trajectory_packet_prev, timing_out);
 		if (trim_trajectory == -1){
 			//no trajectories found enter ATA
 			ret.push_back(1); //agile maneuver
